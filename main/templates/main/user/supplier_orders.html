@@ -1,0 +1,78 @@
+<div class="wrapper">
+    {% include "account/dashboard.html" %}
+    {% load static %}
+    <div class="content-wrapper px-2" style="background-color: white">
+        <div class="wrapper">
+            <div class="row w-100">
+                <div class="w-100">
+
+                    <div class="col-12 w-100">
+
+                        <div class="card w-100">
+                            <div class="card-header">
+                                <div class="row w-100">
+                                    <h4 class="pt-1">لیست تامین کنندگان درخواست شماره {{ request_r.number }}</h4>
+
+                                    <form class="col-8" action="/get_request/{{ request_r.number }}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-info float-left ">برگشت</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+
+                            <div class="app-table card-body table-responsive p-0">
+                                <table class="table table-striped table-valign-middle">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">شماره</th>
+                                        <th class="text-center">نام تامین کننده مربوطه</th>
+                                        <th class="text-center">نام نماینده بنیاد درخواست کننده</th>
+                                        <th class="text-center">تاریخ ایجاد درخواست</th>
+                                        <th class="text-center">مشاهده</th>
+                                        <th class="text-center">فاکتور</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for key,value in supplier_orders %}
+                                        <tr>
+                                            <td class="text-center">{{ forloop.counter }}</td>
+                                            <td class="text-center">{{ value }}</td>
+                                            <td class="text-center">
+                                                {{ request_r.user.userprofile.last_name }}
+                                            </td>
+                                            <td class="text-center">
+                                                {{ request_r.get_created_date }}
+                                            </td>
+                                            <td class="text-center"><a
+                                                    href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}"
+                                                    class="fa fa-check"
+                                                    style="padding-top: 6px"></a>
+                                            </td>
+                                            <td class="text-center"><a
+                                                    href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/factor"
+                                                    class="fa fa-ship"
+                                                    style="padding-top: 6px"></a>
+                                            </td>
+
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script src="{% static 'dist/js/admin_p_crud/p_crud.js' %}"></script>

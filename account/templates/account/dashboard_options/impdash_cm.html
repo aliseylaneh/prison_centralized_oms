@@ -1,0 +1,91 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Sidebar -->
+    <div class="sidebar" style="direction: ltr">
+        <div style="direction: rtl">
+            <!-- Sidebar user panel (optional) -->
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="image" style="padding-right: 12px">
+
+                    <img src="{% static  'dist/img/userlogo.png' %}"
+                         class="img-circle elevation-2" alt="Logo">
+
+                </div>
+                <div class="info">
+                    <span><a href="/logout">{{ request.user.userprofile.get_full_name }}</a></span>
+                </div>
+            </div>
+
+
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                    data-accordion="false">
+
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item has-treeview {% if 'request' in url_name %} menu-open {% endif %}">
+                        <a href="#" class="nav-link ">
+                            <i class="nav-icon fa fa-dashboard"></i>
+                            <p>
+                                مدیریت درخواست ها
+                                <i class="fa fa-angle-left right"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                    {% endwith %}
+
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item ">
+                            <a href="/user/requests"
+                               class="nav-link {% if 'requests' in url_name %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>درخواست های استان</p>
+                            </a>
+                        </li>
+                    {% endwith %}
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item">
+                            <a href="/user/expert_requests"
+                               class="nav-link  {% if 'expert' in url_name %}active{% endif %}">
+
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>بررسی کارشناسان</p>
+                            </a>
+                        </li>
+                    {% endwith %}
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item">
+                            <a href="/user/completed_request"
+                               class="nav-link {% if 'completed' in url_name %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>درخواست های نهایی شده</p>
+                            </a>
+                        </li>
+                    {% endwith %}
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item">
+                            <a href="/user/finalized_request"
+                               class="nav-link {% if 'finalized' in url_name %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>درخواست های تایید شده</p>
+                            </a>
+                        </li>
+                    {% endwith %}
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item">
+                            <a href="/user/declined_request"
+                               class="nav-link {% if 'declined' in url_name %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>درخواست های تایید نشده</p>
+                            </a>
+                        </li>
+                    {% endwith %}
+                    </ul>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- /.sidebar-menu -->
+        </div>
+    </div>
+</aside>

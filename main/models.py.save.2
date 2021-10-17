@@ -1,0 +1,239 @@
+from datetime import datetime
+from enum import Enum
+from persiantools.jdatetime import JalaliDateTime
+from django.db import models
+from import_export.admin import ImportExportMixin
+from django_jalali.db import models as jmodels
+from jalali_date import date2jalali, datetime2jalali
+from account.models import User
+import pickle
+import pytz
+from abc import ABC
+
+
+class Supplier(models.Model):
+
+    class Meta:
+   	ordering = ['-']
+
+    company_name = models.CharField(max_length=30, null=True)
+    address = models.CharField(max_length=255, null=True)
+    city = models.CharField(max_length=30, null=True)
+    province = models.CharField(max_length=30, null=True)
+    fax = models.CharField(max_length=30, null=True)
+    is_active = models.BooleanField(default=True)
+    margin = models.IntegerField(default=1)
+
+    def __status__(self):
+        if self.is_active:
+            return 'فعال'
+        else:
+            return 'غیر فعال'
+
+    def __str__(self):
+        return self.company_name or ''
+
+
+class Brand(models.Model):
+    company_name = models.CharField(max_length=255, null=True)
+    address = models.CharField(max_length=255, null=True)
+    city = models.CharField(max_length=30, null=True)
+    province = models.CharField(max_length=30, null=True)
+    fax = models.CharField(max_length=30, null=True)
+    is_active = models.BooleanField(default=True)
+
+    def __status__(self):
+        if self.is_active:
+            return 'قرارداد جاری'
+        else:
+            return 'فاقد قرارداد'
+
+    def __str__(self):
+        return self.company_name or ''
+
+
+class Category(models.Model):
+    class Meta:
+        verbose_name_plural = "Categories"
+
+    name = models.CharField(max_length=100, primary_key=True)
+    suppliers = models.ManyToManyField(Brand, verbose_name='suppliers')
+    description = models.CharField(max_length=50, null=True)
+    user_expert = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.name
+
+
+class Unit(models.TextChoices):
+    each = 'عدد'
+    box = 'کارتن'
+    kg = 'کیلوگرم'
+    gr = 'گرم'
+    tn = 'تن'
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=50, null=True)
+    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
+    ordered_quantity = models.BigIntegerField(null=True, default=0)
+    based_quantity = models.CharField(max_length=20, null=True, choices=Unit.choices, default=Unit.each)
+    description = models.CharField(max_length=255, null=True)
+    percentage = models.IntegerField(null=True, default=0)
+
+    def __str__(self):
+        return self.name
+
+
+class PrisonBranch(models.Model):
+    name = models.CharField(max_length=255, null=True)
+    address = models.CharField(max_length=255, null=True)
+    branch_deputy = models.CharField(max_length=50, null=True)
+    phone_number = models.BigIntegerField(null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Prison(models.Model):
+    name = models.CharField(max_length=255, null=True)
+    deputy = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    prisons = models.ManyToManyField(PrisonBranch, verbose_name='prisons')
+    address = models.CharField(max_length=255, null=True)
+    phone_number = models.BigIntegerField(null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Status(models.TextChoices):
+    ceo_review = 'درحال بررسی توسط مدیر عامل'
+    fm_review = 'درحال بررسی توسط مدیر مالی'
+    cm_review = 'درحال بررسی توسط مدیر بازرگانی'
+    ce_review = 'درحال بررسی توسط کارشناس بازرگانی'
+
+    ceo_dreview = 'عدم تایید توسط مدیر عامل'
+    fm_dreview = 'عدم تایید توسط مدیر مالی'
+    cm_dreview = 'عدم تایید توسط مدیر بازرگانی'
+    ce_dreview = 'عدم تایید توسط کارشناس بازرگانی'
+    completed = 'اتمام تاییدیه'
+
+
+def init_user_signatures():
+    context = {
+        'ceo': None,
+        'financial_manager': None,
+        'commercial_manager': None,
+        'commercial_expert': None
+    }
+    return pickle.dumps(context)
+
+
+class ShippingStatus(models.TextChoices):
+    requested = 'درحال تاییدیه'
+    supplier = 'در حال ارسال به تامین کنندگان'
+    gathering = 'در حال آماده سازی سفارش'
+    sending = 'ارسال شده'
+    delivered = 'دریافت شده'
+    declined = 'تایید نشده'
+
+
+class Request(models.Model):
+    number = models.CharField(max_length=255, null=True, unique=True)
+    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    user_signatures = models.BinaryField(null=True, default=init_user_signatures())
+    prison = models.ForeignKey(Prison, null=True, on_delete=models.SET_NULL)
+    branch = models.ForeignKey(PrisonBranch, null=True, on_delete=models.SET_NULL)
+    request_status = models.CharField(max_length=255, choices=Status.choices, default=Status.ceo_review)
+    shipping_status = models.CharField(max_length=50, choices=ShippingStatus.choices, default=ShippingStatus.requested)
+    shipping_fee = models.IntegerField(default=0)
+    created_date = models.DateTimeField(default=datetime.now())
+    expert = models.ManyToManyField(User, null=True, related_name='expert')
+
+    @property
+    def get_prison(self):
+        return self.prison
+
+    @property
+    def get_created_date(self):
+        return date2jalali(self.created_date).strftime("%Y/%m/%d")
+
+    @property
+    def get_created_time(self):
+        return datetime2jalali(self.created_date).strftime("%X")
+
+    @property
+    def get_user(self):
+        return self.user
+
+    def __str__(self):
+        return self.number
+
+
+class Ticket(models.Model):
+    request = models.ForeignKey(Request, null=True, on_delete=models.CASCADE)
+    title = models.CharField(null=True, max_length=255)
+    created_date = models.DateTimeField(default=datetime.now())
+
+    def __str__(self):
+        return self.title
+
+
+class Conversation(models.Model):
+    ticket = models.ForeignKey(Ticket, null=True, on_delete=models.CASCADE)
+    comment_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='comment_user')
+    reply_user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='reply_user')
+    comment = models.CharField(max_length=255, null=True)
+    reply = models.CharField(max_length=255, null=True)
+    timestamp = models.DateTimeField(auto_now=True)
+
+
+class Order(models.Model):
+    request = models.ForeignKey(Request, null=True, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    brand = models.ForeignKey(Brand, null=True, on_delete=models.SET_NULL)
+    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
+    bar_code = models.BigIntegerField(null=True)
+    quantity = models.IntegerField(default=0)
+    created_date = jmodels.jDateTimeField(default=datetime.now())
+    price = models.BigIntegerField(default=0)
+    price_2m = models.BigIntegerField(default=0)
+
+    @property
+    def set_price(self, price):
+        if self.quantity != 0:
+            self.price = price * self.quantity
+        elif self.weight != 0:
+            self.price = price * self.quantity
+
+    def get_dict(self):
+        return {
+            'id': self.id,
+            'request_id': self.request.id,
+            'product': self.product.name,
+            'category': self.product.category.name,
+            'supplier': self.supplier.company_name,
+            'brand': self.brand.company_name,
+            'quantity_unit': self.product.based_quantity,
+            'quantity': self.quantity,
+            'price': self.price,
+            'price_2m': self.price_2m
+        }
+
+
+class SupplierProduct(models.Model):
+    request = models.ForeignKey(Request, null=True, on_delete=models.SET_NULL)
+    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    brand = models.ForeignKey(Brand, null=True, on_delete=models.SET_NULL)
+    price = models.BigIntegerField(default=0)
+    price2m = models.BigIntegerField(default=0)
+    created_date = models.DateTimeField(default=datetime.now())
+
+    @property
+    def get_created_date(self):
+        return date2jalali(self.created_date).strftime("%Y/%m/%d")
+
+    @property
+    def get_created_time(self):
+        return datetime2jalali(self.created_date).strftime("%X")
