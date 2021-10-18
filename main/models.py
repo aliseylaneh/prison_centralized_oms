@@ -12,6 +12,11 @@ import pytz
 from abc import ABC
 
 
+class Province(models.Model):
+    name = models.CharField(max_length=50, null=True)
+    code = models.IntegerField(null=True, default=0)
+
+
 class Supplier(models.Model):
     company_name = models.CharField(max_length=30, null=True)
     address = models.CharField(max_length=255, null=True)
