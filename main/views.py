@@ -1111,7 +1111,7 @@ def update_prison(request, pk):
         if name != '': prison.name = name
         if user != '': prison.deputy = User.objects.get(email=user)
         if address != '': prison.address = address
-        if province_r != '' and prison.province.code != province_r:
+        if province_r != '':
             province = Province.objects.get(code=province_r)
             prison.province = province
         prison_rb_data = []
