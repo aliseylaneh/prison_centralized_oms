@@ -100,6 +100,7 @@ class PrisonBranch(models.Model):
 class Prison(models.Model):
     name = models.CharField(max_length=255, null=True)
     deputy = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    province = models.ForeignKey(Province,null=True,on_delete=models.SET_NULL)
     prisons = models.ManyToManyField(PrisonBranch, verbose_name='prisons')
     address = models.CharField(max_length=255, null=True)
     phone_number = models.BigIntegerField(null=True)
