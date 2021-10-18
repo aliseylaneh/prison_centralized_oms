@@ -16,3 +16,4 @@ logs
 mysite/settings.py
 main/migrations
 account/migrations
+__pycache__

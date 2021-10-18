@@ -1050,6 +1050,7 @@ def get_prison(request, pk):
     prison_r = Prison.objects.get(id=pk)
     users = User.objects.filter(groups__name='user')
     branches = PrisonBranch.objects.all()
+    provinces_r = Province.objects.all()
     data = []
     for prisonbranch in prison_r.prisons.values():
         data.append(prisonbranch['name'])
@@ -1057,7 +1058,8 @@ def get_prison(request, pk):
         'prison': prison_r,
         'users': users,
         'branches': branches,
-        'prisonbranches': data
+        'prisonbranches': data,
+        'provinces': provinces_r
     }
 
     return render(request, 'main/site_admin/prison/edit_prison.html', context)
@@ -1082,13 +1084,15 @@ def prisons(request):
 
         return redirect('main:prisons')
     if request.method == 'GET':
+        provinces_r = Province.objects.all()
         prisons_r = Prison.objects.all()
         branch_r = PrisonBranch.objects.all()
         users = User.objects.filter(groups__name='user')
         context = {
             'prisons': prisons_r,
             'branch_r': branch_r,
-            'users': users
+            'users': users,
+            'provinces': provinces_r
         }
         return render(request, 'main/site_admin/prison/prisons.html', context)
 
