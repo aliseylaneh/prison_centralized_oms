@@ -48,7 +48,7 @@ def review_request(request):
         prison = Prison.objects.get(deputy=request.user)
         branch = PrisonBranch.objects.get(name=list(json.loads(request.body).keys())[0])
         request_n = Request.objects.create(user=request.user, prison=prison, branch=branch)
-        request_n.number = get_request_id(request_n)
+        request_n.number = get_request_id(prison, request_n)
         request_n.save()
 
         for order in list(json.loads(request.body).values())[0].values():
@@ -405,8 +405,8 @@ def update_request(request, pk):
     return render(request, 'main/user/edit_request.html', context)
 
 
-def get_request_id(request_n):
-    return f"{date2jalali(request_n.created_date).strftime('%Y')}{date2jalali(request_n.created_date).strftime('%m')}{request_n.prison.province.code}{request_n.id}"
+def get_request_id(prison, request_n):
+    return f"{date2jalali(request_n.created_date).strftime('%Y')}{date2jalali(request_n.created_date).strftime('%m')}{prison.province.code}{request_n.id}"
 
 
 def add_product_to_request(request):
