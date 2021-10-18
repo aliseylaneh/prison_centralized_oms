@@ -406,7 +406,7 @@ def update_request(request, pk):
 
 
 def get_request_id(request_n):
-    return f"{date2jalali(request_n.created_date).strftime('%Y')}{date2jalali(request_n.created_date).strftime('%m')}/{request_n.prison.province.code}/{request_n.id}"
+    return f"{date2jalali(request_n.created_date).strftime('%Y')}{date2jalali(request_n.created_date).strftime('%m')}{request_n.prison.province.code}{request_n.id}"
 
 
 def add_product_to_request(request):
