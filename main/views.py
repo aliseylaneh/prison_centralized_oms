@@ -1071,9 +1071,11 @@ def prisons(request):
         phone = request.POST.get('number')
         user = request.POST.get('user-selector')
         branches = request.POST.getlist('branch-selector')
+        province_r = request.POST.get('province-selector')
         address = request.POST.get('address')
         user_r = User.objects.get(email=user)
-        prison = Prison.objects.create(name=name, address=address, phone_number=phone, deputy=user_r)
+        province = Province.objects.get(code=province_r)
+        prison = Prison.objects.create(name=name, address=address, phone_number=phone, deputy=user_r, province=province)
         for branch in branches:
             pb = PrisonBranch.objects.get(id=branch)
             pb.prison_set.add(prison)
@@ -1098,12 +1100,16 @@ def update_prison(request, pk):
         name = request.POST.get('name')
         address = request.POST.get('address')
         user = request.POST.get('user-selector')
+        province_r = request.POST.get('province-selector')
 
         branches = [int(i) for i in request.POST.getlist('branch-selector')]
         prison = Prison.objects.get(id=pk)
         if name != '': prison.name = name
         if user != '': prison.deputy = User.objects.get(email=user)
         if address != '': prison.address = address
+        if province_r != '' and prison.province.code != province_r:
+            province = Province.objects.get(code=province_r)
+            prison.province = province
         prison_rb_data = []
         for pbsv in prison.prisons.values():
             prison_rb_data.append(pbsv['id'])

@@ -62,6 +62,16 @@ class BrandAdmin(ImportExportModelAdmin):
     to_encoding = 'utf-8'
 
 
+class ProvinceResource(resources.ModelResource):
+    class Meta:
+        model = Province
+        exclude = 'id'
+
+
+class ProvinceAdmin(ImportExportModelAdmin):
+    to_encoding = 'utf-8'
+
+
 admin.site.register(Ticket)
 admin.site.register(Order)
 admin.site.register(Product, ProductAdmin)
@@ -73,3 +83,4 @@ admin.site.register(Conversation)
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(PrisonBranch, PrisonBranchAdmin)
 admin.site.register(SupplierProduct)
+admin.site.register(Province, ProvinceAdmin)

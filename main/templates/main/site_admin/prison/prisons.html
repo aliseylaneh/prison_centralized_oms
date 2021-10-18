@@ -59,6 +59,19 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <select class="form-control" id="province-selector"
+                                            name="province-selector" required style=" text-align: right;">
+                                        <option value="">انتخاب استان</option>
+                                        {% for province in provinces %}
+                                            <option value="{{ province.code }}">{{ province.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        استان را انتخاب کنید
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
                                     <select class="form-control" id="user-selector"
                                             name="user-selector" required style=" text-align: right;">
                                         <option value="">انتخاب کاربر استان</option>

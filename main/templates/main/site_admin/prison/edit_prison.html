@@ -52,7 +52,23 @@
                                            placeholder="نام: {{ prison.name }}"
                                            name="name">
                                 </div>
-
+                                <div class="form-group">
+                                    <select class="form-control" id="province-selector"
+                                            name="province-selector" required style=" text-align: right;">
+                                        <option value="">انتخاب استان</option>
+                                        {% for province in provinces %}
+                                            {% if province.code == prison.province.code %}
+                                                <option value="{{ prison.province.code }}"
+                                                        selected>{{ prison.province.name }}</option>
+                                            {% else %}
+                                                <option value="{{ province.code }}">{{ province.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        استان را انتخاب کنید
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <select class="form-control" id="user-selector"
                                             name="user-selector" required

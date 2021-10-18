@@ -14,3 +14,5 @@ venv
 static/build
 logs
 mysite/settings.py
+main/migrations
+account/migrations
