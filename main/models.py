@@ -16,6 +16,9 @@ class Province(models.Model):
     name = models.CharField(max_length=50, null=True)
     code = models.IntegerField(null=True, default=0)
 
+    def __str__(self):
+        return self.name
+
 
 class Supplier(models.Model):
     company_name = models.CharField(max_length=30, null=True)
@@ -100,7 +103,7 @@ class PrisonBranch(models.Model):
 class Prison(models.Model):
     name = models.CharField(max_length=255, null=True)
     deputy = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    province = models.ForeignKey(Province,null=True,on_delete=models.SET_NULL)
+    province = models.ForeignKey(Province, null=True, on_delete=models.SET_NULL)
     prisons = models.ManyToManyField(PrisonBranch, verbose_name='prisons')
     address = models.CharField(max_length=255, null=True)
     phone_number = models.BigIntegerField(null=True)
