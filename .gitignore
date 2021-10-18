@@ -13,3 +13,4 @@ test.html
 venv
 static/build
 logs
+mysite/settings.py
