@@ -242,7 +242,6 @@ function serverCallOut() {
                                              </div>
                                             <div class="text-center col-4">
                                             <h5 style="font-family: IranNastaliq;font-size: 40px" class="article-title text-center">بسم الله الرحمن الرحیم</h5>    
-                                                <h5 class="article-title text-center">بنیاد تعاون زندانیان استان تهران</h5>
                                                 <h5 class="article-title text-center">(فرم درخواست کالا از شرکت بازرگانی حامی امید)</h5>
                                             </div>
                                             <div class="text-left col-4">
