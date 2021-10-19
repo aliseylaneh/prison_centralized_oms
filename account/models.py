@@ -75,8 +75,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    first_name = models.CharField(max_length=10, null=True)
-    last_name = models.CharField(max_length=15, null=True)
+    first_name = models.CharField(max_length=50, null=True)
+    last_name = models.CharField(max_length=50, null=True)
     national_id = models.BigIntegerField(null=True)
     phone_number = models.CharField(max_length=11, null=True)
     postal_code = models.BigIntegerField(null=True)
