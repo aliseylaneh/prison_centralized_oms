@@ -194,7 +194,7 @@ def decline_request(request, pk):
             request_or = Request.objects.get(number=pk)
             request_or.request_status = Status.ceo_dreview
             request_or.shipping_status = ShippingStatus.declined
-            request_or.expert = None
+            request_or.expert.clear()
             request_or.user_signatures = init_user_signatures()
         elif request.user.groups.all()[0].name == 'commercial_manager':
             request_or = Request.objects.get(number=pk)
