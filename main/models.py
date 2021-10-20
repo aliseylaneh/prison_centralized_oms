@@ -76,6 +76,7 @@ class Unit(models.TextChoices):
     kg = 'کیلوگرم'
     gr = 'گرم'
     tn = 'تن'
+    meter = 'متر'
 
 
 class Product(models.Model):
