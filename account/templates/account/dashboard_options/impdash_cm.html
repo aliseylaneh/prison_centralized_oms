@@ -64,15 +64,6 @@
                     {% endwith %}
                     {% with url_name=request.resolver_match.url_name %}
                         <li class="nav-item">
-                            <a href="/user/finalized_request"
-                               class="nav-link {% if 'finalized' in url_name %}active{% endif %}">
-                                <i class="fa fa-circle-o nav-icon"></i>
-                                <p>درخواست های تایید شده</p>
-                            </a>
-                        </li>
-                    {% endwith %}
-                    {% with url_name=request.resolver_match.url_name %}
-                        <li class="nav-item">
                             <a href="/user/declined_request"
                                class="nav-link {% if 'declined' in url_name %}active{% endif %}">
                                 <i class="fa fa-circle-o nav-icon"></i>
