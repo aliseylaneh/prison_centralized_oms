@@ -162,9 +162,10 @@
 
                                                 </div>
 
-                                                <div class="col-3 pl-0 ml-0" id="print-button">
+                                                <div class="row gutters col-3 pl-0 ml-0 justify-content-end" id="print-button">
                                                     {% if request.user.groups.all.0.name == 'ceo' and request_r.request_status == 'درحال بررسی توسط مدیر عامل' %}
-                                                        <form action="/accept/request/{{ request_r.number }}"
+
+                                                        <form class="float-left" action="/accept/request/{{ request_r.number }}"
                                                               method="post">
                                                             <button type="submit" class="btn btn-success float-left"
                                                                     style="margin-right: 5px;">
@@ -172,7 +173,7 @@
                                                             </button>
                                                         </form>
                                                         {% if signed_r is True %}
-                                                            <form action="/decline/request/{{ request_r.number }}"
+                                                            <form  action="/decline/request/{{ request_r.number }}"
                                                                   method="post">
                                                                 <button type="submit" class="btn btn-danger float-right"
                                                                         style="margin-right: 5px;">

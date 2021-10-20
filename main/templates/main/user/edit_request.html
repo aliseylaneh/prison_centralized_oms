@@ -133,8 +133,7 @@
                                                     <select class="btn btn-outline-dark text-right show-tick dropdown w-100"
                                                             id="requestBrand-{{ order.id }}">
                                                         {% for supplier in  order.product.category.suppliers.all %}
-
-                                                            {% if supplier == order.supplier %}
+                                                            {% if supplier == order.brand %}
                                                                 <option value="{{ supplier }}"
                                                                         selected>{{ supplier }}</option>
                                                             {% else %}

@@ -88,7 +88,8 @@ def requests(request):
         requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'ceo':
         requests_r = Request.objects.exclude(
-            shipping_status=ShippingStatus.declined).order_by('-created_date')
+            shipping_status=ShippingStatus.declined).order_by('-created_date') and Request.objects.exclude(
+            request_status=Status.completed).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'commercial_manager':
         requests_r = Request.objects.filter(request_status=Status.cm_review).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'commercial_expert':
@@ -178,12 +179,14 @@ def accept_request(request, pk):
             if check_user_signatures(request_or.user_signatures) is False:
                 request_or.request_status = Status.cm_review
                 request_or.shipping_status = ShippingStatus.requested
+                request_or.save()
+                return redirect('main:requests')
             else:
                 request_or.request_status = Status.completed
                 request_or.shipping_status = ShippingStatus.supplier
                 request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
-            request_or.save()
-            return redirect('main:requests')
+                request_or.save()
+                return redirect('main:completed_request')
 
 
 @login_required(login_url='account:login')
@@ -394,7 +397,6 @@ def update_request(request, pk):
     paginator = Paginator(products, 21)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
-
     context = {
 
         'request_r': request_r,
