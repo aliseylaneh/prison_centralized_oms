@@ -192,10 +192,14 @@ def decline_request(request, pk):
     if request.method == "POST":
         if request.user.groups.all()[0].name == 'ceo':
             request_or = Request.objects.get(number=pk)
-            request_or.request_status = Status.ceo_dreview
-            request_or.shipping_status = ShippingStatus.declined
-            request_or.expert.clear()
-            request_or.user_signatures = init_user_signatures()
+            if check_manager_signatures(request_or.user_signatures):
+                request_or.request_status = Status.cm_review
+                request_or.user_signatures = init_user_signatures()
+            else:
+                request_or.request_status = Status.ceo_dreview
+                request_or.shipping_status = ShippingStatus.declined
+                request_or.expert.clear()
+                request_or.user_signatures = init_user_signatures()
         elif request.user.groups.all()[0].name == 'commercial_manager':
             request_or = Request.objects.get(number=pk)
             request_or.request_status = Status.cm_dreview

@@ -171,6 +171,15 @@
                                                                 <i class="fa fa-check"></i> تایید
                                                             </button>
                                                         </form>
+                                                        {% if signed_r is True %}
+                                                            <form action="/decline/request/{{ request_r.number }}"
+                                                                  method="post">
+                                                                <button type="submit" class="btn btn-danger float-right"
+                                                                        style="margin-right: 5px;">
+                                                                    <i class="fa fa-close"></i> عدم تایید
+                                                                </button>
+                                                            </form>
+                                                        {% endif %}
                                                     {% elif request.user.groups.all.0.name == 'commercial_expert' and signed_r is False and request_r.shipping_status != 'تایید نشده' %}
                                                         {% if request_r.expert is not None %}
                                                             <form action="/accept/request/{{ request_r.number }}"
