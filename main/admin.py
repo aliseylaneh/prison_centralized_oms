@@ -6,7 +6,6 @@ from import_export.admin import ImportExportModelAdmin
 
 
 # Register your models here.
-
 class PrisonBranchResource(resources.ModelResource):
     class Meta:
         model = PrisonBranch

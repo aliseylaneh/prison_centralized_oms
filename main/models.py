@@ -2,8 +2,6 @@ from datetime import datetime
 from enum import Enum
 from persiantools.jdatetime import JalaliDateTime
 from django.db import models
-from import_export.admin import ImportExportMixin
-from django_jalali.db import models as jmodels
 from jalali_date import date2jalali, datetime2jalali
 from django.utils import timezone
 from account.models import User
@@ -40,7 +38,7 @@ class Supplier(models.Model):
 
 
 class Brand(models.Model):
-    company_name = models.CharField(max_length=255, null=True)
+    company_name = models.CharField(max_length=255, null=True, unique=True)
     address = models.CharField(max_length=255, null=True)
     city = models.CharField(max_length=30, null=True)
     province = models.CharField(max_length=30, null=True)

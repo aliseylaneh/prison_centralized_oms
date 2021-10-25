@@ -11,7 +11,6 @@ const priceTable = document.querySelector('.priceTable')
 
 
 function handleSearch() {
-    console.log(selectedCategory.value)
     if (selectedCategory.value === 'دسته') {
         if (nameField.value.trim().length > 0)
             getData(nameField.value, null, null)

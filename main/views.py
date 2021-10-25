@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from django.core.paginator import Paginator
+from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponseNotFound
 from xlwt.Bitmap import ObjBmpRecord
 
@@ -105,7 +106,8 @@ def requests(request):
 @allowed_users(['ceo', 'commercial_manager', 'commercial_expert'])
 def declined_request(request):
     if request.user.groups.all()[0].name == 'ceo':
-        requests_r = Request.objects.filter(request_status=Status.ceo_dreview).order_by('-created_date') | Request.objects.filter(request_status=Status.cm_dreview).order_by('-created_date')
+        requests_r = Request.objects.filter(request_status=Status.ceo_dreview).order_by(
+            '-created_date') | Request.objects.filter(request_status=Status.cm_dreview).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'commercial_manager':
         requests_r = Request.objects.filter(request_status=Status.cm_dreview).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'commercial_expert':
@@ -991,10 +993,14 @@ def update_brand(request, pk):
 @allowed_users(allowed_roles=['site_admin'])
 def add_brand(request):
     if request.method == "POST":
-        name = request.POST.get('name')
-        Brand.objects.create(company_name=name)
-        messages.success(request, f"ثبت برند جدید با موفقیت انجام شد")
-        return redirect('main:brands')
+        try:
+            name = request.POST.get('name')
+            Brand.objects.create(company_name=name)
+            messages.success(request, f"ثبت برند جدید با موفقیت انجام شد")
+            return redirect('main:brands')
+        except IntegrityError:
+            messages.warning(request, "برند مورد نظر در سیستم موجود است")
+            return redirect('main:brands')
 
     if request.method == "GET":
         return render(request, 'main/admin/brand/register_brand.html', {})

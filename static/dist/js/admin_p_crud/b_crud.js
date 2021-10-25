@@ -11,19 +11,9 @@ const tableBody = document.querySelector(".table-body")
 const noResult = document.querySelector(".no-results")
 
 
-nameField.addEventListener("keyup", (e) => {
-    const searchValue = e.target.value;
-    getData(searchValue)
-
-
-});
-
-
-function getData(searchValue) {
-    if (searchValue.trim().length > 0) {
-        getSuppliers(searchValue)
-    } else {
-        resetFound();
+function getData() {
+    if (nameField.value.trim().length > 0) {
+        getSuppliers(nameField.value)
     }
 
 }
