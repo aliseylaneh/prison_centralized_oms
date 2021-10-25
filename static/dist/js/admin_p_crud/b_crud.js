@@ -107,3 +107,13 @@ function reviewSupplier() {
             }, false)
         })
 })()
+
+$(window).keypress(function (event) {
+    switch (event.keyCode) {
+
+        case 13:
+            getData();
+            break;
+
+    }
+});
