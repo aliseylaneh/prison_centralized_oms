@@ -5,6 +5,7 @@ import jdatetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
+from django.core.handlers import exception
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponseNotFound
@@ -719,21 +720,27 @@ def update_supplier(request):
 @allowed_users(allowed_roles=['site_admin'])
 def add_supplier(request):
     if request.method == "POST":
-        company_name = request.POST.get('company_name')
-        fax = request.POST.get('fax')
-        province = request.POST.get('province-selector')
-        city = request.POST.get('city-selector')
-        address = request.POST.get('address')
-        status = request.POST.get('status-selector')
-        margin = request.POST.get('margin')
-        if margin == '':
-            Supplier.objects.create(company_name=company_name, fax=fax, is_active=checkStatus(status), address=address,
-                                    city=city, province=province, margin=0)
-        else:
-            Supplier.objects.create(company_name=company_name, fax=fax, is_active=checkStatus(status), address=address,
-                                    city=city, province=province, margin=margin)
-        messages.success(request, f"ثبت تامین کنند جدید با موفقیت انجام شد")
-        return redirect('main:suppliers')
+        try:
+            company_name = request.POST.get('company_name')
+            fax = request.POST.get('fax')
+            province = request.POST.get('province-selector')
+            city = request.POST.get('city-selector')
+            address = request.POST.get('address')
+            status = request.POST.get('status-selector')
+            margin = request.POST.get('margin')
+            if margin == '':
+                Supplier.objects.create(company_name=company_name, fax=fax, is_active=checkStatus(status),
+                                        address=address,
+                                        city=city, province=province, margin=0)
+            else:
+                Supplier.objects.create(company_name=company_name, fax=fax, is_active=checkStatus(status),
+                                        address=address,
+                                        city=city, province=province, margin=margin)
+            messages.success(request, f"ثبت تامین کنند جدید با موفقیت انجام شد")
+            return redirect('main:suppliers')
+        except Exception:
+            messages.success(request, f"تامین کننده مورد نظر در سیستم موجود میباشد")
+            return redirect('main:suppliers')
     if request.method == "GET":
         return render(request, 'main/admin/supplier/register_supplier.html', {})
 
@@ -998,7 +1005,7 @@ def add_brand(request):
             Brand.objects.create(company_name=name)
             messages.success(request, f"ثبت برند جدید با موفقیت انجام شد")
             return redirect('main:brands')
-        except IntegrityError:
+        except Exception:
             messages.warning(request, "برند مورد نظر در سیستم موجود است")
             return redirect('main:brands')
 
