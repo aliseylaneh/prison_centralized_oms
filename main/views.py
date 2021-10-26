@@ -1033,9 +1033,9 @@ def prisonbranches(request):
     if request.method == "POST":
         name = request.POST.get('name')
         number = request.POST.get('number')
+        deputy = request.POST.get('deputy')
         address = request.POST.get('address')
-        print(address)
-        PrisonBranch.objects.create(name=name, phone_number=number, address=address)
+        PrisonBranch.objects.create(name=name, phone_number=number, address=address, branch_deputy=deputy)
         return redirect('main:prisonbranches')
 
     if request.method == 'GET':
@@ -1049,6 +1049,7 @@ def update_prisonbranch(request, pk):
     if request.method == 'POST':
         name = request.POST.get('name')
         phone_number = request.POST.get('number')
+        deputy = request.POST.get('deputy')
         address = request.POST.get('address')
         branch_r = PrisonBranch.objects.get(id=pk)
         if name != '' and name != branch_r.name:
@@ -1057,6 +1058,8 @@ def update_prisonbranch(request, pk):
             branch_r.phone_number = phone_number
         if address != '' and address != branch_r.address:
             branch_r.address = address
+        if deputy != '' and deputy != branch_r.branch_deputy:
+            branch_r.branch_deputy = deputy
 
         branch_r.save()
         return redirect('main:prisonbranches')

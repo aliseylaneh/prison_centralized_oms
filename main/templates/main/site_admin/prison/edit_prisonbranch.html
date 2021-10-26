@@ -6,7 +6,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>ویرایش اطلاعات تامین کننده موجود در سیستم</h1>
+                        <h1>ویرایش اطلاعات زندان موجود در سیستم</h1>
                     </div>
                     <div class="col-sm-6">
 
@@ -28,8 +28,7 @@
                         <h5 class="user-name text-warning">توجه</h5>
 
                         <p class="text-justify">
-                            تغییرات اطلاعات تامین کننده باید با هماهنگی های قبلی از سوی مدیر عامل و مدیر بازرگانی به
-                            منظور فسخ یا برقراری یک قرارداد صورت گیرد در این صورت ایجاد هرگونه تغییر
+                            تغییرات اطلاعات زندان ها باید با هماهنگی های قبلی از سوی مدیر عامل و مدیریت بنیاد های استان صورت گیرد در این صورت ایجاد هرگونه تغییر
                             بدون هماهنگی با افراد تعیین شده پیگرد قانونی دارد
                         </p>
 
@@ -55,6 +54,14 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="deputy"
+                                           name="deputy" placeholder="{{ branch.branch_deputy }}" required>
+                                    <div class="invalid-feedback">
+                                        نام نماینده زندان را وارد کنید
+                                    </div>
+
+                                </div>
 
                                 <div class="form-group">
                                     <input type="number" class="form-control" id="number"
