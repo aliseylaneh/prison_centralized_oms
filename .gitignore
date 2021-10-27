@@ -14,6 +14,6 @@ venv
 static/build
 logs
 mysite/settings.py
-main/migrations/*.py
-account/migrations/*.py
+main/migrations
+account/migrations
 __pycache__
