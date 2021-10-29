@@ -247,7 +247,7 @@ class SupplierProduct(models.Model):
 class DeliverDate(models.Model):
     request = models.ForeignKey(Request, null=True, on_delete=models.CASCADE)
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.CASCADE)
-    date = models.DateField(null=True)
+    date = models.DateField(null=True, default=datetime.now())
 
     class Meta:
         unique_together = [['request', 'supplier']]
