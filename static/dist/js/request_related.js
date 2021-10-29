@@ -369,6 +369,19 @@ function serverCallOut() {
 
 }
 
+function setDeliverDate(requestNumber, supplierID) {
+    let deliverDate = document.getElementById('dtp').value
+    let dataDict = {'request_number': requestNumber, 'supplier_id': supplierID, 'deliver_date': deliverDate}
+    $.ajax({
+        url: '/supplier/set_deliver_date',
+        data: JSON.stringify(dataDict),
+        dataType: 'json',
+        method: 'POST',
+        success: function () {
+            window.alert('تاریخ ارسال ثبت شد')
+        }
+    })
+}
 
 function PrintElem() {
 

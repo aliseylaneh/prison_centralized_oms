@@ -1,6 +1,9 @@
 import json
 import logging
 import unittest
+from datetime import date
+
+import django
 import jdatetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -357,11 +360,15 @@ def get_rs_orders(request, pk, ord):
             '-created_date')[0].price
         print(price)
         order.price = price
-
+    try:
+        deliver_date = DeliverDate.objects.get(supplier=supplier_r, request=request_r).get_deliver_date
+    except DeliverDate.DoesNotExist:
+        deliver_date = None
     context = {
         'orders_r': orders_r,
         'request_r': request_r,
-        'supplier_r': supplier_r
+        'supplier_r': supplier_r,
+        'deliver_date': deliver_date
     }
     return render(request, 'main/user/view_orders.html', context)
 
@@ -1209,3 +1216,22 @@ def add_supplier_price(request):
         'message': 'قیمت جدید برای تامین کننده مورد نظر به همراه برند آن ثبت شد'
     }
     return JsonResponse(data, safe=False)
+
+
+@login_required(login_url='account:login')
+def add_sdeliver_date(request):
+    request_number = json.loads(request.body).get('request_number')
+    supplier_id = json.loads(request.body).get('supplier_id')
+    deliver_date = json.loads(request.body).get('deliver_date')
+
+    request_r = Request.objects.get(number=request_number)
+    supplier_r = Supplier.objects.get(id=supplier_id)
+    deliver_date_r = jdatetime.datetime.strptime(deliver_date, '%Y/%m/%d').togregorian()
+    try:
+        DeliverDate.objects.create(request=request_r, supplier=supplier_r, date=deliver_date_r)
+    except IntegrityError:
+        deliver_date_ec = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+        deliver_date_ec.date = deliver_date_r
+        deliver_date_ec.save()
+
+    return JsonResponse({}, safe=False)

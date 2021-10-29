@@ -60,8 +60,36 @@
                                         <span class="pl-5">۴</span>
                                         <span>تاریخ تسویه وجود فاکتور آن شرکت از زمان تحویل اسناد به شرکت حامیان محاسبه و اقدام خواهد شد</span><br>
                                     </p>
-                                    <div class="mb-2">
-                                        <span>آدرس: {{ request_r.branch.address }}</span>
+                                    <div class="row gutters w-100">
+                                        <div class="col-6 mb-2">
+                                            <span>آدرس: {{ request_r.branch.address }}</span>
+                                        </div>
+                                        <div class="col-6 row float-left justify-content-end">
+                                            <div class="col-3 mt-2 text-left">
+                                                <span class="">تاریخ ارسال:</span>
+                                            </div>
+                                            {% if deliver_date is None %}
+                                                <div class="col-3 mt-2" id="deliverdate">..................</div>
+                                            {% else %}
+                                                <div class="col-3 mt-2" id="deliverdate">{{ deliver_date }}</div>
+                                            {% endif %}
+                                            {% if request.user.groups.all.0.name != 'ceo' %}
+                                                {% if deliver_date is None %}
+                                                    <div class="col-4 row mb-3 justify-content-end no-print">
+
+                                                        <button class=" btn btn-outline-secondary fa fa-calendar float-left"
+                                                                id="dtp"></button>
+                                                        <button class="mr-2 btn btn-info float-left no-print"
+                                                                onclick="setDeliverDate({{ request_r.number }},{{ supplier_r.id }})">
+                                                            ثبت تاریخ
+                                                        </button>
+
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+
+                                        </div>
+
                                     </div>
 
                                     <p style="text-align: justify;">
@@ -156,6 +184,22 @@
     </div>
 
 </div>
+<script type="application/javascript">
 
+
+    let options = {
+        palaceholder: '',
+        twodigit: false,
+        forceFarsiDigits: true,
+        markToday: true,
+        markHolidays: true,
+        highlightSelectedDay: true,
+        sync: true,
+        gotoToday: true
+    }
+    kamaDatepicker("dtp", options)
+
+
+</script>
 <script src="{% static 'dist/js/admin_p_crud/p_crud.js' %}"></script>
 <script src="{% static 'dist/js/request_related.js' %}"></script>

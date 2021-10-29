@@ -242,3 +242,16 @@ class SupplierProduct(models.Model):
     @property
     def get_created_time(self):
         return datetime2jalali(self.created_date).strftime("%X")
+
+
+class DeliverDate(models.Model):
+    request = models.ForeignKey(Request, null=True, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.CASCADE)
+    date = models.DateField(null=True)
+
+    class Meta:
+        unique_together = [['request', 'supplier']]
+
+    @property
+    def get_deliver_date(self):
+        return date2jalali(self.date).strftime("%Y/%m/%d")
