@@ -29,7 +29,7 @@ logger = logging.getLogger('django')
 def new_request(request):
     branches = PrisonBranch.objects.filter(prison=Prison.objects.get(deputy=request.user))
     products = Product.objects.all()
-    suppliers = Supplier.objects.all()
+    suppliers = Supplier.objects.all().order_by('-company_name')
     brands = Brand.objects.all()
     categories_nr = Category.objects.all()
     paginator = Paginator(products, 21)
@@ -403,7 +403,7 @@ def update_request(request, pk):
 
     products = Product.objects.all()
     brands = Brand.objects.all()
-    suppliers = Supplier.objects.all()
+    suppliers = Supplier.objects.all().order_by('-company_name')
     categories_r = Category.objects.all()
     paginator = Paginator(products, 21)
     page_number = request.GET.get('page')
