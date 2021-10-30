@@ -149,7 +149,8 @@ def finalized_requests(request):
 def completed_requests(request):
     if request.user.groups.all()[0].name == 'commercial_expert':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
-                                            request_status=Status.completed).order_by('-created_date')
+                                            request_status=Status.completed, expert=request.user).order_by(
+            '-created_date')
 
     elif request.user.groups.all()[0].name == 'commercial_manager':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
