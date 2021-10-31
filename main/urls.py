@@ -67,5 +67,6 @@ urlpatterns = [
     path('add_supplier_price', csrf_exempt(views.add_supplier_price), name='add_supplier_price'),
 
     path('user/completed_request', views.completed_requests, name='completed_request'),
+    path('user/reviewing_request', views.reviewing_requests, name='reviewing_request'),
     path('supplier/set_deliver_date', csrf_exempt(views.add_sdeliver_date), name='set_deliver_date')
 ]
