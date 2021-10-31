@@ -92,9 +92,8 @@ def requests(request):
     if request.user.groups.all()[0].name == 'user':
         requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'ceo':
-        requests_r = Request.objects.exclude(
-            shipping_status=ShippingStatus.declined).order_by('-created_date') & Request.objects.exclude(
-            request_status=Status.completed).order_by('-created_date')
+        requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
+                                            request_status=Status.ceo_review).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'commercial_manager':
         requests_r = Request.objects.filter(request_status=Status.cm_review).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'commercial_expert':
