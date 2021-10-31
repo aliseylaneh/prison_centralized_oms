@@ -46,7 +46,7 @@
                     {% with url_name=request.resolver_match.url_name %}
                         <li class="nav-item">
                             <a href="/user/reviewing_request"
-                               class="nav-link  {% if 'complete' in url_name %}active{% endif %}">
+                               class="nav-link  {% if 'review' in url_name %}active{% endif %}">
 
                                 <i class="fa fa-circle-o nav-icon"></i>
                                 <p>در حین بررسی کارشناسان</p>
@@ -59,7 +59,7 @@
                                class="nav-link  {% if 'complete' in url_name %}active{% endif %}">
 
                                 <i class="fa fa-circle-o nav-icon"></i>
-                                <p>در حال ارسال به تامین کننده</p>
+                                <p>درخواست نهایی شده</p>
                             </a>
                         </li>
                     {% endwith %}
