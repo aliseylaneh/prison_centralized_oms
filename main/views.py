@@ -168,11 +168,10 @@ def completed_requests(request):
 @login_required(login_url='account:login')
 @allowed_users(['ceo'])
 def reviewing_requests(request):
-    if request.user.groups.all()[0].name == 'ceo':
-        requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                            request_status=Status.cm_review).order_by(
-            '-created_date') & Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                                      request_status=Status.ce_review).order_by('-created_date')
+    requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
+                                        request_status=Status.cm_review).order_by(
+        '-created_date') | Request.objects.filter(shipping_status=ShippingStatus.requested,
+                                                  request_status=Status.ce_review).order_by('-created_date')
     context = {
         'requests_r': requests_r
     }
