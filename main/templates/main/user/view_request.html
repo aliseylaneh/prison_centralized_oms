@@ -162,10 +162,12 @@
 
                                                 </div>
 
-                                                <div class="row gutters col-3 pl-0 ml-0 justify-content-end" id="print-button">
+                                                <div class="row gutters col-3 pl-0 ml-0 justify-content-end"
+                                                     id="print-button">
                                                     {% if request.user.groups.all.0.name == 'ceo' and request_r.request_status == 'درحال بررسی توسط مدیر عامل' %}
 
-                                                        <form class="float-left" action="/accept/request/{{ request_r.number }}"
+                                                        <form class="float-left"
+                                                              action="/accept/request/{{ request_r.number }}"
                                                               method="post">
                                                             <button type="submit" class="btn btn-success float-left"
                                                                     style="margin-right: 5px;">
@@ -173,7 +175,7 @@
                                                             </button>
                                                         </form>
                                                         {% if signed_r is True %}
-                                                            <form  action="/decline/request/{{ request_r.number }}"
+                                                            <form action="/decline/request/{{ request_r.number }}"
                                                                   method="post">
                                                                 <button type="submit" class="btn btn-danger float-right"
                                                                         style="margin-right: 5px;">
@@ -261,8 +263,8 @@
                                                 <div class="col-1 justify-content-start" id="print-button">
                                                     <form action="/update_request/{{ request_r.number }}">
                                                         <button type="submit" class="btn btn-info float-right ml-2"
-                                                                style="margin-right: 5px;">
-                                                            <i class="fa fa-edit"></i> ویرایش
+                                                                style="margin-right: 5px;" id="edit_button">
+                                                            <i class="fa fa-edit" ></i> ویرایش
                                                         </button>
                                                     </form>
 
@@ -281,7 +283,8 @@
                                                     </select>
                                                     <button type="submit" class="btn btn-info float-right ml-2"
                                                             style="margin-right: 5px;"
-                                                            onclick="handleCommercialExpert({{ request_r.number }})">
+                                                            onclick="handleCommercialExpert({{ request_r.number }})"
+                                                            id="ce_requestsb">
                                                         <i class="fa fa-check"></i> ارسال درخواست به
                                                     </button>
 
@@ -290,9 +293,9 @@
 
                                                 <div class="col-1" id="print-button">
                                                     <form action="/accept/request/{{ request_r.number }}"
-                                                          class="text-left w-0" method="post">
+                                                          class="text-left w-0" method="post" id="accept_button">
                                                         <button type="submit" class="btn btn-success"
-                                                                style="margin-right: 5px;">
+                                                                style="margin-right: 5px;" id="accept_button">
                                                             <i class="fa fa-check"></i> تایید
                                                         </button>
                                                     </form>
@@ -301,9 +304,9 @@
                                                 </div>
                                                 <div class="col-2 no-print">
                                                     <form action="/decline/request/{{ request_r.number }}"
-                                                          class="text-right" method="post">
+                                                          class="text-right" method="post" id="decline_button">
                                                         <button type="submit" class="btn btn-danger"
-                                                                style="margin-right: 5px;">
+                                                                style="margin-right: 5px;" id="decline_button">
                                                             <i class="fa fa-close"></i> عدم تایید
                                                         </button>
                                                     </form>
