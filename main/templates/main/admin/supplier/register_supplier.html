@@ -88,9 +88,9 @@
                                                 style="width: 100%;height: 39px" placeholder="استان" required
                                                 name="province-selector" required>
                                             <option value="">استان</option>
-                                            <option value="تهران">تهران</option>
-                                            <option value="گیلان">گیلان</option>
-                                            <option value="همدان">همدان</option>
+                                            {% for province in provinces %}
+                                                <option value="{{ province.name }}">{{ province.name }}</option>
+                                            {% endfor %}
                                         </select>
                                         <div class="invalid-feedback">
                                             استان را انتخاب کنید
@@ -107,32 +107,21 @@
                                         </div>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <select class="dropdown btn btn-outline-primary" id="city-selector"
-                                                placeholder="شهر" name="city-selector"
-                                                style="width: 100%;height: 39px" required>
-                                            <option value="">شهر</option>
-
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            شهر را انتخاب کنید
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row gutters">
-                                    <div class="col-6">
                                         <div class="text-left">
                                             <input class="form-control" type="number" id="margin" name="margin"
                                                    placeholder="درصد تخفیف">
                                         </div>
                                     </div>
-                                    <div class="col-6">
-                                        <div class="text-left">
-                                            <button type="submit" id="" name="submit" class="w-100 btn btn-primary"
-                                                    value="submit">ثبت
-                                            </button>
-                                        </div>
+
+                                </div>
+                                <div>
+
+                                    <div class="text-left">
+                                        <button type="submit" id="" name="submit" class="w-100 btn btn-primary"
+                                                value="submit">ثبت
+                                        </button>
                                     </div>
+
                                 </div>
 
                             </div>

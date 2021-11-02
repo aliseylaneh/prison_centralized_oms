@@ -50,7 +50,6 @@ function getSuppliers(searchValue, categoryValue, supplierValue) {
                                     <td class="text-center">${item.name}</td>
                                     <td class="text-center">${item.margin}</td>
                                     <td class="text-center">${item.province}</td>
-                                    <td class="text-center">${item.city}</td>
                                     <td class="text-center">${item.status}</td>
                                     <td class="text-center">${item.fax}</td>
                                     <td class="text-center">${item.address}</td>

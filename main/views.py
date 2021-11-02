@@ -703,7 +703,6 @@ def search_suppliers(request):
     data = []
     for supplier in suppliers:
         data.append({'id': supplier.id, 'name': supplier.company_name, 'province': supplier.province,
-                     'city': supplier.city,
                      'fax': supplier.province, 'address': supplier.address,
                      'status': supplier.__status__(), 'margin': supplier.margin
                      })
@@ -714,8 +713,10 @@ def search_suppliers(request):
 @allowed_users(['site_admin'])
 def get_supplier(request, pk):
     supplier = Supplier.objects.get(id=pk)
+    province = Province.objects.all()
     context = {
         'supplier_e': supplier,
+        'provinces': province
     }
     return render(request, 'main/admin/supplier/edit_supplier.html', context)
 
@@ -775,7 +776,8 @@ def add_supplier(request):
             messages.success(request, f"تامین کننده مورد نظر در سیستم موجود میباشد")
             return redirect('main:suppliers')
     if request.method == "GET":
-        return render(request, 'main/admin/supplier/register_supplier.html', {})
+        provinces = Province.objects.all()
+        return render(request, 'main/admin/supplier/register_supplier.html', {'provinces': provinces})
 
 
 # Product CRUD

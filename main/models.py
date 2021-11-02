@@ -21,7 +21,6 @@ class Province(models.Model):
 class Supplier(models.Model):
     company_name = models.CharField(max_length=30, null=True, unique=True)
     address = models.CharField(max_length=255, null=True)
-    city = models.CharField(max_length=30, null=True)
     province = models.CharField(max_length=30, null=True)
     fax = models.CharField(max_length=30, null=True)
     is_active = models.BooleanField(default=True)
