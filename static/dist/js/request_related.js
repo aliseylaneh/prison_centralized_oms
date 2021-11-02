@@ -202,13 +202,14 @@ function serverCallOut() {
             let tempDict = {};
             tempDict[branch] = requestFinalOrders;
             if (action != false) {
+                document.getElementById("submitButton").remove();
+                document.getElementById('prisonbranch').remove();
                 $.ajax({
                     url: '/review_request',
                     data: JSON.stringify(tempDict),
                     dataType: 'json',
                     method: 'POST',
                     success: function (data) {
-                        console.log(data)
                         var requestFinalOrders = ``
                         data.request_orders.forEach(item => {
                             requestFinalOrders += `
@@ -364,7 +365,9 @@ function serverCallOut() {
                     }
                 })
             } else {
+
                 confirm('شما برای ایجاد درخواست جدید نیازمند به اضافه کردن حداقل ۱ محصول را دارید')
+                submitButton.disabled = false
             }
         }
     } else {
