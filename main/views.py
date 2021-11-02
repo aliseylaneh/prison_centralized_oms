@@ -228,7 +228,20 @@ def decline_request(request, pk):
             request_or.shipping_status = ShippingStatus.declined
             request_or.user_signatures = init_user_signatures()
         request_or.save()
-    return redirect('main:requests')
+    return redirect('main:get_request', pk)
+
+
+@login_required(login_url='account:login')
+@allowed_users(['ceo'])
+def return_declined_request(request, pk):
+    if request.method == "POST":
+        if request.user.groups.all()[0].name == 'ceo':
+            request_or = Request.objects.get(number=pk)
+            request_or.request_status = Status.ceo_review
+            request_or.shipping_status = ShippingStatus.requested
+            request_or.user_signatures = init_user_signatures()
+            request_or.save()
+            return redirect('main:get_request', pk)
 
 
 @login_required(login_url='account:login')

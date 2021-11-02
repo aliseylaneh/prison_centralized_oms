@@ -151,7 +151,7 @@
                                         <div class="row no- pt-3 no-print">
                                             {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_expert' %}
                                                 <div class="col-3 justify-content-start" id="print-button">
-                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' and signed_r is False %}
+                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' and request_r.request_status != 'درحال بررسی توسط کارشناس بازرگانی' and signed_r is False %}
                                                         <form action="/update_request/{{ request_r.number }}">
                                                             <button type="submit" class="btn btn-info float-right ml-2"
                                                                     style="margin-right: 5px;">
@@ -226,6 +226,15 @@
                                                                 <i class="fa fa-close"></i> عدم تایید
                                                             </button>
                                                         </form>
+                                                    {% elif request_r.shipping_status == 'تایید نشده' %}
+                                                        <form action="/decline/request/return_declined_request/{{ request_r.number }}"
+                                                              method="post">
+                                                            <button type="submit" class="btn btn-danger float-right"
+                                                                    style="margin-right: 5px;"
+                                                                    onclick="alert('باید توجه داشت که برگشت دادن این درخواست به منزله شروع دوباره روند کاری آن میباشد')">
+                                                                <i class="fa fa-forward"></i> برگشت دادن درخواست
+                                                            </button>
+                                                        </form>
                                                     {% endif %}
                                                 </div>
                                                 <div class="col-3" id="print-button">
@@ -264,7 +273,7 @@
                                                     <form action="/update_request/{{ request_r.number }}">
                                                         <button type="submit" class="btn btn-info float-right ml-2"
                                                                 style="margin-right: 5px;" id="edit_button">
-                                                            <i class="fa fa-edit" ></i> ویرایش
+                                                            <i class="fa fa-edit"></i> ویرایش
                                                         </button>
                                                     </form>
 
@@ -356,6 +365,7 @@
                                                     </form>
 
                                                 </div>
+
                                             {% elif request.user.groups.all.0.name == 'user' %}
                                                 <div class="col-12" id="print-button">
                                                     <form action="/user/requests">

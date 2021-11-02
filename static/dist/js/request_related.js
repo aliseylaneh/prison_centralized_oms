@@ -4,7 +4,6 @@ let requestFinalOrders = {}
 function handleTicket(request_number) {
     let ticket_title = document.getElementById('ticket_title').value
     let ticket_con = document.getElementById('ticket_con').value
-    console.log(ticket_title, ticket_con)
     let data = {
         'request_number': request_number,
         'ticket_con': ticket_con,
@@ -81,7 +80,6 @@ function transferRow(id) {
     var table2 = document.getElementById("tableDestination")
     var productSource = document.getElementById("productSource-" + id)
     var childNodes = productSource.childNodes
-    console.log(childNodes)
     let product_id = childNodes[1].textContent
     let product_name = childNodes[3].textContent
     let product_category = document.getElementById('category-' + id).innerText
