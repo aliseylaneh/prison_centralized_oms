@@ -70,5 +70,11 @@ urlpatterns = [
     path('user/reviewing_request', views.reviewing_requests, name='reviewing_request'),
     path('supplier/set_deliver_date', csrf_exempt(views.add_sdeliver_date), name='set_deliver_date'),
     path('decline/request/return_declined_request/<str:pk>', csrf_exempt(views.return_declined_request),
-         name='return_declined_request')
+         name='return_declined_request'),
+
+    path('set_delivered_quantity', csrf_exempt(views.set_delivered_quantity), name='set_delivered_quantity'),
+    path('get_request/<str:pk>/supplier_orders/<str:ord>/edit_factor', csrf_exempt(views.edit_get_rs_orders_factor),
+         name='edit_get_rs_orders_factor'),
+    path('request/<str:req>/submit_factor/<str:sup>', csrf_exempt(views.submit_delivered_factor),
+         name='submit_delivered_factor')
 ]

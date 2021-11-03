@@ -12,6 +12,7 @@ from django.core.handlers import exception
 from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponseNotFound
+from django.urls import reverse
 from xlwt.Bitmap import ObjBmpRecord
 
 from account.decorators import *
@@ -359,21 +360,71 @@ def supplier_orders(request, pk):
     return render(request, 'main/user/supplier_orders.html', context)
 
 
+@login_required(login_url='account:login')
 def get_rs_orders_factor(request, pk, ord):
     request_r = Request.objects.get(number=pk)
-    if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
-        return Http404()
+    # if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
+    #     return Http404()
     supplier_r = Supplier.objects.get(id=ord)
+    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
     orders_r = Order.objects.filter(request__number=pk, supplier_id=ord)
 
     context = {
         'orders_r': orders_r,
         'request_r': request_r,
-        'supplier_r': supplier_r
+        'supplier_r': supplier_r,
+        'deliver_date': deliver_date
     }
-    return render(request, 'main/user/factor.html', context)
+    return render(request, 'main/user/view_factor.html', context)
 
 
+@login_required(login_url='account:login')
+@allowed_users(['user'])
+def edit_get_rs_orders_factor(request, pk, ord):
+    request_r = Request.objects.get(number=pk)
+    # if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
+    #     return Http404()
+    supplier_r = Supplier.objects.get(id=ord)
+    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+    if deliver_date.date > date2jalali(datetime.now()):
+        messages.error(request, f"امکان ویرایش رسید تحویل کالا فقط در تاریخ موعد آن دردسترس است")
+        return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': pk, 'ord': ord}))
+    orders_r = Order.objects.filter(request__number=pk, supplier_id=ord)
+
+    context = {
+        'orders_r': orders_r,
+        'request_r': request_r,
+        'supplier_r': supplier_r,
+        'deliver_date': deliver_date
+    }
+    return render(request, 'main/user/edit_factor.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(['user'])
+def submit_delivered_factor(request, req, sup):
+    # request_number = json.loads(request.body).get('request_number')
+    # supplier_id = json.loads(request.body).get('supplier_id')
+    request_r = Request.objects.get(number=req)
+    supplier_r = Supplier.objects.get(id=sup)
+    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+
+    if deliver_date.date > date2jalali(datetime.now()):
+        messages.error(request, f"امکان ثبت رسید تحویل کالا فقط در تاریخ موعد آن دردسترس است")
+        return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
+    orders = Order.objects.filter(request=request_r, supplier=supplier_r, delivered_quantity=0)
+    for order in orders:
+        order.delivered_quantity = order.quantity
+
+    Order.objects.bulk_update(orders, ['delivered_quantity'])
+    deliver_date.status = 1
+    deliver_date.save()
+    return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
+    # return JsonResponse({}, safe=False)
+
+
+@login_required(login_url='account:login')
+@allowed_users(['commercial_expert', 'commercial_manager', 'ceo'])
 def get_rs_orders(request, pk, ord):
     request_r = Request.objects.get(number=pk)
     if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
@@ -1262,4 +1313,14 @@ def add_sdeliver_date(request):
         deliver_date_ec.date = deliver_date_r
         deliver_date_ec.save()
 
+    return JsonResponse({}, safe=False)
+
+
+def set_delivered_quantity(request):
+    if request.method == "POST":
+        order_id = json.loads(request.body).get('order_id')
+        delivered_quantity = json.loads(request.body).get('delivered_quantity')
+        order_r = Order.objects.get(id=order_id)
+        order_r.delivered_quantity = delivered_quantity
+        order_r.save()
     return JsonResponse({}, safe=False)

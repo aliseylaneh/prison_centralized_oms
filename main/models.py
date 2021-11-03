@@ -199,6 +199,7 @@ class Order(models.Model):
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
     bar_code = models.BigIntegerField(null=True)
     quantity = models.IntegerField(default=0)
+    delivered_quantity = models.IntegerField(default=0)
     created_date = models.DateTimeField(default=timezone.now)
     price = models.BigIntegerField(default=0)
     price_2m = models.BigIntegerField(default=0)
@@ -247,6 +248,7 @@ class DeliverDate(models.Model):
     request = models.ForeignKey(Request, null=True, on_delete=models.CASCADE)
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.CASCADE)
     date = models.DateField(null=True)
+    status = models.BooleanField(default=False)
 
     class Meta:
         unique_together = [['request', 'supplier']]

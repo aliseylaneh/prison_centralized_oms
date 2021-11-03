@@ -367,7 +367,18 @@
                                                 </div>
 
                                             {% elif request.user.groups.all.0.name == 'user' %}
-                                                <div class="col-12" id="print-button">
+                                                <div class="col-6" id="print-button">
+                                                    {% if request_r.request_status == 'اتمام تاییدیه' %}
+                                                        <form action="/get_request/{{ request_r.number }}/supplier_orders"
+                                                              method="post">
+                                                            <button type="submit" class="btn btn-primary float-left"
+                                                                    style="margin-right: 5px;">
+                                                                <i class="fa fa-search"></i> فاکتور های تحویل کالا
+                                                            </button>
+                                                        </form>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-6" id="print-button">
                                                     <form action="/user/requests">
                                                         <button type="submit" class="btn btn-info float-left ml-2"
                                                                 style="margin-right: 5px;">

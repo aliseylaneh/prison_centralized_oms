@@ -29,8 +29,14 @@
                                         <th class="text-center">نام تامین کننده مربوطه</th>
                                         <th class="text-center">نام نماینده بنیاد درخواست کننده</th>
                                         <th class="text-center">تاریخ ایجاد درخواست</th>
-                                        <th class="text-center">مشاهده</th>
-                                        <th class="text-center">فاکتور</th>
+                                        {% if request.user.groups.all.0.name != 'user' %}
+                                            <th class="text-center">مشاهده</th>
+                                        {% else %}
+                                            <th class="text-center">رسید تحویل کالا</th>
+                                        {% endif %}
+                                        {% if request.user.groups.all.0.name != 'user' %}
+                                            <th class="text-center">فاکتور</th>
+                                        {% endif %}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -45,16 +51,25 @@
                                             <td class="text-center">
                                                 {{ request_r.get_created_date }}
                                             </td>
-                                            <td class="text-center"><a
-                                                    href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}"
-                                                    class="fa fa-check"
-                                                    style="padding-top: 6px"></a>
-                                            </td>
-                                            <td class="text-center"><a
+                                            {% if request.user.groups.all.0.name != 'user' %}
+                                                <td class="text-center"><a
+                                                        href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}"
+                                                        class="fa fa-check"
+                                                        style="padding-top: 6px"></a>
+                                                </td>
+                                            {% else %}
+                                                <td class="text-center"><a
                                                     href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/factor"
-                                                    class="fa fa-ship"
+                                                    class="fa fa-shopping-cart"
                                                     style="padding-top: 6px"></a>
-                                            </td>
+                                            {% endif %}
+                                            {% if request.user.groups.all.0.name != 'user' %}
+                                                <td class="text-center"><a
+                                                        href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/factor"
+                                                        class="fa fa-ship"
+                                                        style="padding-top: 6px"></a>
+                                                </td>
+                                            {% endif %}
 
                                         </tr>
                                     {% endfor %}
