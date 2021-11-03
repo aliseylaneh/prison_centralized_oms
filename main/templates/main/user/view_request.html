@@ -151,7 +151,7 @@
                                         <div class="row no- pt-3 no-print">
                                             {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_expert' %}
                                                 <div class="col-3 justify-content-start" id="print-button">
-                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' and request_r.request_status != 'درحال بررسی توسط کارشناس بازرگانی' and signed_r is False %}
+                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی'  and signed_r is False %}
                                                         <form action="/update_request/{{ request_r.number }}">
                                                             <button type="submit" class="btn btn-info float-right ml-2"
                                                                     style="margin-right: 5px;">
