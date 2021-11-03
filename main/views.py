@@ -366,7 +366,11 @@ def get_rs_orders_factor(request, pk, ord):
     # if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
     #     return Http404()
     supplier_r = Supplier.objects.get(id=ord)
-    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+    try:
+        deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+    except DeliverDate.DoesNotExist:
+        messages.error(request, f"امکان مشاهده رسید تحویل کالا برای این تامین کننده وجود ندارد")
+        return redirect(reverse('main:supplier_orders', kwargs={'pk': pk}))
     orders_r = Order.objects.filter(request__number=pk, supplier_id=ord)
 
     context = {
