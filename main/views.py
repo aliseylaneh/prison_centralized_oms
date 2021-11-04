@@ -13,7 +13,6 @@ from django.core.paginator import Paginator
 from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponseNotFound
 from django.urls import reverse
-from xlwt.Bitmap import ObjBmpRecord
 
 from account.decorators import *
 from main.models import *
@@ -435,12 +434,20 @@ def get_rs_orders(request, pk, ord):
         return Http404()
     supplier_r = Supplier.objects.get(id=ord)
     final_list = []
+
     orders_r = Order.objects.filter(request__number=pk, supplier_id=ord)
+
     for order in orders_r:
-        price = SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
-            '-created_date')[0].price
-        print(price)
-        order.price = price
+        try:
+            price = \
+            SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
+                '-created_date')[0].price
+            order.price = price
+        except IndexError:
+            messages.error(request,
+                           f"تامین کننده ' {supplier_r.company_name} ' برای کالای ' {order.product.name} ' دارای قیمت نمیباشد.")
+            return redirect(reverse('main:supplier_orders', kwargs={'pk': pk}))
+
     try:
         deliver_date = DeliverDate.objects.get(supplier=supplier_r, request=request_r).get_deliver_date
     except DeliverDate.DoesNotExist:

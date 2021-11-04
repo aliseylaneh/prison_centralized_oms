@@ -87,7 +87,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'USER': 'root',
-        'PASSWORD': '03f2d3026c'
+        'PASSWORD': 'St@03f2d3026c'
     }
 }
 # Password validation
