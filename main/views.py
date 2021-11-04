@@ -439,8 +439,7 @@ def get_rs_orders(request, pk, ord):
 
     for order in orders_r:
         try:
-            price = \
-            SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
+            price = SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
                 '-created_date')[0].price
             order.price = price
         except IndexError:
