@@ -439,7 +439,8 @@ def get_rs_orders(request, pk, ord):
 
     for order in orders_r:
         try:
-            price = SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
+            price = \
+            SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
                 '-created_date')[0].price
             order.price = price
         except IndexError:
@@ -819,18 +820,15 @@ def add_supplier(request):
             company_name = request.POST.get('company_name')
             fax = request.POST.get('fax')
             province = request.POST.get('province-selector')
-            city = request.POST.get('city-selector')
             address = request.POST.get('address')
             status = request.POST.get('status-selector')
             margin = request.POST.get('margin')
             if margin == '':
                 Supplier.objects.create(company_name=company_name, fax=fax, is_active=checkStatus(status),
-                                        address=address,
-                                        city=city, province=province, margin=0)
+                                        address=address, province=province, margin=0)
             else:
                 Supplier.objects.create(company_name=company_name, fax=fax, is_active=checkStatus(status),
-                                        address=address,
-                                        city=city, province=province, margin=margin)
+                                        address=address, province=province, margin=margin)
             messages.success(request, f"ثبت تامین کنند جدید با موفقیت انجام شد")
             return redirect('main:suppliers')
         except Exception:
