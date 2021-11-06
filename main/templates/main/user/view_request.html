@@ -164,7 +164,15 @@
 
                                                 <div class="row gutters col-3 pl-0 ml-0 justify-content-end"
                                                      id="print-button">
-                                                    {% if request.user.groups.all.0.name == 'ceo' and request_r.request_status == 'درحال بررسی توسط مدیر عامل' %}
+                                                    {% if request.user.groups.all.0.name == 'ceo' and request_r.request_status == 'اتمام تاییدیه' %}
+                                                        <form action="/decline/request/{{ request_r.number }}"
+                                                              method="post">
+                                                            <button type="submit" class="btn btn-danger float-right"
+                                                                    style="margin-right: 5px;">
+                                                                <i class="fa fa-close"></i>برگشت درخواست
+                                                            </button>
+                                                        </form>
+                                                    {% elif request.user.groups.all.0.name == 'ceo' and request_r.request_status == 'درحال بررسی توسط مدیر عامل' %}
 
                                                         <form class="float-left"
                                                               action="/accept/request/{{ request_r.number }}"
