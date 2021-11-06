@@ -193,19 +193,23 @@ def accept_request(request, pk):
             request_or.shipping_status = ShippingStatus.requested
             request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
             request_or.save()
+            messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
             return redirect('main:expert_request')
         elif request.user.groups.all()[0].name == 'ceo':
             if check_user_signatures(request_or.user_signatures) is False:
                 request_or.request_status = Status.cm_review
                 request_or.shipping_status = ShippingStatus.requested
                 request_or.save()
+                messages.success(request, 'درخواست برای مدیر بازرگانی ارسال شد')
                 return redirect('main:requests')
             else:
                 request_or.request_status = Status.completed
                 request_or.shipping_status = ShippingStatus.supplier
                 request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
                 request_or.save()
-                return redirect('main:completed_request')
+                messages.success(request, 'درخواست با موفقیت به اتمام تاییدیه رسید و هم اکنون کارشناسان امکان ارسال به '
+                                          'تامین کنندگان را دارند')
+                return redirect('main:get_request', request_or.number)
 
 
 @login_required(login_url='account:login')
@@ -217,11 +221,13 @@ def decline_request(request, pk):
             if check_manager_signatures(request_or.user_signatures):
                 request_or.request_status = Status.cm_review
                 request_or.user_signatures = init_user_signatures()
+                messages.success(request,'درخواست برای مدیر بازرگانی ارسال گردید')
             else:
                 request_or.request_status = Status.ceo_dreview
                 request_or.shipping_status = ShippingStatus.declined
                 request_or.expert.clear()
                 request_or.user_signatures = init_user_signatures()
+                messages.success(request,'درخواست مورد نظر تایید نشد')
         elif request.user.groups.all()[0].name == 'commercial_manager':
             request_or = Request.objects.get(number=pk)
             request_or.request_status = Status.cm_dreview
@@ -440,8 +446,8 @@ def get_rs_orders(request, pk, ord):
     for order in orders_r:
         try:
             price = \
-            SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
-                '-created_date')[0].price
+                SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
+                    '-created_date')[0].price
             order.price = price
         except IndexError:
             messages.error(request,
