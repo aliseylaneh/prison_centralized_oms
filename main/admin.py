@@ -71,8 +71,18 @@ class ProvinceAdmin(ImportExportModelAdmin):
     to_encoding = 'utf-8'
 
 
+class OrderResource(resources.ModelResource):
+    class Meta:
+        model = Order
+        exclude = 'id'
+
+
+class OrderAdmin(ImportExportModelAdmin):
+    to_encoding = 'utf-8'
+
+
 admin.site.register(Ticket)
-admin.site.register(Order)
+admin.site.register(Order, OrderAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Request)
 admin.site.register(Supplier, SupplierAdmin)
