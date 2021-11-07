@@ -10,13 +10,16 @@
 
                         <div class="card w-100">
                             <div class="card-header">
-                                <div class="row w-100">
-                                    <h4 class="pt-1">لیست تامین کنندگان درخواست شماره {{ request_r.number }}</h4>
-
-                                    <form class="col-8" action="/get_request/{{ request_r.number }}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn btn-info float-left ">برگشت</button>
-                                    </form>
+                                <div class="row gutters">
+                                    <div class="col-10">
+                                        <h4 class="pt-1">لیست تامین کنندگان درخواست شماره {{ request_r.number }}</h4>
+                                    </div>
+                                    <div class="col-1">
+                                        <form class="col-7" action="/get_request/{{ request_r.number }}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-info float-left ">برگشت</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                             <!-- /.card-header -->
