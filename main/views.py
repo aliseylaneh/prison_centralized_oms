@@ -1370,11 +1370,18 @@ def export_order_report(request):
                                         'price_2m', 'supplier__deliverdate__date',
                                         'delivered_quantity',
                                         'supplier__deliverdate__date', 'supplier__deliverdate__status')
+
     for order in orders:
+        try:
+            deliver_date = DeliverDate.objects.get(request__number=order[1],
+                                                   supplier__company_name=order[9]).get_deliver_date
+
+        except DeliverDate.DoesNotExist:
+            deliver_date = None
         order = list(order)
         order[6] = date2jalali(order[6]).strftime("%Y/%m/%d")
-        order[14] = date2jalali(order[14]).strftime("%Y/%m/%d") if order[14] != None else None
-        order[16] = date2jalali(order[16]).strftime("%Y/%m/%d") if order[16] != None else None
+        order[14] = deliver_date
+        order[16] = deliver_date
         writer.writerow(order)
 
     return response
