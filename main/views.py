@@ -1,3 +1,5 @@
+import csv
+import io
 import json
 import logging
 import unittest
@@ -5,14 +7,16 @@ from datetime import date
 
 import django
 import jdatetime
+import xlsxwriter
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
 from django.core.handlers import exception
 from django.core.paginator import Paginator
 from django.db import IntegrityError
-from django.http import JsonResponse, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponseNotFound, HttpResponse, FileResponse
 from django.urls import reverse
+from io import StringIO
 
 from account.decorators import *
 from main.models import *
@@ -221,13 +225,13 @@ def decline_request(request, pk):
             if check_manager_signatures(request_or.user_signatures):
                 request_or.request_status = Status.cm_review
                 request_or.user_signatures = init_user_signatures()
-                messages.success(request,'درخواست برای مدیر بازرگانی ارسال گردید')
+                messages.success(request, 'درخواست برای مدیر بازرگانی ارسال گردید')
             else:
                 request_or.request_status = Status.ceo_dreview
                 request_or.shipping_status = ShippingStatus.declined
                 request_or.expert.clear()
                 request_or.user_signatures = init_user_signatures()
-                messages.success(request,'درخواست مورد نظر تایید نشد')
+                messages.success(request, 'درخواست مورد نظر تایید نشد')
         elif request.user.groups.all()[0].name == 'commercial_manager':
             request_or = Request.objects.get(number=pk)
             request_or.request_status = Status.cm_dreview
@@ -1330,6 +1334,7 @@ def add_sdeliver_date(request):
     return JsonResponse({}, safe=False)
 
 
+@login_required(login_url='account:login')
 def set_delivered_quantity(request):
     if request.method == "POST":
         order_id = json.loads(request.body).get('order_id')
@@ -1338,3 +1343,37 @@ def set_delivered_quantity(request):
         order_r.delivered_quantity = delivered_quantity
         order_r.save()
     return JsonResponse({}, safe=False)
+
+
+@login_required(login_url='account:login')
+def export_order_report(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
+    response.write(u'\ufeff'.encode('utf8'))
+    writer = csv.writer(response)
+    writer.writerow(
+        ['شماره سفارش', 'شماره درخواست', 'نام بنیاد', 'وضعیت تاییدیه',
+         'وضعیت ارسال', 'نام زندان',
+         'تاریخ ایجاد درخواست', 'نام کالا',
+         'گروه',
+         'تامین کننده', 'برند', 'تعداد', 'قیمت',
+         'قیمت دو ماهه', 'تاریخ ارسال',
+         'تعداد دریافتی',
+         'تاریخ دریافت', 'وضعیت دریافت'])
+    orders = \
+        Order.objects.all().values_list('id', 'request__number', 'request__prison__name', 'request__request_status',
+                                        'request__shipping_status', 'request__branch__name',
+                                        'request__created_date', 'product__name',
+                                        'product__category__name',
+                                        'supplier__company_name', 'brand__company_name', 'quantity', 'price',
+                                        'price_2m', 'supplier__deliverdate__date',
+                                        'delivered_quantity',
+                                        'supplier__deliverdate__date', 'supplier__deliverdate__status')
+    for order in orders:
+        order = list(order)
+        order[6] = date2jalali(order[6]).strftime("%Y/%m/%d")
+        order[14] = date2jalali(order[14]).strftime("%Y/%m/%d") if order[14] != None else None
+        order[16] = date2jalali(order[16]).strftime("%Y/%m/%d") if order[16] != None else None
+        writer.writerow(order)
+
+    return response

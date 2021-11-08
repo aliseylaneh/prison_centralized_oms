@@ -76,5 +76,7 @@ urlpatterns = [
     path('get_request/<str:pk>/supplier_orders/<str:ord>/edit_factor', csrf_exempt(views.edit_get_rs_orders_factor),
          name='edit_get_rs_orders_factor'),
     path('request/<str:req>/submit_factor/<str:sup>', csrf_exempt(views.submit_delivered_factor),
-         name='submit_delivered_factor')
+         name='submit_delivered_factor'),
+
+    path('export_order_report', views.export_order_report, name='export_order_report')
 ]
