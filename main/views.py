@@ -1348,7 +1348,8 @@ def set_delivered_quantity(request):
 @login_required(login_url='account:login')
 def export_order_report(request):
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="report.xls"'
+    date_time_now = datetime2jalali(datetime.now()).strftime("%Y/%m/%d %H:%M:%S")
+    response['Content-Disposition'] = f'attachment; filename="report-{date_time_now}.xls"'
     response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response)
     writer.writerow(
