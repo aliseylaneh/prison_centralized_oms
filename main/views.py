@@ -975,7 +975,7 @@ def categories(request):
 
         return redirect('main:categories')
     if request.method == 'GET':
-        experts = User.objects.filter(groups__name='user')
+        experts = User.objects.filter(groups__name='commercial_expert')
         suppliers = Brand.objects.all()
         categories_r = Category.objects.all()
         return render(request, 'main/site_admin/categories.html',
@@ -998,7 +998,7 @@ def delete_category(request):
 def get_category(request, pk):
     category = Category.objects.get(name=pk)
     suppliers = Brand.objects.all()
-    experts = User.objects.filter(groups__name='user')
+    experts = User.objects.filter(groups__name='commercial_expert')
     data = []
     for supplier in category.suppliers.values():
         data.append(supplier['company_name'])
