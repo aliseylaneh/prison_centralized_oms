@@ -69,7 +69,22 @@
                                         لطفا برند های گروه خود را انتخاب کنید
                                     </div>
                                 </div>
-
+                                <div class="form-group">
+                                    <select class="form-control" id="expert-selector"
+                                            name="expert-selector" required style=" text-align: right;">
+                                        {% for expert in experts %}
+                                            {% if expert == category_e.user_expert %}
+                                                <option value="{{ category_e.user_expert.email }}"
+                                                        selected>{{ category_e.user_expert.userprofile.first_name }} {{ category_e.user_expert.userprofile.last_name }}</option>
+                                            {% else %}
+                                                <option value="{{ expert.email }}">{{ expert.userprofile.first_name }} {{ expert.userprofile.last_name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        کارشناس را انتخاب کنید
+                                    </div>
+                                </div>
 
                                 <div class="form-group">
                                             <textarea class="form-control" id="description" name="description"

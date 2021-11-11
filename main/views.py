@@ -966,16 +966,20 @@ def categories(request):
         category_name = request.POST.get('name')
         category_description = request.POST.get('description')
         category_suppliers = request.POST.getlist('supplier-selector')
-        sc = Category.objects.create(name=category_name, description=category_description)
+        category_expert = request.POST.get('expert-selector')
+        user_e = User.objects.get(email=category_expert)
+        sc = Category.objects.create(name=category_name, description=category_description, user_expert=user_e)
         for supplier in category_suppliers:
             cp = Brand.objects.get(company_name=supplier)
             cp.category_set.add(sc)
 
         return redirect('main:categories')
     if request.method == 'GET':
+        experts = User.objects.filter(groups__name='user')
         suppliers = Brand.objects.all()
         categories_r = Category.objects.all()
-        return render(request, 'main/site_admin/categories.html', {'suppliers': suppliers, 'categories': categories_r})
+        return render(request, 'main/site_admin/categories.html',
+                      {'suppliers': suppliers, 'categories': categories_r, 'experts': experts})
 
 
 @login_required(login_url='account:login')
@@ -994,11 +998,12 @@ def delete_category(request):
 def get_category(request, pk):
     category = Category.objects.get(name=pk)
     suppliers = Brand.objects.all()
+    experts = User.objects.filter(groups__name='user')
     data = []
     for supplier in category.suppliers.values():
         data.append(supplier['company_name'])
     context = {
-        'category_e': category, 'suppliers_c': suppliers, 'category_suppliers': data
+        'category_e': category, 'suppliers_c': suppliers, 'category_suppliers': data, 'experts': experts
     }
     return render(request, 'main/site_admin/edit_category.html', context)
 
@@ -1010,7 +1015,10 @@ def update_category(request):
         category_name = request.POST.get('name')
         category_description = request.POST.get('description')
         category_suppliers = request.POST.getlist('supplier-selector')
+        category_expert = request.POST.get('expert-selector')
         category = Category.objects.get(name=category_name)
+        if category_expert != '' and category_expert != category.user_expert.email: category.user_expert = User.objects.get(
+            email=category_expert)
         if category_description != '': category.description = category_description
         if category_name != '': category.name = category_name
         category_rs_data = []
@@ -1353,7 +1361,7 @@ def export_order_report(request):
     response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response)
     writer.writerow(
-        ['شماره سفارش','شماره درخواست', 'نام بنیاد', 'وضعیت تاییدیه',
+        ['شماره سفارش', 'شماره درخواست', 'نام بنیاد', 'وضعیت تاییدیه',
          'وضعیت ارسال', 'نام زندان',
          'تاریخ ایجاد درخواست', 'نام کالا',
          'گروه',
@@ -1361,16 +1369,16 @@ def export_order_report(request):
          'قیمت دو ماهه',
          'تعداد دریافتی', 'تاریخ ارسال',
          'تاریخ دریافت', 'وضعیت دریافت'])
-    orders = Order.objects.all().distinct().values_list('id','request__number', 'request__prison__name',
-                                                                 'request__request_status',
-                                                                 'request__shipping_status', 'request__branch__name',
-                                                                 'request__created_date', 'product__name',
-                                                                 'product__category__name',
-                                                                 'supplier__company_name', 'brand__company_name',
-                                                                 'quantity', 'price',
-                                                                 'price_2m',
-                                                                 'delivered_quantity', 'delivered_quantity',
-                                                                 'delivered_quantity', 'delivered_quantity')
+    orders = Order.objects.all().distinct().values_list('id', 'request__number', 'request__prison__name',
+                                                        'request__request_status',
+                                                        'request__shipping_status', 'request__branch__name',
+                                                        'request__created_date', 'product__name',
+                                                        'product__category__name',
+                                                        'supplier__company_name', 'brand__company_name',
+                                                        'quantity', 'price',
+                                                        'price_2m',
+                                                        'delivered_quantity', 'delivered_quantity',
+                                                        'delivered_quantity', 'delivered_quantity')
     for order in orders:
         try:
             deliver_date = DeliverDate.objects.get(request__number=order[1],

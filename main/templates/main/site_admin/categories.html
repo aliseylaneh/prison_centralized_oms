@@ -71,6 +71,18 @@
                                         لطفا برند های گروه خود را انتخاب کنید
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                    <select class="form-control" id="expert-selector"
+                                            name="expert-selector" required style=" text-align: right;">
+                                        <option value="">انتخاب کارشناس</option>
+                                        {% for expert in experts %}
+                                            <option value="{{ expert.email }}">{{ expert.userprofile.first_name }} {{ expert.userprofile.last_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        کارشناس مورد نظر را انتخاب کنید
+                                    </div>
+                                </div>
 
 
                                 <div class="form-group">
