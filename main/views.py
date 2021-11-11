@@ -1353,35 +1353,36 @@ def export_order_report(request):
     response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response)
     writer.writerow(
-        ['شماره سفارش', 'شماره درخواست', 'نام بنیاد', 'وضعیت تاییدیه',
+        ['شماره سفارش','شماره درخواست', 'نام بنیاد', 'وضعیت تاییدیه',
          'وضعیت ارسال', 'نام زندان',
          'تاریخ ایجاد درخواست', 'نام کالا',
          'گروه',
          'تامین کننده', 'برند', 'تعداد', 'قیمت',
-         'قیمت دو ماهه', 'تاریخ ارسال',
-         'تعداد دریافتی',
+         'قیمت دو ماهه',
+         'تعداد دریافتی', 'تاریخ ارسال',
          'تاریخ دریافت', 'وضعیت دریافت'])
-    orders = \
-        Order.objects.all().values_list('id', 'request__number', 'request__prison__name', 'request__request_status',
-                                        'request__shipping_status', 'request__branch__name',
-                                        'request__created_date', 'product__name',
-                                        'product__category__name',
-                                        'supplier__company_name', 'brand__company_name', 'quantity', 'price',
-                                        'price_2m', 'supplier__deliverdate__date',
-                                        'delivered_quantity',
-                                        'supplier__deliverdate__date', 'supplier__deliverdate__status')
-
+    orders = Order.objects.filter(id=712).distinct().values_list('id','request__number', 'request__prison__name',
+                                                                 'request__request_status',
+                                                                 'request__shipping_status', 'request__branch__name',
+                                                                 'request__created_date', 'product__name',
+                                                                 'product__category__name',
+                                                                 'supplier__company_name', 'brand__company_name',
+                                                                 'quantity', 'price',
+                                                                 'price_2m',
+                                                                 'delivered_quantity', 'delivered_quantity',
+                                                                 'delivered_quantity', 'delivered_quantity')
     for order in orders:
         try:
             deliver_date = DeliverDate.objects.get(request__number=order[1],
-                                                   supplier__company_name=order[9]).get_deliver_date
+                                                   supplier__company_name=order[9])
 
         except DeliverDate.DoesNotExist:
             deliver_date = None
         order = list(order)
         order[6] = date2jalali(order[6]).strftime("%Y/%m/%d")
-        order[14] = deliver_date
-        order[16] = deliver_date
+        order[15] = deliver_date.get_deliver_date if deliver_date is not None else None
+        order[16] = deliver_date.get_deliver_date if deliver_date is not None else None
+        order[17] = deliver_date.status if deliver_date is not None else None
         writer.writerow(order)
 
     return response
