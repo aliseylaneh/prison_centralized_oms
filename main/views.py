@@ -1361,7 +1361,7 @@ def export_order_report(request):
          'قیمت دو ماهه',
          'تعداد دریافتی', 'تاریخ ارسال',
          'تاریخ دریافت', 'وضعیت دریافت'])
-    orders = Order.objects.filter(id=712).distinct().values_list('id','request__number', 'request__prison__name',
+    orders = Order.objects.all().distinct().values_list('id','request__number', 'request__prison__name',
                                                                  'request__request_status',
                                                                  'request__shipping_status', 'request__branch__name',
                                                                  'request__created_date', 'product__name',
