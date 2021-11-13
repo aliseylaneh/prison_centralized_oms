@@ -1042,8 +1042,6 @@ def update_category(request):
 
 
 # Brand
-
-
 @login_required(login_url='account:login')
 @allowed_users(['site_admin'])
 def get_brands(request):

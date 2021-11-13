@@ -12,7 +12,7 @@ from abc import ABC
 
 class Province(models.Model):
     name = models.CharField(max_length=50, null=True)
-    code = models.IntegerField(null=True, default=0)
+    code = models.CharField(null=True, max_length=3, default=0)
 
     def __str__(self):
         return self.name
