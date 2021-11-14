@@ -1,12 +1,14 @@
 function submitDeliveredQuantity(order_id) {
     let delivered_quantity = document.getElementById("productNQ-" + order_id).value
+    let sell_price = document.getElementById("productNDS-" + order_id).value
     if (delivered_quantity > 0) {
 
         let tempDictUpdate = {
             'order_id': order_id,
-            'delivered_quantity': delivered_quantity
+            'delivered_quantity': delivered_quantity,
+            'sell_price': sell_price
         }
-        let alert = confirm("آیا از ثبت مقدار دریافتی مطمئن هستید؟")
+        let alert = confirm("آیا از ثبت مقدار دریافتی و قیمت مصرف کننده مورد نظر مطمئن هستید؟")
         if (alert !== false) {
             $.ajax({
                 url: '/set_delivered_quantity',

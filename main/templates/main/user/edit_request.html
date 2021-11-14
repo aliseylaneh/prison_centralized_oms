@@ -94,8 +94,13 @@
                                             <th class="text-center">تامین کننده</th>
                                             <th class="text-center">برند</th>
                                             <th class="text-center">کمیت</th>
-                                            <th class="text-center">نقدی</th>
-                                            <th class="text-center">دو ماهه</th>
+                                            {% if request.user.groups.all.0.name != 'user' %}
+                                                <th class="text-center">قیمت خرید</th>
+                                                <th class="text-center">قیمت مصرف کننده</th>
+                                            {% endif %}
+                                            <th class="text-center">نقدی استان</th>
+                                            <th class="text-center">دو ماهه استان</th>
+
                                             {% if request.user.groups.all.0.name != 'user' %}
                                                 <th class="text-center">تاریخچه</th>
                                             {% endif %}
@@ -147,13 +152,33 @@
                                                 <td class="text-center w-0"><input type="number" class="text-center"
                                                                                    value="{{ order.quantity }}"> {{ order.product.based_quantity }}
                                                 </td>
-                                                <td class="text-center"><input type="number" class="text-center"
-                                                                               value="{{ order.price }}"> ریال
-                                                </td>
-                                                <td class="text-center"><input type="number" class="text-center"
-                                                                               value="{{ order.price_2m }}">
-                                                    ریال
-                                                </td>
+                                                {% if request.user.groups.all.0.name != 'user' %}
+                                                    <td class="text-center"><input type="number" class="text-center"
+                                                                                   value="0">
+                                                        ریال
+                                                    </td>
+                                                    <td class="text-center"><input type="number" class="text-center"
+                                                                                   value="0">
+                                                        ریال
+                                                    </td>
+                                                {% endif %}
+                                                {% if request.user.groups.all.0.name == 'user' %}
+                                                    <td class="text-center"><input type="number" class="text-center"
+                                                                                   value="{{ order.price }}"> ریال
+                                                    </td>
+                                                    <td class="text-center"><input type="number" class="text-center"
+                                                                                   value="{{ order.price_2m }}">
+                                                        ریال
+                                                    </td>
+
+                                                {% else %}
+                                                    {% load humanize %}
+                                                    <td class="text-center">{{ order.price | intcomma }} ریال
+                                                    </td>
+                                                    <td class="text-center">{{ order.price_2m | intcomma }} ریال
+                                                    </td>
+                                                {% endif %}
+
                                                 {% if request.user.groups.all.0.name != 'user' %}
                                                     <td class="text-center"><span id="submitSupplierProduct"
                                                                                   class="fa fa-search btn btn-outline-info"
@@ -161,12 +186,19 @@
                                                                                   onclick="getPrice({{ order.product.id }},{{ order.id }})"></span>
                                                     </td>
                                                 {% endif %}
-
-                                                <td class="text-center"><span id="shoppingButton"
-                                                                              class="fa fa-edit btn btn-success"
-                                                                              style="padding-top: 6px"
-                                                                              onclick="submitProductServerCallOut({{ order.id }})"></span>
-                                                </td>
+                                                {% if request.user.groups.all.0.name == 'user' %}
+                                                    <td class="text-center"><span id="shoppingButton"
+                                                                                  class="fa fa-edit btn btn-success"
+                                                                                  style="padding-top: 6px"
+                                                                                  onclick="submitProductServerCallOut({{ order.id }})"></span>
+                                                    </td>
+                                                {% else %}
+                                                    <td class="text-center"><span id="shoppingButton"
+                                                                                  class="fa fa-edit btn btn-success"
+                                                                                  style="padding-top: 6px"
+                                                                                  onclick="submitProductServerCallOutStaff({{ order.id }})"></span>
+                                                    </td>
+                                                {% endif %}
                                                 {% if request.user.groups.all.0.name != 'user' %}
                                                     <td class="text-center"><span id="submitSupplierProduct"
                                                                                   class="fa fa-check btn btn-outline-primary"
@@ -288,8 +320,8 @@
                                     <th class="text-center">تامین کننده</th>
                                     <th class="text-center">برند</th>
                                     <th class="text-center">کمیت</th>
-                                    <th class="text-center">نقدی</th>
-                                    <th class="text-center">دو ماهه</th>
+                                    <th class="text-center">نقدی استان</th>
+                                    <th class="text-center">دو ماهه استان</th>
                                     <th class="text-center"></th>
 
                                 </tr>
@@ -371,8 +403,9 @@
                                     <th class="text-center">تامین کننده</th>
                                     <th class="text-center">برند</th>
                                     <th class="text-center">کمیت</th>
-                                    <th class="text-center">نقدی</th>
-                                    <th class="text-center">دو ماهه</th>
+                                    <th class="text-center">نقدی استان</th>
+                                    <th class="text-center">دو ماهه استان</th>
+
                                 </tr>
                                 </thead>
                                 <tbody class='table-body position-relative' style="width: 100px"></tbody>
@@ -395,8 +428,9 @@
                                     <th class="text-center">نام کالا</th>
                                     <th class="text-center">برند</th>
                                     <th class="text-center">خرید</th>
-                                    <th class="text-center">دو ماهه</th>
-                                    <th class="text-center">تاریخ</th>
+                                    <th class="text-center">مصرف کننده</th>
+                                    <th class="text-center">درصد مارجین</th>
+                                    <th class="text-center">تاریخ ثبت شده</th>
                                 </tr>
                                 </thead>
                                 <tbody class="priceTable w-100"></tbody>

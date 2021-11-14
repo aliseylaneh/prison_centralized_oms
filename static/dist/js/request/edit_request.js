@@ -46,6 +46,31 @@ function submitProductServerCallOut(id) {
     }
 }
 
+function submitProductServerCallOutStaff(id) {
+    let productDest = document.getElementById("productDestination-" + id)
+    let supplier = document.getElementById('requestSupplier-' + id).value
+    let brand = document.getElementById('requestBrand-' + id).value
+    let quantity = productDest.childNodes[11].childNodes[0].value
+
+    let tempDictUpdate = {
+        'order_id': id,
+        'supplier': supplier,
+        'brand': brand,
+        'quantity': quantity,
+    }
+    let alert = confirm("آیا از ویرایش این کالای سفارش شده مطمئن هستید؟")
+    if (alert != false) {
+        $.ajax({
+            url: '/update_order_request_staff',
+            data: JSON.stringify(tempDictUpdate),
+            dataType: 'json',
+            method: 'put',
+            success: function (data) {
+            }
+        })
+    }
+}
+
 function addProductServerCallOut(product) {
     $.ajax({
         url: '/add_product_to_request',

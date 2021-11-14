@@ -199,6 +199,7 @@ class Order(models.Model):
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
     bar_code = models.BigIntegerField(null=True)
     quantity = models.IntegerField(default=0)
+    sell_deliver_price = models.BigIntegerField(default=0)
     delivered_quantity = models.IntegerField(default=0)
     created_date = models.DateTimeField(default=timezone.now)
     price = models.BigIntegerField(default=0)

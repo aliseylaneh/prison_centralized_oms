@@ -125,6 +125,7 @@ function getPrice(product_id, order_id) {
         method: 'POST',
         success: function (data) {
             data.data.forEach(item => {
+                let margin = ((item.price2m - item.price) / item.price2m) * 100
                 priceTable.innerHTML += `
                                 <tr>
                                     <td class="text-center"">${item.supplier_name}</td>
@@ -132,6 +133,7 @@ function getPrice(product_id, order_id) {
                                     <td class="text-center">${item.brand_name}</td>
                                     <td class="text-center"">${numberWithCommas(item.price)} ریال</td>
                                     <td class="text-center"">${numberWithCommas(item.price2m)} ریال</td>
+                                    <td class="text-center">${margin.toFixed(2)}</td>
                                     <td class="text-center"">${item.created_date}</td>
                                 </tr>
 

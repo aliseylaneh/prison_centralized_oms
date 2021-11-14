@@ -25,3 +25,8 @@ def multiply_price(value, count):
 def get_name(email):
     last_name = UserProfile.objects.get(user__email=email).last_name
     return last_name
+
+
+@register.filter(name='get_margin')
+def sell_price_margin(sell_price, consumer_price):
+    return "{:.2f}".format(((consumer_price - sell_price) / consumer_price) * 100)

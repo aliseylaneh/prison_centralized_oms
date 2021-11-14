@@ -37,6 +37,8 @@ urlpatterns = [
     path('add_product_to_request', csrf_exempt(views.add_product_to_request), name='add_product_to_request'),
     path('remove_order_request', csrf_exempt(views.remove_order_request), name='remove_order_request'),
     path('update_order_request', csrf_exempt(views.update_order_request), name='update_order_request'),
+    path('update_order_request_staff', csrf_exempt(views.update_order_request_staff),
+         name='update_order_request_staff'),
     path('change_request_cexpert', csrf_exempt(views.change_request_cexpert), name='change_request_cexpert'),
     path('user/expert_requests', views.expert_requests, name='expert_request'),
     path('submit_request_conversation', csrf_exempt(views.submit_request_conversation),

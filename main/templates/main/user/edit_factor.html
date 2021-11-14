@@ -72,7 +72,9 @@
                                             <td class="text-center"> {{ order.product.based_quantity }}</td>
                                             {% load humanize %}
                                             {% load main_custom_tags %}
-                                            <td class="text-center">{{ order.price | multiply_price:order.quantity | intcomma }}
+                                            <td class="text-center"><input id="productNDS-{{ order.id }}" type="number"
+                                                                           class="text-center"
+                                                                           value="{{ order.sell_deliver_price }}">
                                                 ریال
                                             </td>
                                             {% if request.user.groups.all.0.name == 'user' %}

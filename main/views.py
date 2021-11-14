@@ -452,7 +452,11 @@ def get_rs_orders(request, pk, ord):
             price = \
                 SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
                     '-created_date')[0].price
+            price2m = \
+                SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
+                    '-created_date')[0].price2m
             order.price = price
+            order.price_2m = price2m
         except IndexError:
             messages.error(request,
                            f"تامین کننده ' {supplier_r.company_name} ' برای کالای ' {order.product.name} ' دارای قیمت نمیباشد.")
@@ -581,6 +585,25 @@ def update_order_request(request):
         if quantity != '' and order.quantity != quantity: order.quantity = quantity
         if price != '' and order.price != price: order.price = price
         if price_2m != '' and order.price_2m != price_2m: order.price_2m = price_2m
+        order.save()
+        data = {
+            'message': 'سفارش شما با موفقیت ویرایش شد'
+        }
+        return JsonResponse(data, safe=False)
+
+
+def update_order_request_staff(request):
+    if request.method == 'PUT':
+        order_id = json.loads(request.body).get('order_id')
+        supplier = json.loads(request.body).get('supplier')
+        brand = json.loads(request.body).get('brand')
+        quantity = json.loads(request.body).get('quantity')
+        order = Order.objects.get(id=order_id)
+        if supplier != '' and order.supplier.company_name != supplier: order.supplier = Supplier.objects.get(
+            company_name=supplier)
+        if Brand != 0 and order.brand.company_name != brand: order.brand = Brand.objects.get(
+            company_name=brand)
+        if quantity != '' and order.quantity != quantity: order.quantity = quantity
         order.save()
         data = {
             'message': 'سفارش شما با موفقیت ویرایش شد'
@@ -1345,8 +1368,10 @@ def set_delivered_quantity(request):
     if request.method == "POST":
         order_id = json.loads(request.body).get('order_id')
         delivered_quantity = json.loads(request.body).get('delivered_quantity')
+        sell_price = json.loads(request.body).get('sell_price')
         order_r = Order.objects.get(id=order_id)
         order_r.delivered_quantity = delivered_quantity
+        order_r.sell_deliver_price = sell_price
         order_r.save()
     return JsonResponse({}, safe=False)
 

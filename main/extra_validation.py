@@ -72,3 +72,5 @@ def check_manager_signatures(req_signature):
     if user_signatures['commercial_manager'] is None:
         return False
     return True
+
+
