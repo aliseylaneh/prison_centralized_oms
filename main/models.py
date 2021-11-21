@@ -150,13 +150,27 @@ class Request(models.Model):
     branch = models.ForeignKey(PrisonBranch, null=True, on_delete=models.SET_NULL)
     request_status = models.CharField(max_length=255, choices=Status.choices, default=Status.ceo_review)
     shipping_status = models.CharField(max_length=50, choices=ShippingStatus.choices, default=ShippingStatus.requested)
-    shipping_fee = models.IntegerField(default=0)
     created_date = models.DateTimeField(default=timezone.now)
+    acceptation_date = models.DateTimeField(null=True)
     expert = models.ManyToManyField(User, related_name='expert')
+    expert_acceptation = models.ManyToManyField(User, related_name='expert_acceptation')
+    last_returned_expert = models.ManyToManyField(User, related_name='last_returned_expert')
 
     @property
     def get_prison(self):
         return self.prison
+
+    @property
+    def get_acceptations_date(self):
+        if self.acceptation_date is None:
+            return 'تاریخ'
+        return date2jalali(self.acceptation_date).strftime("%Y/%m/%d")
+
+    @property
+    def get_acceptations_time(self):
+        if self.acceptation_date is None:
+            return 'ساعت'
+        return datetime2jalali(self.acceptation_date).strftime("%X")
 
     @property
     def get_created_date(self):

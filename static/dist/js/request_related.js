@@ -49,6 +49,29 @@ function handleConversation(conversation_id, user_id) {
 }
 
 function handleCommercialExpert(request_id) {
+    let data = {
+        'request_number': request_id
+    }
+    $.ajax({
+        url: '/change_request_cexpert',
+        data: JSON.stringify(data),
+        dataType: 'json',
+        method: 'POST',
+        success: function () {
+            document.getElementById("accept_button").remove();
+            document.getElementById("decline_button").remove();
+            document.getElementById("ce_request").remove();
+            document.getElementById("ce_requestrsb").remove();
+            document.getElementById("edit_button").remove();
+            window.alert('درخواست با موفقیت به کارشناسان ارسال شد')
+
+        }
+    })
+
+
+}
+
+function handleCommercialReturnExpert(request_id) {
     var value = document.getElementById('ce_request').value
     let data = {
         'ce_category_email': value,
@@ -56,7 +79,7 @@ function handleCommercialExpert(request_id) {
     }
     if (value != 0) {
         $.ajax({
-            url: '/change_request_cexpert',
+            url: '/change_request_cexpertrn',
             data: JSON.stringify(data),
             dataType: 'json',
             method: 'POST',

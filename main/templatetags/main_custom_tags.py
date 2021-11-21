@@ -29,4 +29,6 @@ def get_name(email):
 
 @register.filter(name='get_margin')
 def sell_price_margin(sell_price, consumer_price):
-    return "{:.2f}".format(((consumer_price - sell_price) / consumer_price) * 100)
+    if consumer_price >= 1000 and sell_price >= 1000:
+        return "{:.2f}".format(((consumer_price - sell_price) / consumer_price) * 100)
+    return None

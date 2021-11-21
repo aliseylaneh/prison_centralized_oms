@@ -23,7 +23,8 @@
                                         <th class="text-center">وضعیت تاییدیه</th>
                                         <th class="text-center">وضعیت ارسال</th>
                                         <th class="text-center">نام زندان</th>
-                                        <th class="text-center">تاریخ ایجاد درخواست</th>
+                                        <th class="text-center">تاریخ ثبت</th>
+                                        <th class="text-center">تاریخ تایید نهایی</th>
                                         <th class="text-center">مشاهده</th>
                                         {% if request.user.groups.all.0.name == 'user' %}
                                             <th class="text-center">ویرایش</th>
@@ -52,9 +53,11 @@
                                                     class="text-center">{{ request_r.branch.name }}</span>
                                             </td>
 
-
                                             <td class="text-center"><span
                                                     class="">{{ request_r.get_created_time }} {{ request_r.get_created_date }} </span>
+                                            </td>
+                                            <td class="text-center"><span
+                                                    class="">{{ request_r.get_acceptations_time }} {{ request_r.get_acceptations_date }} </span>
                                             </td>
                                             <td class="text-center"><a href="/get_request/{{ request_r.number }}"
                                                                        class="fa fa-check"
@@ -62,8 +65,11 @@
                                             </td>
                                             {% if request.user.groups.all.0.name == 'user' %}
                                                 {% if request_r.request_status == 'درحال بررسی توسط مدیر بازرگانی' or request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' or request_r.request_status == 'اتمام تاییدیه' %}
-                                                    <td class="text-center">ویرایش دردسترس نیست</td>
-                                                {% else %}
+                                                    <td class="text-center"><a
+                                                            href=""
+                                                            class="fa fa-edit"
+                                                            style="padding-top: 6px" disabled hidden></a></td>
+                                                        {% else %}
                                                     <td class="text-center"><a
                                                             href="/update_request/{{ request_r.number }}"
                                                             class="fa fa-edit"

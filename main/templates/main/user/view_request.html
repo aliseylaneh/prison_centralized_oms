@@ -119,32 +119,38 @@
                                     </p>
                                     <br>
 
-                                    {% if signed_r is True and request.user.groups.all.0.name == 'commercial_manager' %}
+                                    {% if request.user.groups.all.0.name == 'commercial_manager' %}
                                         <div class="w-100 text-center pt-2 no-print col-12">
                                             {% load main_custom_tags %}
-                                            <select class="btn btn-outline-dark text-right show-tick dropdown">
-                                                {% for expert in  request_r.expert.values_list %}
-                                                    <option class="text-bold no-print text-center">این درخواست توسط
-                                                        کارشناس بازرگانی آقای/خانم {{ expert.4 | get_name }} تایید شده
-                                                        است
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
+                                            {% if request_r.expert_acceptation.all.count is not 0 %}
+                                                <select class="btn btn-outline-dark text-right show-tick dropdown">
+                                                    {% for expert in  request_r.expert_acceptation.values_list %}
+                                                        <option class="text-bold no-print text-center">این درخواست توسط
+                                                            کارشناس بازرگانی آقای/خانم {{ expert.4 | get_name }} تایید
+                                                            شده
+                                                            است
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endif %}
                                         </div>
                                     {% elif signed_r is True and request.user.groups.all.0.name == 'ceo' %}
                                         <div class="w-100 text-center pt-2 no-print col-12">
                                             {% load main_custom_tags %}
-                                            <select class="btn btn-outline-dark text-right show-tick dropdown">
-                                                <option class="no-print text-center">این درخواست توسط مدیر بازرگانی
-                                                    تایید شده است
-                                                </option>
-                                                {% for expert in  request_r.expert.values_list %}
-                                                    <option class="no-print text-center">این درخواست توسط
-                                                        کارشناس بازرگانی آقای/خانم {{ expert.4 | get_name }} تایید شده
-                                                        است
+                                            {% if request_r.expert_acceptation.all.count is not 0 %}
+                                                <select class="btn btn-outline-dark text-right show-tick dropdown">
+                                                    <option class="no-print text-center">این درخواست توسط مدیر بازرگانی
+                                                        تایید شده است
                                                     </option>
-                                                {% endfor %}
-                                            </select>
+                                                    {% for expert in  request_r.expert_acceptation.values_list %}
+                                                        <option class="no-print text-center">این درخواست توسط
+                                                            کارشناس بازرگانی آقای/خانم {{ expert.4 | get_name }} تایید
+                                                            شده
+                                                            است
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            {% endif %}
                                         </div>
                                     {% endif %}
                                     <div class="text-right pt-4">
@@ -289,22 +295,30 @@
                                                 </div>
 
                                                 <div class="col-4 justify-content-start" id="print-button">
-                                                    <select class="btn btn-outline-dark text-right show-tick dropdown"
-                                                            data-dropup-auto="false" title="برند" id="ce_request">
-                                                        <option value='0'>کارشناس</option>
-                                                        {% for category in categories_r %}
-                                                            <option value="{{ category.product__category__user_expert_id }}">
-                                                                کارشناس {{ category.product__category }}
-                                                            </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                    <button type="submit" class="btn btn-info float-right ml-2"
-                                                            style="margin-right: 5px;"
-                                                            onclick="handleCommercialExpert({{ request_r.number }})"
-                                                            id="ce_requestsb">
-                                                        <i class="fa fa-check"></i> ارسال درخواست به
-                                                    </button>
-
+                                                    {% if request_r.acceptation_date is None %}
+                                                        <button type="submit" class="btn btn-info float-right ml-2"
+                                                                style="margin-right: 5px;"
+                                                                onclick="handleCommercialExpert({{ request_r.number }})"
+                                                                id="ce_requestrsb">
+                                                            <i class="fa fa-check"></i>ارسال به کارشناسان
+                                                        </button>
+                                                    {% else %}
+                                                        <select class="btn btn-outline-dark text-right show-tick dropdown"
+                                                                data-dropup-auto="false" title="برند" id="ce_request">
+                                                            <option value='0'>کارشناس</option>
+                                                            {% for category in categories_r %}
+                                                                <option value="{{ category.product__category__user_expert_id }}">
+                                                                    کارشناس {{ category.product__category }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <button type="submit" class="btn btn-info float-right ml-2"
+                                                                style="margin-right: 5px;"
+                                                                onclick="handleCommercialReturnExpert({{ request_r.number }})"
+                                                                id="ce_requestsb">
+                                                            <i class="fa fa-check"></i> ارسال درخواست به
+                                                        </button>
+                                                    {% endif %}
 
                                                 </div>
 

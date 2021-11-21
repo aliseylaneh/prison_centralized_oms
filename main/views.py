@@ -4,7 +4,7 @@ import json
 import logging
 import unittest
 from datetime import date
-
+from django.db.models import Q
 import django
 import jdatetime
 import xlsxwriter
@@ -94,14 +94,14 @@ def review_request(request):
 @allowed_users(['user', 'ceo', 'commercial_manager'])
 def requests(request):
     if request.user.groups.all()[0].name == 'user':
-        requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-created_date')
+        requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-acceptation_date')
     elif request.user.groups.all()[0].name == 'ceo':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                            request_status=Status.ceo_review).order_by('-created_date')
+                                            request_status=Status.ceo_review).order_by('-acceptation_date')
     elif request.user.groups.all()[0].name == 'commercial_manager':
-        requests_r = Request.objects.filter(request_status=Status.cm_review).order_by('-created_date')
+        requests_r = Request.objects.filter(request_status=Status.cm_review).order_by('-acceptation_date')
     elif request.user.groups.all()[0].name == 'commercial_expert':
-        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-created_date')
+        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-acceptation_date')
 
     context = {
         'requests_r': requests_r
@@ -153,14 +153,14 @@ def completed_requests(request):
     if request.user.groups.all()[0].name == 'commercial_expert':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
                                             request_status=Status.completed, expert=request.user).order_by(
-            '-created_date')
+            '-acceptation_date')
 
     elif request.user.groups.all()[0].name == 'commercial_manager':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
-                                            request_status=Status.completed).order_by('-created_date')
+                                            request_status=Status.completed).order_by('-acceptation_date')
     elif request.user.groups.all()[0].name == 'ceo':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
-                                            request_status=Status.completed).order_by('-created_date')
+                                            request_status=Status.completed).order_by('-acceptation_date')
 
     context = {
         'requests_r': requests_r
@@ -192,13 +192,33 @@ def accept_request(request, pk):
             request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
             request_or.save()
             return redirect('main:requests')
+
         elif request.user.groups.all()[0].name == 'commercial_expert':
-            request_or.request_status = Status.cm_review
-            request_or.shipping_status = ShippingStatus.requested
-            request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
-            request_or.save()
-            messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
-            return redirect('main:expert_request')
+            if request_or.acceptation_date is None:  # if new request edit is going on while under commercial expert review
+                request_or.expert_acceptation.add(request.user)
+                if request_or.expert_acceptation.count() == request_or.expert.count():
+                    request_or.request_status = Status.cm_review
+                    request_or.shipping_status = ShippingStatus.requested
+                    request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
+                    request_or.save()
+                    messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
+                    return redirect('main:expert_request')
+                request_or.save()
+                messages.success(request, "درخواست شما تایید شد")
+                return redirect('main:expert_request')
+            elif request_or.acceptation_date is not None:  # if return request edit is completed
+                request_or.last_returned_expert.remove(request.user)
+                request_or.expert_acceptation.add(request.user)
+                if request.last_returned_expert.count() == 0:
+                    request_or.request_status = Status.cm_review
+                    request_or.shipping_status = ShippingStatus.requested
+                    request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
+                    request_or.save()
+                    messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
+                    return redirect('main:expert_request')
+                request_or.save()
+                messages.success(request, "درخواست شما تایید شد")
+
         elif request.user.groups.all()[0].name == 'ceo':
             if check_user_signatures(request_or.user_signatures) is False:
                 request_or.request_status = Status.cm_review
@@ -210,6 +230,7 @@ def accept_request(request, pk):
                 request_or.request_status = Status.completed
                 request_or.shipping_status = ShippingStatus.supplier
                 request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
+                request_or.acceptation_date = timezone.now()
                 request_or.save()
                 messages.success(request, 'درخواست با موفقیت به اتمام تاییدیه رسید و هم اکنون کارشناسان امکان ارسال به '
                                           'تامین کنندگان را دارند')
@@ -338,8 +359,8 @@ def submit_request_conversation(request):
 @allowed_users(['commercial_expert', 'commercial_manager'])
 def expert_requests(request):
     if request.user.groups.all()[0].name == 'commercial_expert':
-        requests_r = Request.objects.filter(expert=request.user, request_status=Status.ce_review).order_by(
-            '-created_date')
+        requests_r = Request.objects.filter(Q(expert=request.user) | Q(last_returned_expert=request.user),
+                                            request_status=Status.ce_review).order_by('-created_date')
     else:
         requests_r = Request.objects.filter(request_status=Status.ce_review).order_by(
             '-created_date')
@@ -476,12 +497,28 @@ def get_rs_orders(request, pk, ord):
 
 
 def change_request_cexpert(request):
+    request_number = json.loads(request.body).get('request_number')
+
+    request_r = Request.objects.get(number=request_number)
+    categories_r = Order.objects.filter(request=request_r).values('product__category__user_expert_id').distinct()
+    for category_expert in categories_r:
+        expert = User.objects.get(id=category_expert['product__category__user_expert_id'])
+        request_r.expert.add(expert)
+    request_r.user_signatures = init_user_signatures()
+    request_r.request_status = Status.ce_review
+    request_r.save()
+
+    return JsonResponse({}, safe=False)
+
+
+def change_request_cexpertrn(request):
     category_ce = json.loads(request.body).get('ce_category_email')
     request_number = json.loads(request.body).get('request_number')
 
     request_r = Request.objects.get(number=request_number)
     expert = User.objects.get(id=category_ce)
-    request_r.expert.add(expert)
+    request_r.last_returned_expert.add(expert)
+    request_r.expert_acceptation.remove(expert)
     request_r.user_signatures = init_user_signatures()
     request_r.request_status = Status.ce_review
     request_r.save()

@@ -3,6 +3,7 @@ from main import views
 from django.views.decorators.csrf import csrf_exempt
 
 app_name = 'main'
+
 urlpatterns = [
     path("products", views.get_products, name="products"),
     path("add_user", views.add_user, name="add_user"),
@@ -40,6 +41,8 @@ urlpatterns = [
     path('update_order_request_staff', csrf_exempt(views.update_order_request_staff),
          name='update_order_request_staff'),
     path('change_request_cexpert', csrf_exempt(views.change_request_cexpert), name='change_request_cexpert'),
+    path('change_request_cexpertrn', csrf_exempt(views.change_request_cexpertrn), name='change_request_cexpertrn'),
+
     path('user/expert_requests', views.expert_requests, name='expert_request'),
     path('submit_request_conversation', csrf_exempt(views.submit_request_conversation),
          name='submit_request_conversation'),
