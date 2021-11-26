@@ -157,7 +157,7 @@
                                         <div class="row no- pt-3 no-print">
                                             {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_expert' %}
                                                 <div class="col-3 justify-content-start" id="print-button">
-                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی'  and signed_r is False %}
+                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی'  %}
                                                         <form action="/update_request/{{ request_r.number }}">
                                                             <button type="submit" class="btn btn-info float-right ml-2"
                                                                     style="margin-right: 5px;">
@@ -296,12 +296,14 @@
 
                                                 <div class="col-4 justify-content-start" id="print-button">
                                                     {% if request_r.acceptation_date is None %}
-                                                        <button type="submit" class="btn btn-info float-right ml-2"
-                                                                style="margin-right: 5px;"
-                                                                onclick="handleCommercialExpert({{ request_r.number }})"
-                                                                id="ce_requestrsb">
-                                                            <i class="fa fa-check"></i>ارسال به کارشناسان
-                                                        </button>
+                                                        {% if request_r.expert.all.count == 0 %}
+                                                            <button type="submit" class="btn btn-info float-right ml-2"
+                                                                    style="margin-right: 5px;"
+                                                                    onclick="handleCommercialExpert({{ request_r.number }})"
+                                                                    id="ce_requestrsb">
+                                                                <i class="fa fa-check"></i>ارسال به کارشناسان
+                                                            </button>
+                                                        {% endif %}
                                                     {% else %}
                                                         <select class="btn btn-outline-dark text-right show-tick dropdown"
                                                                 data-dropup-auto="false" title="برند" id="ce_request">

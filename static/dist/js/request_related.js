@@ -87,8 +87,6 @@ function handleCommercialReturnExpert(request_id) {
                 window.alert('درخواست با موفقیت به کارشناس مربوطه ارسال شد')
                 document.getElementById("accept_button").remove();
                 document.getElementById("decline_button").remove();
-                document.getElementById("ce_request").remove();
-                document.getElementById("ce_requestsb").remove();
                 document.getElementById("edit_button").remove();
 
             }

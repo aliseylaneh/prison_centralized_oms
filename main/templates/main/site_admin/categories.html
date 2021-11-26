@@ -117,7 +117,8 @@
                             <tr>
 
                                 <th class="text-center">نام گروه کالا</th>
-                                <th class="text-center">توضیحات مربوطه</th>
+                                <th class="text-center">توضیحات</th>
+                                <th class="text-center">کارشناس</th>
                                 <th class="text-center">برند ها</th>
                                 <th class="text-center">ویرایش</th>
                                 <th class="text-center">حذف</th>
@@ -141,6 +142,7 @@
                                                     id="description-{{ category.name }}"></textarea>
                                             </td>
                                         {% endif %}
+                                        <td class="text-center"><span id="expert-{{ category.name }}">{{ category.user_expert.userprofile.last_name }}</span></td>
                                         <td class="text-center"><select class="form-control"
                                                                         id="supplier-{{ category.name }}">
                                             {% for supplier in category.suppliers.all %}

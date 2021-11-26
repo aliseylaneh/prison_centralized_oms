@@ -174,7 +174,8 @@ def reviewing_requests(request):
     requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
                                         request_status=Status.cm_review).order_by(
         '-created_date') | Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                                  request_status=Status.ce_review).order_by('-created_date')
+                                                  request_status=Status.ce_review).order_by('-created_date',
+                                                                                            '-acceptation_date')
     context = {
         'requests_r': requests_r
     }
@@ -191,6 +192,7 @@ def accept_request(request, pk):
             request_or.shipping_status = ShippingStatus.requested
             request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
             request_or.save()
+            messages.success(request, "درخواست برای مدیر عامل ارسال شد")
             return redirect('main:requests')
 
         elif request.user.groups.all()[0].name == 'commercial_expert':
@@ -209,15 +211,16 @@ def accept_request(request, pk):
             elif request_or.acceptation_date is not None:  # if return request edit is completed
                 request_or.last_returned_expert.remove(request.user)
                 request_or.expert_acceptation.add(request.user)
-                if request.last_returned_expert.count() == 0:
+                if request_or.last_returned_expert.count() == 0:
                     request_or.request_status = Status.cm_review
                     request_or.shipping_status = ShippingStatus.requested
                     request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
                     request_or.save()
                     messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
-                    return redirect('main:expert_request')
+                    return redirect('main:returned_requests')
                 request_or.save()
                 messages.success(request, "درخواست شما تایید شد")
+                return redirect('main:returned_requests')
 
         elif request.user.groups.all()[0].name == 'ceo':
             if check_user_signatures(request_or.user_signatures) is False:
@@ -245,6 +248,7 @@ def decline_request(request, pk):
             request_or = Request.objects.get(number=pk)
             if check_manager_signatures(request_or.user_signatures):
                 request_or.request_status = Status.cm_review
+                request_or.shipping_status = ShippingStatus.requested
                 request_or.user_signatures = init_user_signatures()
                 messages.success(request, 'درخواست برای مدیر بازرگانی ارسال گردید')
             else:
@@ -359,11 +363,24 @@ def submit_request_conversation(request):
 @allowed_users(['commercial_expert', 'commercial_manager'])
 def expert_requests(request):
     if request.user.groups.all()[0].name == 'commercial_expert':
-        requests_r = Request.objects.filter(Q(expert=request.user) | Q(last_returned_expert=request.user),
-                                            request_status=Status.ce_review).order_by('-created_date')
+        requests_r = Request.objects.filter(expert=request.user,
+                                            acceptation_date=None,
+                                            request_status=Status.ce_review).exclude(
+            expert_acceptation=request.user).order_by('-created_date')
     else:
-        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by(
-            '-created_date')
+        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-created_date',
+                                                                                      '-acceptation_date')
+    context = {
+        'requests_r': requests_r
+    }
+    return render(request, 'main/user/requests.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(['commercial_expert', 'commercial_manager'])
+def returned_requests(request):
+    requests_r = Request.objects.filter(last_returned_expert=request.user,
+                                        request_status=Status.ce_review).order_by('-created_date', '-acceptation_date')
     context = {
         'requests_r': requests_r
     }
@@ -1037,7 +1054,7 @@ def categories(request):
     if request.method == 'GET':
         experts = User.objects.filter(groups__name='commercial_expert')
         suppliers = Brand.objects.all()
-        categories_r = Category.objects.all()
+        categories_r = Category.objects.all().order_by('name')
         return render(request, 'main/site_admin/categories.html',
                       {'suppliers': suppliers, 'categories': categories_r, 'experts': experts})
 

@@ -44,6 +44,7 @@ urlpatterns = [
     path('change_request_cexpertrn', csrf_exempt(views.change_request_cexpertrn), name='change_request_cexpertrn'),
 
     path('user/expert_requests', views.expert_requests, name='expert_request'),
+    path('user/returned_requests', views.returned_requests, name='returned_requests'),
     path('submit_request_conversation', csrf_exempt(views.submit_request_conversation),
          name='submit_request_conversation'),
     path('submit_request_ticket', csrf_exempt(views.submit_request_ticket), name='submit_request_ticket'),

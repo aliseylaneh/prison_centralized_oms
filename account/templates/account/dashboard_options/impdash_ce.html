@@ -39,7 +39,16 @@
                             <a href="/user/expert_requests"
                                class="nav-link {% if 'expert' in url_name %}active{% endif %}">
                                 <i class="fa fa-circle-o nav-icon"></i>
-                                <p>درخواست های استان</p>
+                                <p>درخواست های جدید</p>
+                            </a>
+                        </li>
+                    {% endwith %}
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item ">
+                            <a href="/user/returned_requests"
+                               class="nav-link {% if 'returned' in url_name %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>درخواست های برگشت خورده</p>
                             </a>
                         </li>
                     {% endwith %}
