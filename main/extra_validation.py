@@ -16,6 +16,8 @@ def getProductUnit(str):
         return Unit.each
     elif str == 'Tn':
         return Unit.tn
+    elif str == 'متر':
+        return Unit.meter
 
 
 def deactivated_suppliers():
