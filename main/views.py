@@ -153,14 +153,16 @@ def completed_requests(request):
     if request.user.groups.all()[0].name == 'commercial_expert':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
                                             request_status=Status.completed, expert=request.user).order_by(
-            '-acceptation_date')
+            '-acceptation_date', '-created_date')
 
     elif request.user.groups.all()[0].name == 'commercial_manager':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
-                                            request_status=Status.completed).order_by('-acceptation_date')
+                                            request_status=Status.completed).order_by('-acceptation_date',
+                                                                                      '-created_date')
     elif request.user.groups.all()[0].name == 'ceo':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
-                                            request_status=Status.completed).order_by('-acceptation_date')
+                                            request_status=Status.completed).order_by('-acceptation_date',
+                                                                                      '-created_date')
 
     context = {
         'requests_r': requests_r
