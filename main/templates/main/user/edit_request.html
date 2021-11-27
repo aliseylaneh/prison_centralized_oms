@@ -154,11 +154,11 @@
                                                 </td>
                                                 {% if request.user.groups.all.0.name != 'user' %}
                                                     <td class="text-center"><input type="number" class="text-center"
-                                                                                   value="0">
+                                                                                   value="{{ order.buy_price }}">
                                                         ریال
                                                     </td>
                                                     <td class="text-center"><input type="number" class="text-center"
-                                                                                   value="0">
+                                                                                   value="{{ order.sell_price }}">
                                                         ریال
                                                     </td>
                                                 {% endif %}

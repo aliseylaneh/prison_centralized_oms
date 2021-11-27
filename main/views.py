@@ -316,6 +316,19 @@ def get_request(request, pk):
         request_r = Request.objects.get(number=pk)
         orders_r = Order.objects.filter(request=request_r)
 
+    for order in orders_r:
+        try:
+            order.buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                             brand=order.brand).order_by('-created_date')[0].price
+        except Exception:
+            order.buy_price = 0
+
+        try:
+            order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                              brand=order.brand).order_by('-created_date')[0].price2m
+        except Exception:
+            order.sell_price = 0
+
     categories_r = Order.objects.filter(request=request_r).values('product__category',
                                                                   'product__category__user_expert_id').distinct()
     tickets_r = Ticket.objects.filter(request=request_r).order_by('-created_date')
@@ -557,6 +570,19 @@ def update_request(request, pk):
         orders_r = Order.objects.filter(request=request_r, product__category__user_expert=request.user).distinct()
     else:
         orders_r = Order.objects.filter(request=request_r)
+
+    for order in orders_r:
+        try:
+            order.buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                             brand=order.brand).order_by('-created_date')[0].price
+        except Exception:
+            order.buy_price = 0
+
+        try:
+            order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                              brand=order.brand).order_by('-created_date')[0].price2m
+        except Exception:
+            order.sell_price = 0
 
     products = Product.objects.all()
     brands = Brand.objects.all()

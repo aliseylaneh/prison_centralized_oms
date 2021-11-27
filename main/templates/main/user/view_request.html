@@ -96,6 +96,10 @@
                                             <th class="text-center">کمیت</th>
                                             <th class="text-center">قیمت نقدی استان</th>
                                             <th class="text-center">قیمت دوماهه استان</th>
+                                            {% if request.user.groups.all.0.name != 'user' %}
+                                                <th class="text-center">قیمت خرید</th>
+                                                <th class="text-center">قیمت مصرف کننده</th>
+                                            {% endif %}
                                         </tr>
                                         </thead>
                                         <tbody class='position-relative'>
@@ -110,6 +114,10 @@
                                                 {% load humanize %}
                                                 <td class="text-center">{{ order.price|intcomma }} ریال</td>
                                                 <td class="text-center">{{ order.price_2m|intcomma }} ریال</td>
+                                                {% if request.user.groups.all.0.name != 'user' %}
+                                                    <td class="text-center">{{ order.buy_price|intcomma }} ریال</td>
+                                                    <td class="text-center">{{ order.sell_price|intcomma }} ریال</td>
+                                                {% endif %}
                                             </tr>
                                         {% endfor %}
                                         </tbody>
@@ -157,7 +165,7 @@
                                         <div class="row no- pt-3 no-print">
                                             {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_expert' %}
                                                 <div class="col-3 justify-content-start" id="print-button">
-                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی'  %}
+                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' %}
                                                         <form action="/update_request/{{ request_r.number }}">
                                                             <button type="submit" class="btn btn-info float-right ml-2"
                                                                     style="margin-right: 5px;">

@@ -218,6 +218,8 @@ class Order(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     price = models.BigIntegerField(default=0)
     price_2m = models.BigIntegerField(default=0)
+    sell_price = models.BigIntegerField(default=0)
+    buy_price = models.BigIntegerField(default=0)
 
     @property
     def set_price(self, price):
