@@ -16,7 +16,7 @@ def getProductUnit(str):
         return Unit.each
     elif str == 'Tn':
         return Unit.tn
-    elif str == 'meter':
+    elif str == 'Meter':
         return Unit.meter
 
 
