@@ -14,7 +14,7 @@
                                 <div class="row">
                                     <div class="text-right col-4">
                                         <img src="{% static 'dist/img/logo.png' %}"
-                                             style="width: 74px;margin-right: 34px">
+                                             style="width: 80px;margin-right: 34px">
                                         <br>
                                         <span style="font-family: 'B Titr'">بازرگانی حامیان امید فردا</span><br>
 
@@ -165,7 +165,7 @@
                                         <div class="row no- pt-3 no-print">
                                             {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_expert' %}
                                                 <div class="col-3 justify-content-start" id="print-button">
-                                                    {% if request_r.shipping_status == 'درحال تاییدیه' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' %}
+                                                    {% if request_r.shipping_status == 'درحال تاییدیه' or request_r.shipping_status == 'در حال ارسال به تامین کنندگان' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' %}
                                                         <form action="/update_request/{{ request_r.number }}">
                                                             <button type="submit" class="btn btn-info float-right ml-2"
                                                                     style="margin-right: 5px;">
