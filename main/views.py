@@ -1458,6 +1458,14 @@ def set_delivered_quantity(request):
     return JsonResponse({}, safe=False)
 
 
+# real factor
+@login_required(login_url='account:login')
+def test_factor(request):
+    context = {
+    }
+    return render(request, 'main/user/factor/factor.html', context)
+
+
 @login_required(login_url='account:login')
 def export_order_report(request):
     response = HttpResponse(content_type='text/csv')
