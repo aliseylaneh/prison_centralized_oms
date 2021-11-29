@@ -165,7 +165,7 @@
                                         <div class="row no- pt-3 no-print">
                                             {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_expert' %}
                                                 <div class="col-3 justify-content-start" id="print-button">
-                                                    {% if request_r.shipping_status == 'درحال تاییدیه' or request_r.shipping_status == 'در حال ارسال به تامین کنندگان' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' %}
+                                                    {% if request_r.shipping_status == 'درحال تاییدیه' or request_r.shipping_status == 'در حال ارسال به تامین کنندگان' and request_r.request_status != 'درحال بررسی توسط مدیر بازرگانی' and request.user.groups.all.0.name != 'commercial_expert' %}
                                                         <form action="/update_request/{{ request_r.number }}">
                                                             <button type="submit" class="btn btn-info float-right ml-2"
                                                                     style="margin-right: 5px;">
@@ -275,7 +275,7 @@
                                                             </button>
                                                         </form>
                                                     {% else %}
-                                                        <form action="/user/requests">
+                                                        <form {% if request_r.request_status == 'اتمام تاییدیه' %} action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' or request_r.request_status == 'در حال بررسی توسط مدیر بازرگانی' %} action="/user/reviewing_request" {% else %} action="/user/requests" {% endif %}>
                                                             <button type="submit" class="btn btn-info float-left ml-2"
                                                                     style="margin-right: 5px;">
                                                                 <i class="fa fa-arrow-left"></i> برگشت
