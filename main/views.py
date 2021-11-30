@@ -94,14 +94,18 @@ def review_request(request):
 @allowed_users(['user', 'ceo', 'commercial_manager'])
 def requests(request):
     if request.user.groups.all()[0].name == 'user':
-        requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-acceptation_date')
+        requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-acceptation_date',
+                                                                                            '-created_date')
     elif request.user.groups.all()[0].name == 'ceo':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                            request_status=Status.ceo_review).order_by('-acceptation_date')
+                                            request_status=Status.ceo_review).order_by('-acceptation_date',
+                                                                                       '-created_date')
     elif request.user.groups.all()[0].name == 'commercial_manager':
-        requests_r = Request.objects.filter(request_status=Status.cm_review).order_by('-acceptation_date')
+        requests_r = Request.objects.filter(request_status=Status.cm_review).order_by('-acceptation_date',
+                                                                                      '-created_date')
     elif request.user.groups.all()[0].name == 'commercial_expert':
-        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-acceptation_date')
+        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-acceptation_date',
+                                                                                      '-created_date')
 
     context = {
         'requests_r': requests_r

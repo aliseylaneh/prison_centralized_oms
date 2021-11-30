@@ -61,7 +61,6 @@ function handleCommercialExpert(request_id) {
             window.alert('درخواست با موفقیت به کارشناسان ارسال شد')
             document.getElementById("accept_button").remove();
             document.getElementById("decline_button").remove();
-            document.getElementById("ce_request").remove();
             document.getElementById("ce_requestrsb").remove();
             document.getElementById("edit_button").remove();
 
