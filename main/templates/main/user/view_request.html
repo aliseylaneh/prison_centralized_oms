@@ -353,7 +353,7 @@
                                                     </form>
                                                 </div>
                                                 <div class="col-4" id="print-button">
-                                                    <form action="/user/requests">
+                                                    <form {% if request_r.request_status == 'اتمام تاییدیه' %} action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' %} action="/user/expert_requests" {% else %} action="/user/requests" {% endif %}>
                                                         <button type="submit" class="btn btn-info float-left ml-2"
                                                                 style="margin-right: 5px;">
                                                             <i class="fa fa-arrow-left"></i>برگشت
@@ -381,7 +381,7 @@
 
                                                 </div>
                                                 <div class="col-4" id="print-button">
-                                                    <form action="/user/requests">
+                                                    <form {% if request_r.request_status == 'اتمام تاییدیه' %} action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' %} action="/user/expert_requests" {% else %} action="/user/requests" {% endif %}>
                                                         <button type="submit" class="btn btn-info float-left ml-2"
                                                                 style="margin-right: 5px;">
                                                             <i class="fa fa-arrow-left"></i>برگشت
