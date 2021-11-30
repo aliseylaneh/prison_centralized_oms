@@ -85,5 +85,5 @@ urlpatterns = [
          name='submit_delivered_factor'),
 
     path('export_order_report', views.export_order_report, name='export_order_report'),
-    path('test/factor',views.test_factor,name='test_factor')
+    path('get_request/<str:pk>/supplier_orders/<str:ord>/hamifactor',views.hami_factor,name='hamifactor')
 ]

@@ -691,6 +691,7 @@ def update_order_request_staff(request):
         if Brand != 0 and order.brand.company_name != brand: order.brand = Brand.objects.get(
             company_name=brand)
         if quantity != '' and order.quantity != quantity: order.quantity = quantity
+        order.last_edition = request.user
         order.save()
         data = {
             'message': 'سفارش شما با موفقیت ویرایش شد'
@@ -1465,8 +1466,31 @@ def set_delivered_quantity(request):
 
 # real factor
 @login_required(login_url='account:login')
-def test_factor(request):
+def hami_factor(request, pk, ord):
+    request_r = Request.objects.get(number=pk)
+    supplier_r = Supplier.objects.get(id=ord)
+    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+    orders_r = Order.objects.filter(request=request_r, supplier=supplier_r, )
+
+    for order in orders_r:
+        try:
+            order.buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                             brand=order.brand).order_by('-created_date')[0].price
+        except Exception:
+            order.buy_price = 0
+
+        try:
+            order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                              brand=order.brand).order_by('-created_date')[0].price2m
+        except Exception:
+            order.sell_price = 0
+
+
     context = {
+        'request_r': request_r,
+        'supplier_r': supplier_r,
+        'orders_r': orders_r,
+        'deliver_date':deliver_date
     }
     return render(request, 'main/user/factor/factor.html', context)
 

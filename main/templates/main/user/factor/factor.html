@@ -14,7 +14,7 @@
                                 <div class="row">
                                     <div class="text-right col-3">
                                         <img src="{% static 'dist/img/logo.png' %}"
-                                             style="width: 37px;margin-right: 50px">
+                                             style="width: 60px;margin-right: 46px">
                                         <br>
                                         <span style="font-family: 'B Titr'">بازرگانی حامیان امید فردا</span><br>
 
@@ -35,14 +35,14 @@
 
                                     <thead>
                                     <tr>
-                                        <th class="text-center" colspan="12">مشخصات فروشنده</th>
+                                        <th class="text-center" colspan="10">مشخصات فروشنده</th>
 
                                     </tr>
 
                                     </thead>
                                     <tbody class='position-relative'>
                                     <tr>
-                                        <td colspan="12">
+                                        <td colspan="10">
                                             <div class="row">
                                                 <div class="text-right col-6">
                                                     <span>نام شخص حقیقی / حقوقی: شرکت بازرگانی حامیان امید فردا</span><br>
@@ -60,83 +60,95 @@
                                             </div>
                                         </td>
                                     </tr>
+                                    {#                                    <tr>#}
+                                    {#                                        <th class="text-center" colspan="12">مشخصات خریدار</th>#}
+                                    {##}
+                                    {#                                    </tr>#}
+                                    {#                                    <tr>#}
+                                    {#                                        <td colspan="12">#}
+                                    {#                                            <div class="row">#}
+                                    {#                                                <div class="text-right col-6">#}
+                                    {#                                                    <span>نام شخص حقیقی / حقوقی: </span><br>#}
+                                    {#                                                    <span>نشانی استان: - شهرستان: - شهر: - </span><br>#}
+                                    {#                                                    <span>نشانی: -</span>#}
+                                    {##}
+                                    {#                                                </div>#}
+                                    {#                                                <div class="text-right col-6">#}
+                                    {#                                                    <span>شماره اقتصادی: </span>#}
+                                    {#                                                    <span>شماره/ ثبت / شماره ملی: </span><br>#}
+                                    {#                                                    <span>کد پستی ۱۰ رقمی: </span><br>#}
+                                    {#                                                    <span>شماره تلفن / نمابر: </span><br>#}
+                                    {##}
+                                    {#                                                </div>#}
+                                    {##}
+                                    {#                                            </div>#}
+                                    {#                                        </td>#}
+                                    {#                                    </tr>#}
                                     <tr>
-                                        <th class="text-center" colspan="12">مشخصات خریدار</th>
-
-                                    </tr>
-                                    <tr>
-                                        <td colspan="12">
-                                            <div class="row">
-                                                <div class="text-right col-6">
-                                                    <span>نام شخص حقیقی / حقوقی: </span><br>
-                                                    <span>نشانی استان: - شهرستان: - شهر: - </span><br>
-                                                    <span>نشانی: -</span>
-
-                                                </div>
-                                                <div class="text-right col-6">
-                                                    <span>شماره اقتصادی: </span>
-                                                    <span>شماره/ ثبت / شماره ملی: </span><br>
-                                                    <span>کد پستی ۱۰ رقمی: </span><br>
-                                                    <span>شماره تلفن / نمابر: </span><br>
-
-                                                </div>
-
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th class="text-center" colspan="12">مشخصات کالا یا خدمات مورد معامله</th>
+                                        <th class="text-center" colspan="10">مشخصات کالا یا خدمات مورد معامله</th>
 
                                     </tr>
                                     <tr>
                                         <td class="text-center">ردیف</td>
-                                        <td class="text-center">سود استان</td>
                                         <td class="text-center">قیمت مصرف کننده</td>
                                         <td class="text-center">شرح کالا</td>
                                         <td class="text-center">مقدار</td>
                                         <td class="text-center">واحد</td>
                                         <td class="text-center">مبلغ(ریال)</td>
                                         <td class="text-center">مبلغ کل(ریال)</td>
-                                        <td class="text-center">مبلغ تحفیف(ریال)</td>
                                         <td class="text-center">مبلغ کل پس از تخفیف(ریال)</td>
                                         <td class="text-center">جمع مالیات و عوارض(ریال)</td>
                                         <td class="text-center">جمع مبلغ کل بعلاوه جمع مالیات و عوارض(ریال)</td>
 
                                     </tr>
+                                    {% load main_custom_tags %}
+                                    {% load humanize %}
+                                    {% for order in orders_r %}
+                                        <tr>
+                                            <td class="text-center">{{ forloop.counter }}</td>
+                                            <td class="text-center">{{ order.sell_price | intcomma }}</td>
+                                            <td class="text-center">{{ order.product.name }}</td>
+                                            <td class="text-center">{{ order.quantity }}</td>
+                                            <td class="text-center">{{ order.product.based_quantity }}</td>
+                                            <td class="text-center">{{ order.buy_price | intcomma }}</td>
+                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | intcomma }}</td>
+                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | intcomma }}</td>
+                                            <td class="text-center">{{ order.buy_price | tax_price | intcomma }}</td>
+                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | tax_final_price:order.buy_price | intcomma }}</td>
+                                        </tr>
+                                    {% endfor %}
                                     <!-- for loop -->
 
                                     <tr>
-                                        <th class="text-center" colspan="12">مقتضی است ظرف مدت ۴۸ ساعت پس از تحویل کالا
+                                        <th class="text-center" colspan="10">مقتضی است ظرف مدت ۴۸ ساعت پس از تحویل کالا
                                             فرم جاری را تایید و ارسال نماید. بدیهی است در غیر اینصورت تعداد قید شده قطعی
                                             تلقی شده و فاکتور نهایی ارسال خواهد شد.
                                         </th>
 
                                     </tr>
                                     <tr>
-                                        <td colspan="3" class="text-center">۲۰۰۰</td>
-                                        <td colspan="2" class="text-center">جمع سود استان</td>
 
-                                        <td colspan="2" class="text-center">تاریخ ارسال</td>
-                                        <td colspan="2" class="text-center">1400/02/14</td>
+                                        <td colspan="3" class="text-center">تاریخ ارسال</td>
+                                        <td colspan="3" class="text-center">{{ deliver_date.get_deliver_date }}</td>
                                         <td colspan="2" class="text-center">مبلغ قابل پرداخت</td>
-                                        <td colspan="3" class="text-center">۲۰۰۰</td>
+                                        <td colspan="2" class="text-center"></td>
 
                                     </tr>
                                     <tr>
-                                        <td colspan="7">شرایط و نحوه فروش:</td>
-                                        <td colspan="8" class="text-center" rowspan="2">در صورت عدم ارسال کالا در تاریخ
+                                        <td colspan="5">شرایط و نحوه فروش:</td>
+                                        <td colspan="5" class="text-center" rowspan="2">در صورت عدم ارسال کالا در تاریخ
                                             فوق مراتب را به این شرکت اعلام فرمایید.
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="7">نزد بانک انصار با شماره حساب IR530630188782808003436001</td>
+                                        <td colspan="5">نزد بانک انصار با شماره حساب IR530630188782808003436001</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center">نام و نام خانوادگی تنظیم کننده</td>
+                                        <td class="text-center" colspan="3">نام و نام خانوادگی تنظیم کننده</td>
                                         <td class="text-center" colspan="3">نام و نام خانوادگی بازرگانی</td>
-                                        <td class="text-center" colspan="3">نام و نام خانوادگی امور مالی</td>
-                                        <td class="text-center" colspan="3">نام و نام خانوادگی و مهر مدیر عامل</td>
-                                        <td class="text-center" colspan="3">مهر و امضا خریدار</td>
+                                        <td class="text-center" colspan="1">نام و نام خانوادگی امور مالی</td>
+                                        <td class="text-center" colspan="1">نام و نام خانوادگی و مهر مدیر عامل</td>
+                                        <td class="text-center" colspan="2">مهر و امضا خریدار</td>
 
                                     </tr>
                                     </tbody>

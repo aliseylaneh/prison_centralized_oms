@@ -82,7 +82,8 @@ class Product(models.Model):
     ordered_quantity = models.BigIntegerField(null=True, default=0)
     based_quantity = models.CharField(max_length=20, null=True, choices=Unit.choices, default=Unit.each)
     description = models.CharField(max_length=255, null=True)
-    percentage = models.IntegerField(null=True, default=0)
+    tax = models.IntegerField(default=1)
+    profit = models.IntegerField(default=3)
 
     def __str__(self):
         return self.name
@@ -221,6 +222,7 @@ class Order(models.Model):
     price_2m = models.BigIntegerField(default=0)
     sell_price = models.BigIntegerField(default=0)
     buy_price = models.BigIntegerField(default=0)
+    profit = models.IntegerField(default=0)
 
     @property
     def set_price(self, price):

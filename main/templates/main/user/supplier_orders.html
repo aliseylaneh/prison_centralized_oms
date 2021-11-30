@@ -40,6 +40,9 @@
                                         {% if request.user.groups.all.0.name != 'user' %}
                                             <th class="text-center">رسید تحویل کالا</th>
                                         {% endif %}
+                                        {% if request.user.groups.all.0.name != 'user' %}
+                                            <th class="text-center">فاکتور فروش</th>
+                                        {% endif %}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -70,6 +73,13 @@
                                                 <td class="text-center"><a
                                                         href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/factor"
                                                         class="fa fa-ship"
+                                                        style="padding-top: 6px"></a>
+                                                </td>
+                                            {% endif %}
+                                            {% if request.user.groups.all.0.name != 'user' %}
+                                                <td class="text-center"><a
+                                                        href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/hamifactor"
+                                                        class="fa fa-shopping-cart"
                                                         style="padding-top: 6px"></a>
                                                 </td>
                                             {% endif %}

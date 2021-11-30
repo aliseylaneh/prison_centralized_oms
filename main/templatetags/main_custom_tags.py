@@ -32,3 +32,18 @@ def sell_price_margin(sell_price, consumer_price):
     if consumer_price >= 1000 and sell_price >= 1000:
         return "{:.2f}".format(((consumer_price - sell_price) / consumer_price) * 100)
     return None
+
+
+@register.filter(name='tax_price')
+def tax_price(price):
+    three_percent = int((97 * price) / 100)
+    six_percent = int((94 * price) / 100)
+    return three_percent + six_percent
+
+
+@register.filter(name='tax_final_price')
+def tax_final_price(price, tax):
+    three_percent = int((97 * tax) / 100)
+    six_percent = int((94 * tax) / 100)
+    tax = three_percent + six_percent
+    return price + tax
