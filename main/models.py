@@ -211,7 +211,7 @@ class Order(models.Model):
     product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
     brand = models.ForeignKey(Brand, null=True, on_delete=models.SET_NULL)
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.SET_NULL)
-    last_edition = models.ForeignKey(User,null=True,on_delete=models.SET_NULL)
+    last_edition = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     bar_code = models.BigIntegerField(null=True)
     quantity = models.IntegerField(default=0)
     sell_deliver_price = models.BigIntegerField(default=0)
@@ -274,3 +274,6 @@ class DeliverDate(models.Model):
     @property
     def get_deliver_date(self):
         return date2jalali(self.date).strftime("%Y/%m/%d")
+
+    def __str__(self):
+        return self.request.number + ' ' + self.supplier.company_name
