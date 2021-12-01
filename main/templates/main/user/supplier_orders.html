@@ -40,7 +40,7 @@
                                         {% if request.user.groups.all.0.name != 'user' %}
                                             <th class="text-center">رسید تحویل کالا</th>
                                         {% endif %}
-                                        {% if request.user.groups.all.0.name != 'user' %}
+                                        {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_manager' %}
                                             <th class="text-center">فاکتور فروش</th>
                                         {% endif %}
                                     </tr>
@@ -76,7 +76,7 @@
                                                         style="padding-top: 6px"></a>
                                                 </td>
                                             {% endif %}
-                                            {% if request.user.groups.all.0.name != 'user' %}
+                                            {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_manager' %}
                                                 <td class="text-center"><a
                                                         href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/hamifactor"
                                                         class="fa fa-shopping-cart"
