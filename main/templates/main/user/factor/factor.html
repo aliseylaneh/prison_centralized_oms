@@ -60,30 +60,30 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    {#                                    <tr>#}
-                                    {#                                        <th class="text-center" colspan="12">مشخصات خریدار</th>#}
-                                    {##}
-                                    {#                                    </tr>#}
-                                    {#                                    <tr>#}
-                                    {#                                        <td colspan="12">#}
-                                    {#                                            <div class="row">#}
-                                    {#                                                <div class="text-right col-6">#}
-                                    {#                                                    <span>نام شخص حقیقی / حقوقی: </span><br>#}
-                                    {#                                                    <span>نشانی استان: - شهرستان: - شهر: - </span><br>#}
-                                    {#                                                    <span>نشانی: -</span>#}
-                                    {##}
-                                    {#                                                </div>#}
-                                    {#                                                <div class="text-right col-6">#}
-                                    {#                                                    <span>شماره اقتصادی: </span>#}
-                                    {#                                                    <span>شماره/ ثبت / شماره ملی: </span><br>#}
-                                    {#                                                    <span>کد پستی ۱۰ رقمی: </span><br>#}
-                                    {#                                                    <span>شماره تلفن / نمابر: </span><br>#}
-                                    {##}
-                                    {#                                                </div>#}
-                                    {##}
-                                    {#                                            </div>#}
-                                    {#                                        </td>#}
-                                    {#                                    </tr>#}
+                                    <tr>
+                                        <th class="text-center" colspan="12">مشخصات خریدار</th>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="12">
+                                            <div class="row">
+                                                <div class="text-right col-6">
+                                                    <span>نام شخص حقیقی / حقوقی: {{ request_r.prison.name }}</span><br>
+                                                    <span>نشانی استان: {{ request_r.prison.province.name }} </span><br>
+                                                    <span>نشانی: {{ request_r.prison.address }}</span>
+
+                                                </div>
+                                                <div class="text-right col-6">
+                                                    <span>شماره اقتصادی: </span>
+                                                    <span>شماره/ ثبت / شماره ملی: </span><br>
+                                                    <span>کد پستی ۱۰ رقمی: </span><br>
+                                                    <span>شماره تلفن / نمابر: {{ request_r.prison.phone_number }} </span><br>
+
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th class="text-center" colspan="10">مشخصات کالا یا خدمات مورد معامله</th>
 
@@ -96,7 +96,6 @@
                                         <td class="text-center">واحد</td>
                                         <td class="text-center">مبلغ(ریال)</td>
                                         <td class="text-center">مبلغ کل(ریال)</td>
-                                        <td class="text-center">مبلغ کل پس از تخفیف(ریال)</td>
                                         <td class="text-center">جمع مالیات و عوارض(ریال)</td>
                                         <td class="text-center">جمع مبلغ کل بعلاوه جمع مالیات و عوارض(ریال)</td>
 
@@ -111,7 +110,6 @@
                                             <td class="text-center">{{ order.quantity }}</td>
                                             <td class="text-center">{{ order.product.based_quantity }}</td>
                                             <td class="text-center">{{ order.buy_price | intcomma }}</td>
-                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | intcomma }}</td>
                                             <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | intcomma }}</td>
                                             <td class="text-center">{{ order.buy_price | tax_price | intcomma }}</td>
                                             <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | tax_final_price:order.buy_price | intcomma }}</td>

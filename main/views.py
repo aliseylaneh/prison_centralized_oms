@@ -1477,9 +1477,15 @@ def hami_factor(request, pk, ord):
 
     for order in orders_r:
         try:
-            order.buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                             brand=order.brand).order_by('-created_date')[0].price
-        except Exception:
+            buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                       brand=order.brand).order_by('-created_date')[0].price
+            if order.profit == 0:
+                three_percent = int((97 * buy_price) / 100)
+                order.buy_price = buy_price + (buy_price - three_percent)
+            else:
+                new_profit = int(((100 - order.profit) * buy_price) / 100)
+                order.buy_price = buy_price + (buy_price - new_profit)
+        except Order.DoesNotExist:
             order.buy_price = 0
 
         try:
