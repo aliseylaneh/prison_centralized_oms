@@ -43,7 +43,8 @@
                                     onclick="resetFound()">
                             </button>
                             <form action="/export_order_report">
-                                <button type="submit" class="btn btn-outline-dark fa fa-database w-100 mb-2 mt-2"></button>
+                                <button type="submit"
+                                        class="btn btn-outline-dark fa fa-database w-100 mb-2 mt-2"></button>
                             </form>
                         </div>
                     </div>
@@ -56,7 +57,7 @@
                             <h4>لیست محصولات</h4>
                         </div>
                         <!-- /.card-header -->
-			<div class="w-100 text-center" id='loadingBar' style='display:none'>
+                        <div class="w-100 text-center" id='loadingBar' style='display:none'>
                             <div class="loadingio-spinner-spinner-985r529o724">
                                 <div class="ldio-oiqxwq2p09">
                                     <div></div>
@@ -82,10 +83,8 @@
                                     <th class="text-center">شماره</th>
                                     <th class="text-center">نام کالا</th>
                                     <th class="text-center">گروه</th>
-                                    <th class="text-center">برند</th>
                                     <th class="text-center">توضیحات</th>
                                     <th class="text-center">کمیت</th>
-                                    <th class="text-center">مقدار سفارشات بر اساس کمیت</th>
                                     <th class="text-center">ویرایش</th>
 
                                 </tr>
@@ -99,21 +98,6 @@
                                             <td class="text-center"><label class="badge badge-success"
                                                                            style="font-size: 13px;">{{ product.category_id }}</label>
                                             </td>
-                                            <td class="text-center">
-                                                {% if product.category is not None %}
-                                                    <select class="btn btn-outline-dark text-right show-tick dropdown"
-                                                            data-dropup-auto="false" title="برند" style="width: 100%">
-                                                        <option value="">برند</option>
-                                                        {% for supplier in product.category.suppliers.all %}
-                                                            <option value="{{ supplier.company_name }}"
-                                                                    {% if supplier.is_active is False %}
-                                                                    disabled {% endif %}>
-                                                                {{ supplier.company_name }}
-                                                            </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                {% endif %}
-                                            </td>
                                             {% if product.description is None %}
                                                 <td class="text-center"><span class="text-center">بدون توضیحات</span>
                                                 </td>
@@ -126,9 +110,6 @@
                                             {% endif %}
                                             <td class="text-center"><span
                                                     class="text-center">{{ product.based_quantity }}</span>
-                                            </td>
-                                            <td class="text-center"><span
-                                                    class="text-center">{{ product.ordered_quantity }}</span>
                                             </td>
 
                                             <td class="text-center"><a href="/get_product/{{ product.id }}"
@@ -154,10 +135,8 @@
                                     <th class="text-center">شماره</th>
                                     <th class="text-center">نام کالا</th>
                                     <th class="text-center">گروه</th>
-                                    <th class="text-center">برند</th>
                                     <th class="text-center">توضیحات</th>
                                     <th class="text-center">کمیت</th>
-                                    <th class="text-center">مقدار سفارشات بر اساس کمیت</th>
                                     <th class="text-center">ویرایش</th>
 
                                 </tr>

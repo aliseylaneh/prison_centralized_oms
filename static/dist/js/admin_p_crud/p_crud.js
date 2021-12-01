@@ -64,14 +64,8 @@ function getProducts(searchValue, categoryValue, supplierValue) {
                                     <td class="text-center"">${item.id}</td>
                                     <td class="text-center">${item.name}</td>
                                     <td class="text-center"><span class="badge badge-success" style="font-size: 13px;" id="searchedCategory-${item.id}">${item.category_id}</span></td>
-                                    <td class="text-center ">
-                                        <select class="btn btn-outline-dark text-right w-100 responseSupplier-${item.id}" aria-label=".form-select-sm example" id="searchedSupplier-${item.id}">
-                                        <option value="0">برند</option>
-                                        </select>
-                                        </td>
                                     <td class="text-center"><span class="text-center">بدون توضیحات</span></td>
                                     <td class="text-center"><span class="text-center">${item.product_unit}</span></td>
-                                    <td class="text-center"><span class="text-center">${item.product_ordered_quantity}</span></td>
                                     <td class="text-center"><a href="/get_product/${item.id}"
                                                                        class="fa fa-edit"
                                                                        style="padding-top: 6px"></a>
@@ -85,17 +79,11 @@ function getProducts(searchValue, categoryValue, supplierValue) {
                                     <td class="text-center"">${item.id}</td>
                                     <td class="text-center">${item.name}</td>
                                     <td class="text-center"><span class="badge badge-success" style="font-size: 13px;" id="searchedCategory-${item.id}">${item.category_id}</span></td>
-                                    <td class="text-center ">
-                                        <select class="btn btn-outline-dark text-right w-100 responseSupplier-${item.id}" aria-label=".form-select-sm example" id="searchedSupplier-${item.id}">
-                                        <option value="0">برند</option>
-                                        </select>
-                                        </td>
                                     <td class="text-center"><textarea
                                                         class="text-center rounded"
                                                         placeholder="${item.description}"
                                                         readonly style="resize: none"></textarea>
                                     <td class="text-center"><span class="text-center">${item.product_unit}</span></td>
-                                    <td class="text-center"><span class="text-center">${item.product_ordered_quantity}</span></td>
                                     <td class="text-center"><a href="/get_product/${item.id}"
                                                                        class="fa fa-edit"
                                                                        style="padding-top: 6px"></a>
@@ -104,14 +92,6 @@ function getProducts(searchValue, categoryValue, supplierValue) {
 
                     `
                     }
-                    var brands = '';
-                    var product_brands = item.product_brands
-                    for (var key in product_brands) {
-
-                        brands += '<option class="h-100" value="' + product_brands[key] + '">' + product_brands[key] + '</option>';
-
-                    }
-                    $(".responseSupplier-" + item.id).append(brands);
 
 
                 });
