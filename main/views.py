@@ -1469,7 +1469,10 @@ def set_delivered_quantity(request):
 def hami_factor(request, pk, ord):
     request_r = Request.objects.get(number=pk)
     supplier_r = Supplier.objects.get(id=ord)
-    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+    try:
+        deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+    except DeliverDate.DoesNotExist:
+        deliver_date = None
     orders_r = Order.objects.filter(request=request_r, supplier=supplier_r, )
 
     for order in orders_r:
@@ -1485,12 +1488,11 @@ def hami_factor(request, pk, ord):
         except Exception:
             order.sell_price = 0
 
-
     context = {
         'request_r': request_r,
         'supplier_r': supplier_r,
         'orders_r': orders_r,
-        'deliver_date':deliver_date
+        'deliver_date': deliver_date
     }
     return render(request, 'main/user/factor/factor.html', context)
 
