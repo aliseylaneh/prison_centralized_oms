@@ -23,6 +23,7 @@ from main.models import *
 from .extra_validation import deactivated_suppliers, checkStatus, getProductUnit, set_user_signatures, \
     check_user_signatures, check_manager_signatures
 from .serializers import *
+from .templatetags.main_custom_tags import multiply_price, tax_final_price
 
 logger = logging.getLogger('django')
 
@@ -484,11 +485,30 @@ def submit_delivered_factor(request, req, sup):
         messages.error(request, f"امکان ثبت رسید تحویل کالا فقط در تاریخ موعد آن دردسترس است")
         return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
     orders = Order.objects.filter(request=request_r, supplier=supplier_r, delivered_quantity=0)
+    final_price = 0
     for order in orders:
         order.delivered_quantity = order.quantity
 
     Order.objects.bulk_update(orders, ['delivered_quantity'])
+    orders_r = Order.objects.filter(request=request_r, supplier=supplier_r)
+    for order in orders_r:
+        try:
+            buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                       brand=order.brand).order_by('-created_date')[0].price
+            if order.profit == 0:
+                three_percent = int((97 * buy_price) / 100)
+                final_price += tax_final_price(multiply_price(buy_price + (buy_price - three_percent), order.quantity),
+                                               buy_price + (buy_price - three_percent))
+            else:
+                new_profit = int(((100 - order.profit) * buy_price) / 100)
+                final_price += tax_final_price(multiply_price(buy_price + (buy_price - new_profit), order.quantity),
+                                               buy_price + (buy_price - new_profit))
+        except Order.DoesNotExist:
+            pass
+    print(final_price)
     deliver_date.status = 1
+    deliver_date.total_price = final_price
+    deliver_date.number = request_r.number + str(deliver_date.id)
     deliver_date.save()
     return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
     # return JsonResponse({}, safe=False)
@@ -1473,32 +1493,43 @@ def hami_factor(request, pk, ord):
         deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
     except DeliverDate.DoesNotExist:
         deliver_date = None
+        messages.warning(request,
+                         'درخواست برای این تامین کننده هنوز ارسال نشده است و درحال بررسی توسط کارشناس مورد نظر است')
+        return redirect(reverse('main:supplier_orders', kwargs={'pk': pk}))
     orders_r = Order.objects.filter(request=request_r, supplier=supplier_r, )
+    final_price = 0
+    if deliver_date.status is not False:
+        for order in orders_r:
+            try:
+                buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                           brand=order.brand).order_by('-created_date')[0].price
+                if order.profit == 0:
+                    three_percent = int((97 * buy_price) / 100)
+                    order.buy_price = buy_price + (buy_price - three_percent)
+                    final_price += tax_final_price(multiply_price(order.buy_price, order.quantity), order.buy_price)
+                else:
+                    new_profit = int(((100 - order.profit) * buy_price) / 100)
+                    order.buy_price = buy_price + (buy_price - new_profit)
+                    final_price += tax_final_price(multiply_price(order.buy_price, order.quantity), order.buy_price)
+            except Order.DoesNotExist:
+                order.buy_price = 0
 
-    for order in orders_r:
-        try:
-            buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                       brand=order.brand).order_by('-created_date')[0].price
-            if order.profit == 0:
-                three_percent = int((97 * buy_price) / 100)
-                order.buy_price = buy_price + (buy_price - three_percent)
-            else:
-                new_profit = int(((100 - order.profit) * buy_price) / 100)
-                order.buy_price = buy_price + (buy_price - new_profit)
-        except Order.DoesNotExist:
-            order.buy_price = 0
-
-        try:
-            order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                              brand=order.brand).order_by('-created_date')[0].price2m
-        except Exception:
-            order.sell_price = 0
-
+            try:
+                order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
+                                                                  brand=order.brand).order_by('-created_date')[
+                    0].price2m
+            except Exception:
+                order.sell_price = 0
+    else:
+        messages.warning(request,
+                         'کالای مربوط به این تامین کننده به زندان مورد نظر تحویل داده نشده اند')
+        return redirect(reverse('main:supplier_orders', kwargs={'pk': pk}))
     context = {
         'request_r': request_r,
         'supplier_r': supplier_r,
         'orders_r': orders_r,
-        'deliver_date': deliver_date
+        'deliver_date': deliver_date,
+        'final_price': final_price
     }
     return render(request, 'main/user/factor/factor.html', context)
 

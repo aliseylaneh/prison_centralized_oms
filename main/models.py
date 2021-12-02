@@ -269,6 +269,8 @@ class DeliverDate(models.Model):
     supplier = models.ForeignKey(Supplier, null=True, on_delete=models.CASCADE)
     date = models.DateField(null=True)
     status = models.BooleanField(default=False)
+    number = models.CharField(max_length=255, null=True, unique=True)
+    total_price = models.BigIntegerField(default=0)
 
     class Meta:
         unique_together = [['request', 'supplier']]

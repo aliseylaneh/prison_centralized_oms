@@ -24,7 +24,7 @@
                                     </div>
                                     <div class="text-left col-3">
                                         <span class="text-left"> شماره سریال: {{ request_r.number }}</span><br>
-{#                                        <span class="text-left"> تاریخ: {{ request_r.number }}</span>#}
+                                        {#                                        <span class="text-left"> تاریخ: {{ request_r.number }}</span>#}
                                     </div>
 
                                 </div>
@@ -90,11 +90,11 @@
                                     </tr>
                                     <tr>
                                         <td class="text-center">ردیف</td>
-                                        <td class="text-center">قیمت مصرف کننده</td>
                                         <td class="text-center">شرح کالا</td>
+                                        <td class="text-center">قیمت مصرف کننده</td>
                                         <td class="text-center">مقدار</td>
                                         <td class="text-center">واحد</td>
-                                        <td class="text-center">مبلغ(ریال)</td>
+                                        <td class="text-center">مبلغ واحد(ریال)</td>
                                         <td class="text-center">مبلغ کل(ریال)</td>
                                         <td class="text-center">جمع مالیات و عوارض(ریال)</td>
                                         <td class="text-center">جمع مبلغ کل بعلاوه جمع مالیات و عوارض(ریال)</td>
@@ -105,8 +105,8 @@
                                     {% for order in orders_r %}
                                         <tr>
                                             <td class="text-center">{{ forloop.counter }}</td>
-                                            <td class="text-center">{{ order.sell_price | intcomma }}</td>
                                             <td class="text-center">{{ order.product.name }}</td>
+                                            <td class="text-center">{{ order.sell_price | intcomma }}</td>
                                             <td class="text-center">{{ order.quantity }}</td>
                                             <td class="text-center">{{ order.product.based_quantity }}</td>
                                             <td class="text-center">{{ order.buy_price | intcomma }}</td>
@@ -117,25 +117,25 @@
                                     {% endfor %}
                                     <!-- for loop -->
 
-                                    <tr>
-                                        <th class="text-center" colspan="10">مقتضی است ظرف مدت ۴۸ ساعت پس از تحویل کالا
-                                            فرم جاری را تایید و ارسال نماید. بدیهی است در غیر اینصورت تعداد قید شده قطعی
-                                            تلقی شده و فاکتور نهایی ارسال خواهد شد.
-                                        </th>
-
-                                    </tr>
+{#                                    <tr>#}
+{#                                        <th class="text-center" colspan="10">مقتضی است ظرف مدت ۴۸ ساعت پس از تحویل کالا#}
+{#                                            فرم جاری را تایید و ارسال نماید. بدیهی است در غیر اینصورت تعداد قید شده قطعی#}
+{#                                            تلقی شده و فاکتور نهایی ارسال خواهد شد.#}
+{#                                        </th>#}
+{##}
+{#                                    </tr>#}
                                     <tr>
 
                                         <td colspan="3" class="text-center">تاریخ ارسال</td>
                                         <td colspan="3" class="text-center">{{ deliver_date.get_deliver_date }}</td>
-                                        <td colspan="2" class="text-center">مبلغ قابل پرداخت</td>
-                                        <td colspan="2" class="text-center"></td>
+                                        <td colspan="2" class="text-center">مبلغ قابل پرداخت (ریال)</td>
+                                        <td colspan="2" class="text-center">{{ final_price | intcomma }}</td>
 
                                     </tr>
                                     <tr>
                                         <td colspan="5">شرایط و نحوه فروش:</td>
-                                        <td colspan="5" class="text-center" rowspan="2">در صورت عدم ارسال کالا در تاریخ
-                                            فوق مراتب را به این شرکت اعلام فرمایید.
+                                        <td colspan="5" class="text-center" rowspan="2">در صورت عدم رسید کالا در تاریخ
+                                            فوق مراتب را ظرف ۲۴ ساعت اطلاع رسانی نمایید.
                                         </td>
                                     </tr>
                                     <tr>
@@ -155,9 +155,9 @@
 
                                 <div class="row gutters pt-4">
                                     <div class="col-1 no-print" id="print-button">
-                                        {% if request.user.groups.all.0.name == 'user' %}
+                                        {% if request.user.groups.all.0.name == 'ceo' %}
                                             {% if deliver_date.status == 0 %}
-                                                <form action="/get_request/{{ request_r.number }}/supplier_orders/{{ supplier_r.id }}/edit_factor">
+                                                <form action="#">
                                                     <button type="submit" class="btn btn-info float-right ml-2"
                                                             style="margin-right: 5px;" id="editButton">
                                                         <i class="fa fa-edit"></i> ویرایش
@@ -168,12 +168,12 @@
 
                                     </div>
                                     <div class="col-1 no-print" id="print-button">
-                                        {% if request.user.groups.all.0.name == 'user' %}
+                                        {% if request.user.groups.all.0.name == 'ceo' %}
                                             {% if deliver_date.status == 0 %}
-                                                <form action="/request/{{ request_r.number }}/submit_factor/{{ supplier_r.id }}">
+                                                <form action="#">
                                                     <button type="submit" class="btn btn-danger float-right ml-2"
                                                             style="margin-right: 5px;" id="submitButton">
-                                                        <i class="fa fa-check"></i> ثبت نهایی رسید تحویل
+                                                        <i class="fa fa-check"></i> ثبت نهایی فاکتور
                                                     </button>
                                                 </form>
                                             {% endif %}
