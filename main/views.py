@@ -505,10 +505,10 @@ def submit_delivered_factor(request, req, sup):
                                                buy_price + (buy_price - new_profit))
         except Order.DoesNotExist:
             pass
-    print(final_price)
     deliver_date.status = 1
     deliver_date.total_price = final_price
     deliver_date.number = request_r.number + str(deliver_date.id)
+    deliver_date.recieved_date = timezone.now()
     deliver_date.save()
     return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
     # return JsonResponse({}, safe=False)
@@ -554,16 +554,26 @@ def get_rs_orders(request, pk, ord):
 
 
 def change_request_cexpert(request):
+    category_ce = json.loads(request.body).get('ce_category_email')
     request_number = json.loads(request.body).get('request_number')
-
-    request_r = Request.objects.get(number=request_number)
-    categories_r = Order.objects.filter(request=request_r).values('product__category__user_expert_id').distinct()
-    for category_expert in categories_r:
-        expert = User.objects.get(id=category_expert['product__category__user_expert_id'])
+    if category_ce == 'all':
+        request_r = Request.objects.get(number=request_number)
+        categories_r = Order.objects.filter(request=request_r).values('product__category__user_expert_id').distinct()
+        for category_expert in categories_r:
+            expert = User.objects.get(id=category_expert['product__category__user_expert_id'])
+            request_r.expert.add(expert)
+        request_r.user_signatures = init_user_signatures()
+        request_r.request_status = Status.ce_review
+        request_r.save()
+    else:
+        request_r = Request.objects.get(number=request_number)
+        expert = User.objects.get(id=category_ce)
+        if request_r.expert_acceptation == expert:
+            request_r.expert.remove(expert)
         request_r.expert.add(expert)
-    request_r.user_signatures = init_user_signatures()
-    request_r.request_status = Status.ce_review
-    request_r.save()
+        request_r.user_signatures = init_user_signatures()
+        request_r.request_status = Status.ce_review
+        request_r.save()
 
     return JsonResponse({}, safe=False)
 

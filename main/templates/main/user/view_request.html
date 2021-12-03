@@ -275,7 +275,10 @@
                                                             </button>
                                                         </form>
                                                     {% else %}
-                                                        <form {% if request_r.request_status == 'اتمام تاییدیه' %} action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' or request_r.request_status == 'در حال بررسی توسط مدیر بازرگانی' %} action="/user/reviewing_request" {% else %} action="/user/requests" {% endif %}>
+                                                        <form {% if request_r.request_status == 'اتمام تاییدیه' %}
+                                                            action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' or request_r.request_status == 'در حال بررسی توسط مدیر بازرگانی' %}
+                                                            action="/user/reviewing_request" {% else %}
+                                                            action="/user/requests" {% endif %}>
                                                             <button type="submit" class="btn btn-info float-left ml-2"
                                                                     style="margin-right: 5px;">
                                                                 <i class="fa fa-arrow-left"></i> برگشت
@@ -304,17 +307,35 @@
 
                                                 <div class="col-4 justify-content-start" id="print-button">
                                                     {% if request_r.acceptation_date is None %}
-                                                        {% if request_r.expert.all.count == 0 %}
-                                                            <button type="submit" class="btn btn-info float-right ml-2"
-                                                                    style="margin-right: 5px;"
-                                                                    onclick="handleCommercialExpert({{ request_r.number }})"
-                                                                    id="ce_requestrsb">
-                                                                <i class="fa fa-check"></i>ارسال به کارشناسان
-                                                            </button>
-                                                        {% endif %}
+
+                                                        {#                                                            <button type="submit" class="btn btn-info float-right ml-2"#}
+                                                        {#                                                                    style="margin-right: 5px;"#}
+                                                        {#                                                                    onclick="handleCommercialExpert({{ request_r.number }})"#}
+                                                        {#                                                                    id="ce_requestrsb">#}
+                                                        {#                                                                <i class="fa fa-check"></i>ارسال به کارشناسان#}
+                                                        {#                                                            </button>#}
+                                                        <select class="btn btn-outline-dark text-right show-tick dropdown"
+                                                                data-dropup-auto="false" title="برند" id="ce_requesta">
+                                                            {% if request_r.expert.all.count == 0 %}
+                                                                <option value='all'>همه</option>
+                                                            {% endif %}
+                                                            {% for category in categories_r %}
+                                                                <option value="{{ category.product__category__user_expert_id }}">
+                                                                    کارشناس {{ category.product__category }}
+                                                                </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <button type="submit" class="btn btn-info float-right ml-2"
+                                                                style="margin-right: 5px;"
+                                                                onclick="handleCommercialExpert({{ request_r.number }})"
+                                                                id="ce_requestrsb">
+                                                            <i class="fa fa-check"></i> ارسال درخواست به
+                                                        </button>
+
                                                     {% else %}
                                                         <select class="btn btn-outline-dark text-right show-tick dropdown"
-                                                                data-dropup-auto="false" title="برند" id="ce_request">
+                                                                data-dropup-auto="false" title="برند"
+                                                                id="ce_request">
                                                             <option value='0'>کارشناس</option>
                                                             {% for category in categories_r %}
                                                                 <option value="{{ category.product__category__user_expert_id }}">
@@ -353,7 +374,10 @@
                                                     </form>
                                                 </div>
                                                 <div class="col-4" id="print-button">
-                                                    <form {% if request_r.request_status == 'اتمام تاییدیه' %} action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' %} action="/user/expert_requests" {% else %} action="/user/requests" {% endif %}>
+                                                    <form {% if request_r.request_status == 'اتمام تاییدیه' %}
+                                                        action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' %}
+                                                        action="/user/expert_requests" {% else %}
+                                                        action="/user/requests" {% endif %}>
                                                         <button type="submit" class="btn btn-info float-left ml-2"
                                                                 style="margin-right: 5px;">
                                                             <i class="fa fa-arrow-left"></i>برگشت
@@ -381,7 +405,10 @@
 
                                                 </div>
                                                 <div class="col-4" id="print-button">
-                                                    <form {% if request_r.request_status == 'اتمام تاییدیه' %} action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' %} action="/user/expert_requests" {% else %} action="/user/requests" {% endif %}>
+                                                    <form {% if request_r.request_status == 'اتمام تاییدیه' %}
+                                                        action="/user/completed_request" {% elif request_r.request_status == 'درحال بررسی توسط کارشناس بازرگانی' %}
+                                                        action="/user/expert_requests" {% else %}
+                                                        action="/user/requests" {% endif %}>
                                                         <button type="submit" class="btn btn-info float-left ml-2"
                                                                 style="margin-right: 5px;">
                                                             <i class="fa fa-arrow-left"></i>برگشت

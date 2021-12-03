@@ -49,7 +49,9 @@ function handleConversation(conversation_id, user_id) {
 }
 
 function handleCommercialExpert(request_id) {
+    var value = document.getElementById('ce_requesta').value
     let data = {
+        'ce_category_email': value,
         'request_number': request_id
     }
     $.ajax({
@@ -58,10 +60,12 @@ function handleCommercialExpert(request_id) {
         dataType: 'json',
         method: 'POST',
         success: function () {
-            window.alert('درخواست با موفقیت به کارشناسان ارسال شد')
+            if (value === 'all')
+                window.alert('درخواست با موفقیت به کارشناسان ارسال شد')
+            else
+                window.alert('درخواست با موفقیت به کارشناس مورد نظر ارسال شد')
             document.getElementById("accept_button").remove();
             document.getElementById("decline_button").remove();
-            document.getElementById("ce_requestrsb").remove();
             document.getElementById("edit_button").remove();
 
         }
