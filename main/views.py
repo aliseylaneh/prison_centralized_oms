@@ -209,9 +209,13 @@ def accept_request(request, pk):
                     request_or.request_status = Status.cm_review
                     request_or.shipping_status = ShippingStatus.requested
                     request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
+                    if request_or.last_returned_expert == request.user:
+                        request_or.last_returned_expert.remove(request.user)
                     request_or.save()
                     messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
                     return redirect('main:expert_request')
+                if request_or.last_returned_expert == request.user:
+                    request_or.last_returned_expert.remove(request.user)
                 request_or.save()
                 messages.success(request, "درخواست شما تایید شد")
                 return redirect('main:expert_request')
@@ -385,7 +389,7 @@ def expert_requests(request):
     if request.user.groups.all()[0].name == 'commercial_expert':
         requests_r = Request.objects.filter(expert=request.user,
                                             acceptation_date=None,
-                                            request_status=Status.ce_review).exclude(
+                                            request_status=Status.ce_review, last_returned_expert=None).exclude(
             expert_acceptation=request.user).order_by('-created_date')
     else:
         requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-created_date',
@@ -508,7 +512,7 @@ def submit_delivered_factor(request, req, sup):
     deliver_date.status = 1
     deliver_date.total_price = final_price
     deliver_date.number = request_r.number + str(deliver_date.id)
-    deliver_date.recieved_date = timezone.now()
+    deliver_date.received_date = timezone.now()
     deliver_date.save()
     return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
     # return JsonResponse({}, safe=False)

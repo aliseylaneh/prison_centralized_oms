@@ -306,7 +306,7 @@
                                                 </div>
 
                                                 <div class="col-4 justify-content-start" id="print-button">
-                                                    {% if request_r.acceptation_date is None %}
+                                                    {% if request_r.expert.all.count == 0 %}
 
                                                         {#                                                            <button type="submit" class="btn btn-info float-right ml-2"#}
                                                         {#                                                                    style="margin-right: 5px;"#}

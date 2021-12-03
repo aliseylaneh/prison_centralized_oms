@@ -271,7 +271,7 @@ class DeliverDate(models.Model):
     status = models.BooleanField(default=False)
     number = models.CharField(max_length=255, null=True, unique=True)
     total_price = models.BigIntegerField(default=0)
-    recieved_date = models.DateField(null=True)
+    received_date = models.DateField(null=True)
 
     class Meta:
         unique_together = [['request', 'supplier']]
@@ -281,8 +281,8 @@ class DeliverDate(models.Model):
         return date2jalali(self.date).strftime("%Y/%m/%d")
 
     @property
-    def get_recieved_date(self):
-        return date2jalali(self.recieved_date).strftime("%Y/%m/%d")
+    def get_received_date(self):
+        return date2jalali(self.received_date).strftime("%Y/%m/%d")
 
     def __str__(self):
         return self.request.number + ' ' + self.supplier.company_name
