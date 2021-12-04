@@ -93,7 +93,7 @@
 
                                 <div class="row gutters pt-4">
                                     <div class="col-1 no-print" id="print-button">
-                                        {% if request.user.groups.all.0.name == 'user' or request.user.groups.all.0.name == 'commercial_expert' %}
+                                        {% if request.user.groups.all.0.name == 'user' or request.user.groups.all.0.name == 'ceo' %}
                                             {% if deliver_date.status == 0 %}
                                                 <form action="/get_request/{{ request_r.number }}/supplier_orders/{{ supplier_r.id }}/edit_factor">
                                                     <button type="submit" class="btn btn-info float-right ml-2"
@@ -106,7 +106,7 @@
 
                                     </div>
                                     <div class="col-1 no-print" id="print-button">
-                                        {% if request.user.groups.all.0.name == 'user' or request.user.groups.all.0.name == 'commercial_expert' %}
+                                        {% if request.user.groups.all.0.name == 'user' or request.user.groups.all.0.name == 'ceo' %}
                                             {% if deliver_date.status == 0 %}
                                                 <form action="/request/{{ request_r.number }}/submit_factor/{{ supplier_r.id }}">
                                                     <button type="submit" class="btn btn-danger float-right ml-2"
