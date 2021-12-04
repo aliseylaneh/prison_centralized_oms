@@ -820,7 +820,7 @@ def update_profile(request, pk):
         email = request.POST.get("email")
         user = User.objects.get(email=email)
         userprofile = UserProfile.objects.get(user=user.id)
-        if request.POST.get("password1") is not None:
+        if request.POST.get("password1") is not None and len(request.POST.get("password1")) != 0:
             if request.POST.get("password1") == request.POST.get("password2"):
                 user.password = make_password(request.POST.get("password1"), hasher='pbkdf2_sha256')
         first_name = request.POST.get('first_name')
@@ -841,7 +841,7 @@ def update_profile(request, pk):
         logger.info(
             f"SESSION:[USER: {request.user}, ROLE: {request.user.groups.all()[0].name}, LAST_LOGIN:{request.user.last_login}, ACTION: 'EDITING USER'], CHANGES ON:[ EMAIL: {email}, NID: {userprofile.national_id}, LAST_LOGIN: {user.last_login}]  ")
         messages.success(request, 'اطلاعات شما ویرایش شد')
-        return redirect('main:users')
+        return redirect('account:logout')
     if request.method == "GET":
         user = User.objects.get(id=pk)
         if request.user.email != user.email:
