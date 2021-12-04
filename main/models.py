@@ -194,6 +194,14 @@ class Ticket(models.Model):
     title = models.CharField(null=True, max_length=255)
     created_date = models.DateTimeField(default=datetime.now())
 
+    @property
+    def get_created_time(self):
+        return datetime2jalali(self.created_date).strftime("%X")
+
+    @property
+    def get_created_date(self):
+        return date2jalali(self.created_date).strftime("%Y/%m/%d")
+
     def __str__(self):
         return self.title
 

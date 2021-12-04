@@ -489,8 +489,13 @@
                                 {% if ticket.request.number == request_r.number %}
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5 class="card-title">عنوان: {{ ticket.title }}</h5>
-
+                                            <h5 class="card-title">عنوان: {{ ticket.title }} </h5>
+                                            {% if ticket.created_date != None %}
+                                                <div class="date-text">
+                                                    تاریخ و زمان
+                                                    تیکت: {{ ticket.get_created_time }} {{ ticket.get_created_date }}
+                                                </div>
+                                            {% endif %}
                                             <div class="card-tools">
                                                 <button type="button" class="btn btn-tool" data-widget="collapse"
                                                         data-toggle="tooltip"
