@@ -24,7 +24,9 @@
                                     </div>
                                     <div class="text-left col-3">
                                         <span class="text-left"> شماره سریال: {{ deliver_date.number }}</span><br>
-                                        <span class="text-left"> تاریخ: {{ deliver_date.get_received_date }}</span>
+                                        {% if deliver_date.get_received_date is not None %}
+                                            <span class="text-left"> تاریخ: {{ deliver_date.get_received_date }}</span>
+                                        {% endif %}
                                     </div>
 
                                 </div>
@@ -117,13 +119,13 @@
                                     {% endfor %}
                                     <!-- for loop -->
 
-{#                                    <tr>#}
-{#                                        <th class="text-center" colspan="10">مقتضی است ظرف مدت ۴۸ ساعت پس از تحویل کالا#}
-{#                                            فرم جاری را تایید و ارسال نماید. بدیهی است در غیر اینصورت تعداد قید شده قطعی#}
-{#                                            تلقی شده و فاکتور نهایی ارسال خواهد شد.#}
-{#                                        </th>#}
-{##}
-{#                                    </tr>#}
+                                    {#                                    <tr>#}
+                                    {#                                        <th class="text-center" colspan="10">مقتضی است ظرف مدت ۴۸ ساعت پس از تحویل کالا#}
+                                    {#                                            فرم جاری را تایید و ارسال نماید. بدیهی است در غیر اینصورت تعداد قید شده قطعی#}
+                                    {#                                            تلقی شده و فاکتور نهایی ارسال خواهد شد.#}
+                                    {#                                        </th>#}
+                                    {##}
+                                    {#                                    </tr>#}
                                     <tr>
 
                                         <td colspan="3" class="text-center">تاریخ ارسال</td>
