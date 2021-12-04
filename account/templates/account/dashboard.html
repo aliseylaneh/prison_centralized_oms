@@ -68,25 +68,32 @@
     </ul>
 
     <!-- Right navbar links -->
-
-    <ul class="navbar-nav mr-auto float-left col-sm w-100 justify-content-end">
-        <!-- Notifications Dropdown Menu -->
-        <li class="nav-item dropdown">
-
-            <a class="nav-link" data-toggle="dropdown" href="#" hidden>
-                <i class="fa fa-shopping-cart"></i>
+    <ul class="navbar-nav mr-auto float-left col-sm justify-content-end">
+        <div>
+            <form action="/update_profile/{{ request.user.id }}/" method="get">
+                <button class="btn btn-outline-primary" type="submit"> حساب کاربری</button>
+            </form>
+        </div>
+        <div class="mr-1">
+            <a href="/logout">
+                <button class="btn btn-outline-danger" type="submit"> خروج</button>
             </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
-                <span class="dropdown-item dropdown-header">15 نوتیفیکیشن</span>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fa fa-envelope ml-2"></i> ۱۰ درخواست جدید
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer">مشاهده همه نوتیفیکیشن</a>
-            </div>
-        </li>
+        </div>
     </ul>
+    {#    <ul class="navbar-nav float-left  justify-content-end">#}
+    {#        <!-- Notifications Dropdown Menu -->#}
+    {#        <li class="nav-item dropdown">#}
+    {##}
+    {#            <a class="nav-link" data-toggle="dropdown" href="#">#}
+    {#                <i class="fa fa-caret-square-o-down"></i>#}
+    {#            </a>#}
+    {##}
+    {#            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left">#}
+    {#                <div class="dropdown-divider"></div>#}
+    {#                <a href="/logout" class="dropdown-item dropdown-footer"><i class="fa fa-sign-out ml-2"></i>خروج از حساب</a>#}
+    {#            </div>#}
+    {#        </li>#}
+    {#    </ul>#}
 
 
 </nav>

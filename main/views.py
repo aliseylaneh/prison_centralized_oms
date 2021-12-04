@@ -814,6 +814,48 @@ def update_user(request):
 
 
 @login_required(login_url='account:login')
+@allowed_users(['administrator', 'user', 'commercial_manager', 'commercial_expert', 'ceo', 'financial_manager'])
+def update_profile(request, pk):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        user = User.objects.get(email=email)
+        userprofile = UserProfile.objects.get(user=user.id)
+        if request.POST.get("password1") is not None:
+            if request.POST.get("password1") == request.POST.get("password2"):
+                user.password = make_password(request.POST.get("password1"), hasher='pbkdf2_sha256')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        national_id = request.POST.get('national_id')
+        phone_number = request.POST.get('phone_number')
+        postal_code = request.POST.get('postal_code')
+        address = request.POST.get('address')
+
+        if first_name != '': userprofile.first_name = first_name
+        if last_name != '': userprofile.last_name = last_name
+        if national_id != '': userprofile.national_id = national_id
+        if phone_number != '': userprofile.phone_number = phone_number
+        if postal_code != '': userprofile.postal_code = postal_code
+        if address != '': userprofile.address = address
+        user.save()
+        userprofile.save()
+        logger.info(
+            f"SESSION:[USER: {request.user}, ROLE: {request.user.groups.all()[0].name}, LAST_LOGIN:{request.user.last_login}, ACTION: 'EDITING USER'], CHANGES ON:[ EMAIL: {email}, NID: {userprofile.national_id}, LAST_LOGIN: {user.last_login}]  ")
+        messages.success(request, 'اطلاعات شما ویرایش شد')
+        return redirect('main:users')
+    if request.method == "GET":
+        user = User.objects.get(id=pk)
+        if request.user.email != user.email:
+            messages.success(request, 'شما فقط میتوانید اطلاعات مربوط به حساب کاربری خود را تغییر دهید')
+            return redirect('account:homepage')
+        userprofile = UserProfile.objects.get(user=user)
+        context = {
+            'user_e': user,
+            'userprofile_e': userprofile
+        }
+        return render(request, 'main/admin/edit_profile.html', context)
+
+
+@login_required(login_url='account:login')
 @allowed_users(['administrator'])
 def delete_user(request):
     user_id = request.GET.get('id')

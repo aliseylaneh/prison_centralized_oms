@@ -14,6 +14,7 @@ urlpatterns = [
     path('search_users', csrf_exempt(views.search_users), name='search_users'),
     path('get_user/<str:pk>/', views.get_user, name='get_user'),
     path('update_user', views.update_user, name='update_user'),
+    path('update_profile/<str:pk>/', views.update_profile, name='update_profile'),
     path('review_request', csrf_exempt(views.review_request), name='review_request'),
     path('suppliers', views.get_suppliers, name="suppliers"),
     path('delete_supplier', views.delete_supplier, name='delete_supplier'),
@@ -85,5 +86,5 @@ urlpatterns = [
          name='submit_delivered_factor'),
 
     path('export_order_report', views.export_order_report, name='export_order_report'),
-    path('get_request/<str:pk>/supplier_orders/<str:ord>/hamifactor',views.hami_factor,name='hamifactor')
+    path('get_request/<str:pk>/supplier_orders/<str:ord>/hamifactor', views.hami_factor, name='hamifactor')
 ]
