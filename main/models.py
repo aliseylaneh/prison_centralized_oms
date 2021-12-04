@@ -290,6 +290,8 @@ class DeliverDate(models.Model):
 
     @property
     def get_received_date(self):
+        if self.received_date is None:
+            return None
         return date2jalali(self.received_date).strftime("%Y/%m/%d")
 
     def __str__(self):

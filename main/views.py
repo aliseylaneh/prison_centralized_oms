@@ -1605,7 +1605,7 @@ def export_order_report(request):
          'تامین کننده', 'برند', 'تعداد', 'قیمت',
          'قیمت دو ماهه',
          'تعداد دریافتی', 'تاریخ ارسال',
-         'تاریخ دریافت', 'وضعیت دریافت'])
+         'تاریخ دریافت', 'وضعیت دریافت', 'آخرین ویرایش'])
     orders = Order.objects.all().distinct().values_list('id', 'request__number', 'request__prison__name',
                                                         'request__request_status',
                                                         'request__shipping_status', 'request__branch__name',
@@ -1615,7 +1615,8 @@ def export_order_report(request):
                                                         'quantity', 'price',
                                                         'price_2m',
                                                         'delivered_quantity', 'delivered_quantity',
-                                                        'delivered_quantity', 'delivered_quantity')
+                                                        'delivered_quantity', 'delivered_quantity',
+                                                        'last_edition__userprofile__last_name')
     for order in orders:
         try:
             deliver_date = DeliverDate.objects.get(request__number=order[1],
