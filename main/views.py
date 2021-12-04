@@ -1626,7 +1626,7 @@ def export_order_report(request):
         order = list(order)
         order[6] = date2jalali(order[6]).strftime("%Y/%m/%d")
         order[15] = deliver_date.get_deliver_date if deliver_date is not None else None
-        order[16] = deliver_date.get_deliver_date if deliver_date is not None else None
+        order[16] = deliver_date.get_received_date if deliver_date is not None else None
         order[17] = deliver_date.status if deliver_date is not None else None
         writer.writerow(order)
 
