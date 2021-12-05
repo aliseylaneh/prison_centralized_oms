@@ -113,7 +113,7 @@
                                             <td class="text-center">{{ order.product.based_quantity }}</td>
                                             <td class="text-center">{{ order.buy_price | intcomma }}</td>
                                             <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | intcomma }}</td>
-                                            <td class="text-center">{{ order.buy_price | tax_price | intcomma }}</td>
+                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity |tax_price | intcomma }}</td>
                                             <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | tax_final_price:order.buy_price | intcomma }}</td>
                                         </tr>
                                     {% endfor %}
