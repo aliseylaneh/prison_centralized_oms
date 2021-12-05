@@ -477,7 +477,7 @@ def edit_get_rs_orders_factor(request, pk, ord):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['user'])
+@allowed_users(['user', 'ceo'])
 def submit_delivered_factor(request, req, sup):
     # request_number = json.loads(request.body).get('request_number')
     # supplier_id = json.loads(request.body).get('supplier_id')
