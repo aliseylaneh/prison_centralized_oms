@@ -36,9 +36,8 @@ def sell_price_margin(sell_price, consumer_price):
 
 @register.filter(name='tax_price')
 def tax_price(price):
-    three_percent = int((97 * price) / 100)
-    six_percent = int((94 * price) / 100)
-    return three_percent + six_percent
+    three_percent = int((9 * price) / 100)
+    return three_percent
 
 
 @register.filter(name='tax_final_price')
