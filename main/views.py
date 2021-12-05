@@ -500,11 +500,11 @@ def submit_delivered_factor(request, req, sup):
             buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
                                                        brand=order.brand).order_by('-created_date')[0].price
             if order.profit == 0:
-                three_percent = int((97 * buy_price) / 100)
+                three_percent = int((3 * buy_price) / 100)
                 final_price += tax_final_price(multiply_price(buy_price + (buy_price - three_percent), order.quantity),
                                                buy_price + (buy_price - three_percent))
             else:
-                new_profit = int(((100 - order.profit) * buy_price) / 100)
+                new_profit = int((order.profit * buy_price) / 100)
                 final_price += tax_final_price(multiply_price(buy_price + (buy_price - new_profit), order.quantity),
                                                buy_price + (buy_price - new_profit))
         except Order.DoesNotExist:
