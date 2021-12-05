@@ -43,5 +43,4 @@ def tax_price(price):
 @register.filter(name='tax_final_price')
 def tax_final_price(price, tax):
     three_percent = int((9 * tax) / 100)
-    tax = three_percent
-    return price + tax
+    return price + three_percent
