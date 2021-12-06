@@ -114,7 +114,7 @@
                                             <td class="text-center">{{ order.buy_price | intcomma }}</td>
                                             <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | intcomma }}</td>
                                             <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | tax_price | intcomma }}</td>
-                                            <td class="text-center">{{ order.total_price }}</td>
+                                            <td class="text-center">{{ order.total_price | intcomma }}</td>
                                         </tr>
                                     {% endfor %}
                                     <!-- for loop -->
