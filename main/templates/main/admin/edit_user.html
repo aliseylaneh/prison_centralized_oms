@@ -135,24 +135,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
-                                        <select class="dropdown btn btn-outline-primary" id="province-selector"
-                                                style="width: 100%;height: 39px" placeholder="استان"
-                                                name="province-selector" onload="checkProvince()">
-                                            <option value="">استان</option>
-                                            <option value="تهران" {% if userprofile_e.province == 'تهران' %} selected {% endif %}>تهران</option>
-                                            <option value="گیلان" {% if userprofile_e.province == 'گیلان' %} selected {% endif %}>گیلان</option>
-                                            <option value="همدان" {% if userprofile_e.province == 'همدان' %} selected {% endif %}>همدان</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <select class="dropdown btn btn-outline-primary" id="city-selector"
-                                                placeholder="شهر" name="city-selector"
-                                                style="width: 100%;height: 39px" onload="checkProvince()">
-                                            <option value="{{ userprofile_e.city }}">{{ userprofile_e.city }}</option>
-
-                                        </select>
-                                    </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <input type="text" class="form-control" id="address"

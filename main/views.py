@@ -742,8 +742,6 @@ def add_user(request):
         national_id = request.POST.get('national_id')
         phone_number = request.POST.get('phone_number')
         postal_code = request.POST.get('postal_code')
-        province = request.POST.get('province-selector')
-        city = request.POST.get('city-selector')
         address = request.POST.get('address')
         role = request.POST.get('role-selector')
 
@@ -758,9 +756,7 @@ def add_user(request):
                                    national_id=national_id,
                                    phone_number=phone_number,
                                    postal_code=postal_code,
-                                   province=province,
-                                   address=address,
-                                   city=city)
+                                   address=address)
         messages.success(request, f"ثبت نام با موفقیت انجام شد")
         return redirect('main:users')
     if request.method == "GET":
@@ -782,8 +778,6 @@ def update_user(request):
         national_id = request.POST.get('national_id')
         phone_number = request.POST.get('phone_number')
         postal_code = request.POST.get('postal_code')
-        province = request.POST.get('province-selector')
-        city = request.POST.get('city-selector')
         address = request.POST.get('address')
         role = request.POST.get('role-selector')
 
@@ -798,8 +792,6 @@ def update_user(request):
         if national_id != '': userprofile.national_id = national_id
         if phone_number != '': userprofile.phone_number = phone_number
         if postal_code != '': userprofile.postal_code = postal_code
-        if province != '': userprofile.province = province
-        if city != '': userprofile.city = city
         if address != '': userprofile.address = address
         user.save()
         userprofile.save()
@@ -916,8 +908,7 @@ def search_users(request):
         userprofile = UserProfile.objects.get(user=user)
         data.append({'id': user.id, 'user_email': user.email, 'first_name': userprofile.first_name,
                      'last_name': userprofile.last_name,
-                     'phone_number': userprofile.phone_number, 'province': userprofile.province,
-                     'city': userprofile.city, 'group': f'{user.groups.all()[0]}'})
+                     'phone_number': userprofile.phone_number, 'group': f'{user.groups.all()[0]}'})
     return JsonResponse({'data': data, '': ''}, safe=False)
 
 

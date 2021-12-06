@@ -78,8 +78,6 @@ function getUsers(searchValue, categoryValue, supplierValue) {
                                     <td class="text-center">${item.user_email}</td>
                                     <td class="text-center">${item.first_name} ${item.last_name}</td>
                                     <td class="text-center"><span class="badge badge-success" style="font-size: 13px;">${item.group}</span></td>
-                                    <td class="text-center">${item.province}</td>
-                                    <td class="text-center">${item.city}</td>
                                     <td class="text-center">${item.phone_number}</td>
                                     <td class="text-center"><a href="/get_user/${item.id}" class="fa fa-edit" style="padding-top: 6px"></a></td>
                                     <td class="text-center"><a href="#" class="fa fa-remove" style="padding-top: 6px" onClick="deleteUser(${item.id})" ></a></td>

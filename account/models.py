@@ -80,8 +80,6 @@ class UserProfile(models.Model):
     national_id = models.BigIntegerField(null=True)
     phone_number = models.CharField(max_length=11, null=True)
     postal_code = models.BigIntegerField(null=True)
-    province = models.CharField(max_length=30, null=True)
-    city = models.CharField(max_length=10, null=True, default='Tehran')
     address = models.CharField(max_length=255, null=True)
 
     @property
