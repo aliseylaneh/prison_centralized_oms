@@ -32,7 +32,12 @@ logger = logging.getLogger('django')
 @allowed_users(allowed_roles=['user'])
 @login_required(login_url='account:login')
 def new_request(request):
-    branches = PrisonBranch.objects.filter(prison=Prison.objects.get(deputy=request.user))
+    try:
+        branches = PrisonBranch.objects.filter(prison=Prison.objects.get(deputy=request.user))
+    except PrisonBranch.MultipleObjectsReturned:
+        messages.success(request,
+                         "کاربر محترم حساب شما برای دو بنیاد متفاوت تعریف شده است ضمن اصلاح آن با ادمین سامانه تدارکات تماس حاصل فرمایید ")
+        return redirect("account:homepage")
     products = Product.objects.all()
     suppliers = Supplier.objects.all().order_by('company_name')
     brands = Brand.objects.all()
@@ -205,6 +210,7 @@ def accept_request(request, pk):
         elif request.user.groups.all()[0].name == 'commercial_expert':
             if request_or.acceptation_date is None:  # if new request edit is going on while under commercial expert review
                 request_or.expert_acceptation.add(request.user)
+                request_or.expert.add(request.user)
                 if request_or.expert_acceptation.count() == request_or.expert.count():
                     request_or.request_status = Status.cm_review
                     request_or.shipping_status = ShippingStatus.requested
@@ -214,14 +220,20 @@ def accept_request(request, pk):
                     request_or.save()
                     messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
                     return redirect('main:expert_request')
-                if request_or.last_returned_expert == request.user:
-                    request_or.last_returned_expert.remove(request.user)
+                if request_or.last_returned_expert.count() == 0:
+                    request_or.request_status = Status.cm_review
+                    request_or.shipping_status = ShippingStatus.requested
+                    request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
+                    request_or.save()
+                    messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
+                    return redirect('main:returned_requests')
                 request_or.save()
                 messages.success(request, "درخواست شما تایید شد")
                 return redirect('main:expert_request')
             elif request_or.acceptation_date is not None:  # if return request edit is completed
                 request_or.last_returned_expert.remove(request.user)
                 request_or.expert_acceptation.add(request.user)
+                request_or.expert.add(request.user)
                 if request_or.last_returned_expert.count() == 0:
                     request_or.request_status = Status.cm_review
                     request_or.shipping_status = ShippingStatus.requested
@@ -501,12 +513,16 @@ def submit_delivered_factor(request, req, sup):
                                                        brand=order.brand).order_by('-created_date')[0].price
             if order.profit == 0:
                 three_percent = int((3 * buy_price) / 100)
-                final_price += tax_final_price(multiply_price(buy_price + (buy_price - three_percent), order.quantity),
-                                               buy_price + (buy_price - three_percent))
+                total = tax_final_price(multiply_price(buy_price + (buy_price - three_percent), order.quantity),
+                                        buy_price + (buy_price - three_percent))
+                order.total_price = total
+                final_price += total
             else:
                 new_profit = int((order.profit * buy_price) / 100)
-                final_price += tax_final_price(multiply_price(buy_price + (buy_price - new_profit), order.quantity),
-                                               buy_price + (buy_price - new_profit))
+                total = tax_final_price(multiply_price(buy_price + (buy_price - new_profit), order.quantity),
+                                        buy_price + (buy_price - new_profit))
+                order.total_price = total
+                final_price += total
         except Order.DoesNotExist:
             pass
     deliver_date.status = 1
@@ -573,7 +589,7 @@ def change_request_cexpert(request):
         request_r = Request.objects.get(number=request_number)
         expert = User.objects.get(id=category_ce)
         if request_r.expert_acceptation == expert:
-            request_r.expert.remove(expert)
+            request_r.expert_acceptation.remove(expert)
         request_r.expert.add(expert)
         request_r.user_signatures = init_user_signatures()
         request_r.request_status = Status.ce_review

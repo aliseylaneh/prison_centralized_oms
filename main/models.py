@@ -230,7 +230,8 @@ class Order(models.Model):
     price_2m = models.BigIntegerField(default=0)
     sell_price = models.BigIntegerField(default=0)
     buy_price = models.BigIntegerField(default=0)
-    profit = models.IntegerField(default=0)
+    profit = models.BigIntegerField(default=0)
+    total_price = models.BigIntegerField(default=0)
 
     @property
     def set_price(self, price):
