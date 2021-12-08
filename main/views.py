@@ -417,11 +417,9 @@ def expert_requests(request):
 @login_required(login_url='account:login')
 @allowed_users(['commercial_expert', 'commercial_manager'])
 def returned_requests(request):
-    if request.user.groups.all[0].name == 'commercial_expert':
-        requests_r = Request.objects.filter(last_returned_expert=request.user,
-                                            request_status=Status.ce_review).order_by('-created_date',
-                                                                                      '-acceptation_date')
-
+    requests_r = Request.objects.filter(last_returned_expert=request.user,
+                                        request_status=Status.ce_review).order_by('-created_date',
+                                                                                  '-acceptation_date')
     context = {
         'requests_r': requests_r
     }
