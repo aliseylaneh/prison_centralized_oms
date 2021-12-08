@@ -423,6 +423,7 @@ def returned_requests(request):
     return render(request, 'main/user/requests.html', context)
 
 
+@login_required(login_url='account:login')
 def supplier_orders(request, pk):
     request_r = Request.objects.get(number=pk)
     if request.user.groups.all()[0].name == 'commercial_expert':
@@ -515,7 +516,7 @@ def submit_delivered_factor(request, req, sup):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['commercial_expert', 'commercial_manager', 'ceo'])
+@allowed_users(['commercial_expert', 'commercial_manager', 'ceo','financial_manager'])
 def get_rs_orders(request, pk, ord):
     request_r = Request.objects.get(number=pk)
     if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
@@ -1579,6 +1580,17 @@ def hami_factor(request, pk, ord):
         'final_price': final_price
     }
     return render(request, 'main/user/factor/factor.html', context)
+
+
+@login_required(login_url='account:login')
+@allowed_users(['financial_manager'])
+def request_factors(request):
+    requests_r = Request.objects.filter(request_status=Status.completed, shipping_status=ShippingStatus.supplier)
+    context = {
+        'requests_r': requests_r
+    }
+
+    return render(request, 'main/financial_manager/request_factors.html', context)
 
 
 @login_required(login_url='account:login')

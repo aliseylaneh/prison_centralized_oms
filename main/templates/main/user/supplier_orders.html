@@ -15,10 +15,19 @@
                                         <h4 class="pt-1">لیست تامین کنندگان درخواست شماره {{ request_r.number }}</h4>
                                     </div>
                                     <div class="col-1">
-                                        <form class="col-7" action="/get_request/{{ request_r.number }}" method="post">
-                                            {% csrf_token %}
-                                            <button type="submit" class="btn btn-info float-left ">برگشت</button>
-                                        </form>
+                                        {% if request.user.groups.all.0.name != 'financial_manager' %}
+                                            <form class="col-7" action="/get_request/{{ request_r.number }}"
+                                                  method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-info float-left ">برگشت</button>
+                                            </form>
+                                        {% else %}
+                                            <form class="col-7" action="/request_factors"
+                                                  method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-info float-left ">برگشت</button>
+                                            </form>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -40,7 +49,7 @@
                                         {% if request.user.groups.all.0.name != 'user' %}
                                             <th class="text-center">رسید تحویل کالا</th>
                                         {% endif %}
-                                        {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_manager' %}
+                                        {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_manager' or request.user.groups.all.0.name == 'financial_manager' %}
                                             <th class="text-center">فاکتور فروش</th>
                                         {% endif %}
                                     </tr>
@@ -76,7 +85,7 @@
                                                         style="padding-top: 6px"></a>
                                                 </td>
                                             {% endif %}
-                                            {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_manager' %}
+                                            {% if request.user.groups.all.0.name == 'ceo' or request.user.groups.all.0.name == 'commercial_manager' or request.user.groups.all.0.name == 'financial_manager' %}
                                                 <td class="text-center"><a
                                                         href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/hamifactor"
                                                         class="fa fa-shopping-cart"

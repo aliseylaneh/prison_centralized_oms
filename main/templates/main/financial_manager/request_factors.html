@@ -1,0 +1,81 @@
+<div class="wrapper">
+    {% include "account/dashboard.html" %}
+    {% load static %}
+    <div class="content-wrapper px-2" style="background-color: white">
+        <div class="wrapper">
+            <div class="row w-100">
+                <div class="w-100">
+
+                    <div class="col-12 w-100">
+
+                        <div class="card w-100">
+                            <div class="card-header">
+                                <h4>لیست درخواست ها به همراه فاکتور آنها</h4>
+                            </div>
+                            <!-- /.card-header -->
+
+                            <div class="app-table card-body table-responsive p-0">
+                                <table class="table table-striped table-valign-middle">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">شماره</th>
+                                        <th class="text-center">نام بنیاد</th>
+                                        <th class="text-center">وضعیت تاییدیه</th>
+                                        <th class="text-center">وضعیت ارسال</th>
+                                        <th class="text-center">نام زندان</th>
+                                        <th class="text-center">تاریخ ثبت</th>
+                                        <th class="text-center">تاریخ تایید نهایی</th>
+                                        <th class="text-center">مشاهده</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for request_r in requests_r %}
+                                        <tr>
+                                            <td class="text-center">{{ request_r.number }}</td>
+                                            <td class="text-center">{{ request_r.prison.name }}</td>
+                                            <td class="text-center"><label
+                                                    class="badge {% if request_r.request_status == 'درحال بررسی توسط مدیر عامل' and request.user.groups.all.0.name == 'ceo' %}
+                                                        badge-warning
+                                                        {% elif request_r.request_status ==  'درحال بررسی توسط مدیر بازرگانی' and request.user.groups.all.0.name == 'commercial_manager' %}
+                                                     badge-warning {% else %}
+                                                     badge-secondary {% endif %} "
+                                                    style="font-size: 13px;">{{ request_r.request_status }}</label>
+                                            </td>
+                                            <td class="text-center"><label class="badge badge-info"
+                                                                           style="font-size: 13px;">{{ request_r.shipping_status }}</label>
+                                            </td>
+
+                                            <td class="text-center"><span
+                                                    class="text-center">{{ request_r.branch.name }}</span>
+                                            </td>
+
+                                            <td class="text-center"><span
+                                                    class="">{{ request_r.get_created_time }} {{ request_r.get_created_date }} </span>
+                                            </td>
+                                            <td class="text-center"><span
+                                                    class="">{{ request_r.get_acceptations_time }} {{ request_r.get_acceptations_date }} </span>
+                                            </td>
+                                            <td class="text-center"><a href="/get_request/{{ request_r.number }}/supplier_orders"
+                                                                       class="fa fa-check"
+                                                                       style="padding-top: 6px"></a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<script src="{% static 'dist/js/admin_p_crud/p_crud.js' %}"></script>
