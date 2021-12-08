@@ -209,29 +209,27 @@ def accept_request(request, pk):
 
         elif request.user.groups.all()[0].name == 'commercial_expert':
             if request_or.acceptation_date is None:  # if new request edit is going on while under commercial expert review
+                request_lre_count = request_or.last_returned_expert.all().count()
                 request_or.expert_acceptation.add(request.user)
                 request_or.expert.add(request.user)
-                if request_or.expert_acceptation.count() == request_or.expert.count():
-                    request_or.request_status = Status.cm_review
-                    request_or.shipping_status = ShippingStatus.requested
-                    request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
-                    if request_or.last_returned_expert == request.user:
-                        request_or.last_returned_expert.remove(request.user)
-                    request_or.save()
-                    messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
-                    return redirect('main:expert_request')
-                if request_or.last_returned_expert.count() == 0:
+                request_or.last_returned_expert.remove(request.user)
+
+                if request_or.expert_acceptation.count() == request_or.expert.count() and request_or.last_returned_expert.count() == 0:
                     request_or.request_status = Status.cm_review
                     request_or.shipping_status = ShippingStatus.requested
                     request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
                     request_or.save()
                     messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
-                    return redirect('main:returned_requests')
-                if request_or.last_returned_expert == request.user:
-                    request_or.last_returned_expert.remove(request.user)
+                    if request_lre_count == 0:
+                        return redirect('main:expert_request')
+                    else:
+                        return redirect('main:returned_requests')
                 request_or.save()
                 messages.success(request, "درخواست شما تایید شد")
-                return redirect('main:expert_request')
+                if request_lre_count == 0:
+                    return redirect('main:expert_request')
+                else:
+                    return redirect('main:returned_requests')
             elif request_or.acceptation_date is not None:  # if return request edit is completed
                 request_or.last_returned_expert.remove(request.user)
                 request_or.expert_acceptation.add(request.user)

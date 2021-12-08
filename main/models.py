@@ -152,10 +152,10 @@ class Request(models.Model):
     request_status = models.CharField(max_length=255, choices=Status.choices, default=Status.ceo_review)
     shipping_status = models.CharField(max_length=50, choices=ShippingStatus.choices, default=ShippingStatus.requested)
     created_date = models.DateTimeField(default=timezone.now)
-    acceptation_date = models.DateTimeField(null=True)
+    acceptation_date = models.DateTimeField(null=True, blank=True)
     expert = models.ManyToManyField(User, related_name='expert')
     expert_acceptation = models.ManyToManyField(User, related_name='expert_acceptation')
-    last_returned_expert = models.ManyToManyField(User, related_name='last_returned_expert')
+    last_returned_expert = models.ManyToManyField(User, related_name='last_returned_expert',blank=True)
 
     @property
     def get_prison(self):
