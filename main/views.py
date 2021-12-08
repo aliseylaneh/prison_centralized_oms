@@ -227,6 +227,8 @@ def accept_request(request, pk):
                     request_or.save()
                     messages.success(request, "درخواست برای مدیر بازرگانی ارسال شد")
                     return redirect('main:returned_requests')
+                if request_or.last_returned_expert == request.user:
+                    request_or.last_returned_expert.remove(request.user)
                 request_or.save()
                 messages.success(request, "درخواست شما تایید شد")
                 return redirect('main:expert_request')
@@ -415,8 +417,11 @@ def expert_requests(request):
 @login_required(login_url='account:login')
 @allowed_users(['commercial_expert', 'commercial_manager'])
 def returned_requests(request):
-    requests_r = Request.objects.filter(last_returned_expert=request.user,
-                                        request_status=Status.ce_review).order_by('-created_date', '-acceptation_date')
+    if request.user.groups.all[0].name == 'commercial_expert':
+        requests_r = Request.objects.filter(last_returned_expert=request.user,
+                                            request_status=Status.ce_review).order_by('-created_date',
+                                                                                      '-acceptation_date')
+
     context = {
         'requests_r': requests_r
     }
@@ -516,7 +521,7 @@ def submit_delivered_factor(request, req, sup):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['commercial_expert', 'commercial_manager', 'ceo','financial_manager'])
+@allowed_users(['commercial_expert', 'commercial_manager', 'ceo', 'financial_manager'])
 def get_rs_orders(request, pk, ord):
     request_r = Request.objects.get(number=pk)
     if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
