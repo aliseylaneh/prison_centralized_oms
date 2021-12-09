@@ -1549,14 +1549,18 @@ def hami_factor(request, pk, ord):
                 buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
                                                            brand=order.brand).order_by('-created_date')[0].price
                 if order.profit == 0:
-                    three_percent = int((97 * buy_price) / 100)
-                    order.buy_price = buy_price + (buy_price - three_percent)
+                    three_percent = ((97 * buy_price) / 100)
+                    three_percent = buy_price + (buy_price - three_percent)
+                    nine_percent = ((91 * three_percent) / 100)
+                    order.buy_price = three_percent + (three_percent - nine_percent)
                     tax = tax_price(multiply_price(order.buy_price, order.quantity))
                     order.total_price = tax + multiply_price(order.buy_price, order.quantity)
                     final_price += order.total_price
                 else:
                     new_profit = int(((100 - order.profit) * buy_price) / 100)
-                    order.buy_price = buy_price + (buy_price - new_profit)
+                    new_profit = buy_price + (buy_price - new_profit)
+                    nine_percent = ((91 * new_profit) / 100)
+                    order.buy_price = new_profit + (new_profit - nine_percent)
                     tax = tax_price(multiply_price(order.buy_price, order.quantity))
                     order.total_price = tax + multiply_price(order.buy_price, order.quantity)
                     final_price += order.total_price
