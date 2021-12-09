@@ -111,10 +111,11 @@
                                             <td class="text-center">{{ order.sell_price | intcomma }}</td>
                                             <td class="text-center">{{ order.quantity }}</td>
                                             <td class="text-center">{{ order.product.based_quantity }}</td>
-                                            <td class="text-center">{{ order.buy_price | intcomma }}</td>
-                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | intcomma }}</td>
-                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | tax_price | intcomma }}</td>
-                                            <td class="text-center">{{ order.total_price | intcomma }}</td>
+                                            <td class="text-center">{{ order.buy_price | floatformat | intcomma  }}</td>
+                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | floatformat | intcomma }}</td>
+                                            <td class="text-center">{{ order.buy_price | multiply_price:order.quantity | tax_price | floatformat | intcomma }}</td>
+                                            <td class="text-center">
+                                                {{ order.total_price| floatformat | intcomma }}</td>
                                         </tr>
                                     {% endfor %}
                                     <!-- for loop -->
@@ -131,7 +132,7 @@
                                         <td colspan="3" class="text-center">تاریخ ارسال</td>
                                         <td colspan="3" class="text-center">{{ deliver_date.get_deliver_date }}</td>
                                         <td colspan="2" class="text-center">مبلغ قابل پرداخت (ریال)</td>
-                                        <td colspan="2" class="text-center">{{ final_price | intcomma }}</td>
+                                        <td colspan="2" class="text-center">{{ final_price | floatformat | intcomma }}</td>
 
                                     </tr>
                                     <tr>

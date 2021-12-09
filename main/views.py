@@ -469,7 +469,7 @@ def get_rs_orders_factor(request, pk, ord):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['user'])
+@allowed_users(['user', 'ceo'])
 def edit_get_rs_orders_factor(request, pk, ord):
     request_r = Request.objects.get(number=pk)
     # if request_r.request_status != Status.ce_review and request.user.groups.all()[0].name == 'user':
@@ -1557,7 +1557,7 @@ def hami_factor(request, pk, ord):
                     order.total_price = tax + multiply_price(order.buy_price, order.quantity)
                     final_price += order.total_price
                 else:
-                    new_profit = int(((100 - order.profit) * buy_price) / 100)
+                    new_profit = (((100 - order.profit) * buy_price) / 100)
                     new_profit = buy_price + (buy_price - new_profit)
                     nine_percent = ((91 * new_profit) / 100)
                     order.buy_price = new_profit + (new_profit - nine_percent)
