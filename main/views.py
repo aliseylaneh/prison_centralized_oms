@@ -849,9 +849,16 @@ def update_profile(request, pk):
 @allowed_users(['administrator'])
 def delete_user(request):
     user_id = request.GET.get('id')
-    User.objects.get(id=user_id).delete()
+    user = User.objects.get(id=user_id)
+    if user.is_active:
+        user.active = False
+    else:
+        user.active = True
+
+    data = {'status': user.active, 'id': user.id}
+    user.save()
     data = {
-        'deleted': True
+        'data': data
     }
     return JsonResponse(data)
 
@@ -910,7 +917,8 @@ def search_users(request):
         userprofile = UserProfile.objects.get(user=user)
         data.append({'id': user.id, 'user_email': user.email, 'first_name': userprofile.first_name,
                      'last_name': userprofile.last_name,
-                     'phone_number': userprofile.phone_number, 'group': f'{user.groups.all()[0]}'})
+                     'phone_number': userprofile.phone_number, 'group': f'{user.groups.all()[0]}',
+                     'active': user.is_active})
     return JsonResponse({'data': data, '': ''}, safe=False)
 
 

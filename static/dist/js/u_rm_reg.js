@@ -73,17 +73,31 @@ function getUsers(searchValue, categoryValue, supplierValue) {
                 noResult.style.display = "none"
 
                 data.data.forEach(item => {
-                    tableBody.innerHTML += `
-                                 <tr id="user-${item.id}">
-                                    <td class="text-center">${item.user_email}</td>
-                                    <td class="text-center">${item.first_name} ${item.last_name}</td>
-                                    <td class="text-center"><span class="badge badge-success" style="font-size: 13px;">${item.group}</span></td>
-                                    <td class="text-center">${item.phone_number}</td>
-                                    <td class="text-center"><a href="/get_user/${item.id}" class="fa fa-edit" style="padding-top: 6px"></a></td>
-                                    <td class="text-center"><a href="#" class="fa fa-remove" style="padding-top: 6px" onClick="deleteUser(${item.id})" ></a></td>
-                                </tr>
-
-                    `
+                    if (item.active === false) {
+                        tableBody.innerHTML += `
+                                     <tr id="user-${item.id}">
+                                        <td class="text-center">${item.user_email}</td>
+                                        <td class="text-center">${item.first_name} ${item.last_name}</td>
+                                        <td class="text-center"><span class="badge badge-success" style="font-size: 13px;">${item.group}</span></td>
+                                        <td class="text-center">${item.phone_number}</td>
+                                        <td class="text-center"><a href="/get_user/${item.id}" class="fa fa-edit" style="padding-top: 6px"></a></td>
+                                        <td class="text-center" id="userstatussearch-${item.id}"><a href="#" class="fa fa-remove" style="padding-top: 6px;color: red" onClick="deleteUserSearch(${item.id})" ></a></td>
+                                    </tr>
+    
+                        `
+                    } else {
+                        tableBody.innerHTML += `
+                                     <tr id="user-${item.id}">
+                                        <td class="text-center">${item.user_email}</td>
+                                        <td class="text-center">${item.first_name} ${item.last_name}</td>
+                                        <td class="text-center"><span class="badge badge-success" style="font-size: 13px;">${item.group}</span></td>
+                                        <td class="text-center">${item.phone_number}</td>
+                                        <td class="text-center"><a href="/get_user/${item.id}" class="fa fa-edit" style="padding-top: 6px"></a></td>
+                                        <td class="text-center" id="userstatussearch-${item.id}"><a href="#" class="fa fa-check" style="padding-top: 6px;color: green" onClick="deleteUserSearch(${item.id})" ></a></td>
+                                    </tr>
+    
+                        `
+                    }
 
                 });
             }
@@ -103,7 +117,7 @@ function reviewUser(email) {
 }
 
 function deleteUser(id) {
-    var action = confirm('آیا از حذف این کاربر مطمئ‍ن هستید؟')
+    var action = confirm('آیا از تغییر وضعیت فعال یا غیر فعال بودن این کاربر مظمئن هستید؟')
     if (action != false) {
         $.ajax({
             url: '/delete_user',
@@ -112,9 +126,46 @@ function deleteUser(id) {
             },
             dataType: 'json',
             success: function (data) {
-                if (data.deleted) {
-                    $("#userTable #user-" + id).remove()
-                    alert('کاربر مورد نظر از سیستم حذف شد')
+                if (data.data.status === false) {
+                    document.getElementById("userstatus-" + id).innerHTML = `<a href="#" class="fa fa-remove"
+                                                                           style="padding-top: 6px; color: red"
+                                                                           onClick="deleteUser(${data.data.id})">`;
+                    alert('کاربر مورد نظر غیر فعال شد')
+                } else {
+                    document.getElementById("userstatus-" + id).innerHTML = `<a href="#" class="fa fa-check"
+                                                                           style="padding-top: 6px; color: green"
+                                                                           onClick="deleteUser(${data.data.id})">`;
+
+                    alert('کاربر مورد نظر فعال شد')
+
+                }
+            }
+        })
+    }
+
+}
+
+function deleteUserSearch(id) {
+    var action = confirm('آیا از تغییر وضعیت فعال یا غیر فعال بودن این کاربر مظمئن هستید؟')
+    if (action != false) {
+        $.ajax({
+            url: '/delete_user',
+            data: {
+                'id': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.data.status === false) {
+                    document.getElementById("userstatussearch-" + id).innerHTML = `<a href="#" class="fa fa-remove"
+                                                                           style="padding-top: 6px; color: red"
+                                                                           onClick="deleteUser(${data.data.id})">`;
+                    alert('کاربر مورد نظر غیر فعال شد')
+                } else {
+                    document.getElementById("userstatussearch-" + id).innerHTML = `<a href="#" class="fa fa-check"
+                                                                           style="padding-top: 6px; color: green"
+                                                                           onClick="deleteUser(${data.data.id})">`;
+                    alert('کاربر مورد نظر فعال شد')
+
                 }
             }
         })

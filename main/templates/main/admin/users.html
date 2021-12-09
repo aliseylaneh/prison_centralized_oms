@@ -47,7 +47,7 @@
                                     <th class="text-center">نقش</th>
                                     <th class="text-center">شماره تلفن</th>
                                     <th class="text-center">ویرایش</th>
-                                    <th class="text-center">حذف</th>
+                                    <th class="text-center">وضعیت</th>
 
                                 </tr>
                                 </thead>
@@ -70,10 +70,17 @@
                                             <td class="text-center"><a href="/get_user/{{ user.id }}" class="fa fa-edit"
                                                                        style="padding-top: 6px"></a>
                                             </td>
-                                            <td class="text-center"><a href="#" class="fa fa-remove"
-                                                                       style="padding-top: 6px"
-                                                                       onClick="deleteUser({{ user.id }})"></a>
-
+                                            {% if user.active == False %}
+                                                <td class="text-center" id="userstatus-{{ user.id }}"><a href="#"
+                                                                                                         class="fa fa-remove"
+                                                                                                         style="padding-top: 6px;color: red"
+                                                                                                         onClick="deleteUser({{ user.id }})"></a>
+                                                    {% else %}
+                                                <td class="text-center" id="userstatus-{{ user.id }}">
+                                                <a href="#" class="fa fa-check"
+                                                   style="padding-top: 6px; color: green"
+                                                   onClick="deleteUser({{ user.id }})"></a>
+                                            {% endif %}
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
@@ -93,7 +100,7 @@
                                     <th class="text-center">نقش</th>
                                     <th class="text-center">شماره تلفن</th>
                                     <th class="text-center">ویرایش</th>
-                                    <th class="text-center">حذف</th>
+                                    <th class="text-center">وضعیت</th>
                                 </tr>
                                 </thead>
                                 <tbody class='table-body position-relative' style="width: 100px"></tbody>
