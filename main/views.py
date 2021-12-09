@@ -502,12 +502,6 @@ def submit_delivered_factor(request, req, sup):
     if deliver_date.date > date2jalali(datetime.now()):
         messages.error(request, f"امکان ثبت رسید تحویل کالا فقط در تاریخ موعد آن دردسترس است")
         return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
-    orders = Order.objects.filter(request=request_r, supplier=supplier_r, delivered_quantity=0)
-    for order in orders:
-        order.delivered_quantity = order.quantity
-
-    Order.objects.bulk_update(orders, ['delivered_quantity'])
-
     deliver_date.status = 1
     deliver_date.number = request_r.number + str(deliver_date.id)
     deliver_date.received_date = timezone.now()
