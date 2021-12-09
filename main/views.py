@@ -39,7 +39,7 @@ def new_request(request):
                          "کاربر محترم حساب شما برای دو بنیاد متفاوت تعریف شده است ضمن اصلاح آن با ادمین سامانه تدارکات تماس حاصل فرمایید ")
         return redirect("account:homepage")
     products = Product.objects.all()
-    suppliers = Supplier.objects.all().order_by('company_name')
+    suppliers = Supplier.objects.filter(is_active=True).order_by('company_name')
     brands = Brand.objects.all()
     categories_nr = Category.objects.all()
     paginator = Paginator(products, 21)
@@ -617,7 +617,7 @@ def update_request(request, pk):
 
     products = Product.objects.all()
     brands = Brand.objects.all()
-    suppliers = Supplier.objects.all().order_by('company_name')
+    suppliers = Supplier.objects.filter(is_active=True).order_by('company_name')
     categories_r = Category.objects.all()
     paginator = Paginator(products, 21)
     page_number = request.GET.get('page')
@@ -1046,7 +1046,7 @@ def search_products(request):
                 category=search_category)
 
         data = []
-        suppliers = Supplier.objects.all().values()
+        suppliers = Supplier.objects.filter(is_active=True).values()
         for product in products:
             data.append({'id': product.id, 'name': product.name, 'category_id': product.category.name,
                          'product_unit': product.based_quantity, 'description': product.description,
@@ -1065,7 +1065,7 @@ def get_products(request):
     products = Product.objects.all()
     suppliers = Brand.objects.all()
     categories = Category.objects.all()
-    o_suppliers = Supplier.objects.all()
+    o_suppliers = Supplier.objects.filter(is_active=True)
     paginator = Paginator(products, 21)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
