@@ -1592,7 +1592,7 @@ def hami_factor(request, pk, ord):
 @login_required(login_url='account:login')
 @allowed_users(['financial_manager'])
 def request_factors(request):
-    requests_r = Request.objects.filter(request_status=Status.completed, shipping_status=ShippingStatus.supplier)
+    requests_r = Request.objects.filter(request_status=Status.completed, shipping_status=ShippingStatus.supplier).order_by('-acceptation_date','-created_date')
     paginator = Paginator(requests_r, 21)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
