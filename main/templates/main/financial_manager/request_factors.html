@@ -30,7 +30,7 @@
                                     </thead>
                                     <tbody>
 
-                                    {% for request_r in requests_r %}
+                                    {% for request_r in page_obj %}
                                         <tr>
                                             <td class="text-center">{{ request_r.number }}</td>
                                             <td class="text-center">{{ request_r.prison.name }}</td>
@@ -56,9 +56,10 @@
                                             <td class="text-center"><span
                                                     class="">{{ request_r.get_acceptations_time }} {{ request_r.get_acceptations_date }} </span>
                                             </td>
-                                            <td class="text-center"><a href="/get_request/{{ request_r.number }}/supplier_orders"
-                                                                       class="fa fa-check"
-                                                                       style="padding-top: 6px"></a>
+                                            <td class="text-center"><a
+                                                    href="/get_request/{{ request_r.number }}/supplier_orders"
+                                                    class="fa fa-check"
+                                                    style="padding-top: 6px"></a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -72,6 +73,33 @@
 
                     </div>
                 </div>
+            </div>
+            <div class="pagination-container">
+                <div class="">
+                    صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}
+                </div>
+
+                <ul class="pagination align-right float-right mr-auto" style="padding-top: 10px">
+                    {% if page_obj.has_previous %}
+                        <li {% ifequal 1 page_obj.number %} class="page-item active" {% endifequal %}>
+                            <a class="page-link" href="?page=1">&laquo; 1
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page ={{ page_obj.previous_page_number }}">قبلی</a>
+                        </li>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page= {{ page_obj.next_page_number }}">بعدی</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                {{ page_obj.paginator.num_pages }} &raquo;
+                            </a></li>
+                    {% endif %}
+                </ul>
+
             </div>
 
 
