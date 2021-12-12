@@ -199,10 +199,15 @@ def reviewing_requests(request):
     requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
                                         request_status=Status.cm_review).order_by(
         '-created_date') | Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                                  request_status=Status.ce_review).order_by('-created_date',
-                                                                                            '-acceptation_date')
+                                                  request_status=Status.ce_review).order_by('-acceptation_date',
+                                                                                            '-created_date')
+    prisons_r = Prison.objects.all().order_by('-name')
+    prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
-        'requests_r': requests_r
+
+        'requests_r': requests_r,
+        'prisons_r': prisons_r,
+        'prisonbranches_r': prisonbranches_r
     }
     return render(request, 'main/user/requests.html', context)
 
@@ -417,8 +422,9 @@ def expert_requests(request):
                                             request_status=Status.ce_review, last_returned_expert=None).exclude(
             expert_acceptation=request.user).order_by('-created_date')
     else:
-        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-created_date',
-                                                                                      '-acceptation_date')
+        requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-acceptation_date',
+                                                                                      '-created_date')
+
     context = {
         'requests_r': requests_r
     }
@@ -429,8 +435,7 @@ def expert_requests(request):
 @allowed_users(['commercial_expert', 'commercial_manager'])
 def returned_requests(request):
     requests_r = Request.objects.filter(last_returned_expert=request.user,
-                                        request_status=Status.ce_review).order_by('-created_date',
-                                                                                  '-acceptation_date')
+                                        request_status=Status.ce_review).order_by('-acceptation_date', '-created_date')
     context = {
         'requests_r': requests_r
     }
