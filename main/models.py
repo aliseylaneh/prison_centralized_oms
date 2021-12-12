@@ -82,8 +82,8 @@ class Product(models.Model):
     ordered_quantity = models.BigIntegerField(null=True, default=0)
     based_quantity = models.CharField(max_length=20, null=True, choices=Unit.choices, default=Unit.each)
     description = models.CharField(max_length=255, null=True)
-    tax = models.IntegerField(default=1)
-    profit = models.IntegerField(default=3)
+    tax = models.FloatField(default=9)
+    profit = models.FloatField(default=3)
 
     def __str__(self):
         return self.name
@@ -155,7 +155,7 @@ class Request(models.Model):
     acceptation_date = models.DateTimeField(null=True, blank=True)
     expert = models.ManyToManyField(User, related_name='expert')
     expert_acceptation = models.ManyToManyField(User, related_name='expert_acceptation')
-    last_returned_expert = models.ManyToManyField(User, related_name='last_returned_expert',blank=True)
+    last_returned_expert = models.ManyToManyField(User, related_name='last_returned_expert', blank=True)
 
     @property
     def get_prison(self):
