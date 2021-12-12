@@ -1566,16 +1566,16 @@ def hami_factor(request, pk, ord):
                 if order.profit == 0:  # چک میشه سود حامیان جدید
 
                     order.buy_price = (buy_price * (1 + (order.product.profit / 100))) / (1 + (order.product.tax / 100))
-                    tax = tax_price(multiply_price(order.buy_price, order.quantity))
-                    order.total_price = tax + multiply_price(order.buy_price, order.quantity)
+                    tax = tax_price(multiply_price(order.buy_price, order.delivered_quantity))
+                    order.total_price = tax + multiply_price(order.buy_price, order.delivered_quantity)
                     final_price += order.total_price
                 else:  # سود حامیان جدید
                     new_profit = (((100 - order.profit) * buy_price) / 100)
                     new_profit = buy_price + (buy_price - new_profit)
                     nine_percent = ((91 * new_profit) / 100)
                     order.buy_price = new_profit + (new_profit - nine_percent)
-                    tax = tax_price(multiply_price(order.buy_price, order.quantity))
-                    order.total_price = tax + multiply_price(order.buy_price, order.quantity)
+                    tax = tax_price(multiply_price(order.buy_price, order.delivered_quantity))
+                    order.total_price = tax + multiply_price(order.buy_price, order.delivered_quantity)
                     final_price += order.total_price
             except Order.DoesNotExist:
                 order.buy_price = 0
