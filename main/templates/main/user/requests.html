@@ -7,45 +7,49 @@
                 <div class="w-100">
 
                     <div class="col-12 w-100">
+
                         {% with url_name=request.resolver_match.url_name %}
-                            {% if url_name != 'returned_requests' or url_name != 'expert_requests' %}
-                                <div class="border-end bg-white text-center" id="sidebar-wrapper">
-                                    <span class=""> جست و جو درخواست:</span>
-                                    <input type="text" name="table_search" class="" placeholder="شماره درخواست"
-                                           id="nameField">
-                                    <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"
-                                            data-width="fit"
-                                            id="selected-prison">
-                                        <option value="بنیاد">بنیاد</option>
-                                        {% for prison in prisons_r %}
-                                            <option value="{{ prison.name }}">{{ prison.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"
-                                            data-width="fit"
-                                            id="selected-branch">
-                                        <option value="زندان">زندان</option>
-                                        {% for branch in prisonbranches_r %}
-                                            <option value="{{ branch.name }}">{{ branch.name }}</option>
-                                        {% endfor %}
-                                    </select>
+                            {% if url_name != 'returned_requests' %}
+                                {% if request.user.groups.all.0.name != 'user' %}
+                                    <div class="border-end bg-white text-center" id="sidebar-wrapper">
+                                        <span class=""> جست و جو درخواست:</span>
+                                        <input type="text" name="table_search" class="" placeholder="شماره درخواست"
+                                               id="nameField">
+                                        <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"
+                                                data-width="fit"
+                                                id="selected-prison">
+                                            <option value="بنیاد">بنیاد</option>
+                                            {% for prison in prisons_r %}
+                                                <option value="{{ prison.name }}">{{ prison.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"
+                                                data-width="fit"
+                                                id="selected-branch">
+                                            <option value="زندان">زندان</option>
+                                            {% for branch in prisonbranches_r %}
+                                                <option value="{{ branch.name }}">{{ branch.name }}</option>
+                                            {% endfor %}
+                                        </select>
 
 
-                                    <button accesskey="Enter" class="btn btn-primary" id="searchbtn" type="button"
-                                            {% if url_name == 'requests' %}
-                                            onclick="handleSearchRequest(1)" {% elif url_name == 'completed_request' %}
-                                            onclick="handleSearchRequest(2)" {% elif url_name == 'reviewing_request' %}
-                                            onclick="handleSearchRequest(3)"
-                                            {% elif url_name == 'declined_request' %}onclick="handleSearchRequest(4)" {% endif %} >
-                                        جست و جو
-                                    </button>
+                                        <button accesskey="Enter" class="btn btn-primary" id="searchbtn" type="button"
+                                                {% if url_name == 'requests' %}
+                                                onclick="handleSearchRequest(1)" {% elif url_name == 'completed_request' %}
+                                                onclick="handleSearchRequest(2)" {% elif url_name == 'reviewing_request' %}
+                                                onclick="handleSearchRequest(3)" {% elif url_name == 'declined_request' %}
+                                                onclick="handleSearchRequest(4)" {% elif url_name == 'expert_request' %}
+                                                onclick="handleSearchRequest(3)"{% endif %} >
+                                            جست و جو
+                                        </button>
 
-                                    <button class="btn btn-outline-danger fa fa-close" type="button"
-                                            onclick="resetFound()">
-                                    </button>
+                                        <button class="btn btn-outline-danger fa fa-close" type="button"
+                                                onclick="resetFound()">
+                                        </button>
 
 
-                                </div>
+                                    </div>
+                                {% endif %}
 
                                 {#                        <div class="col-12 text-center row justify-content-center mt-2">#}
                                 {#                            <div class="col-2 mt-2 text-left">#}
@@ -108,7 +112,7 @@
                                     </thead>
                                     <tbody>
 
-                                    {% for request_r in requests_r %}
+                                    {% for request_r in page_obj %}
                                         <tr>
                                             <td class="text-center">{{ request_r.number }}</td>
                                             <td class="text-center">{{ request_r.prison.name }}</td>
@@ -189,6 +193,33 @@
 
                     </div>
                 </div>
+            </div>
+            <div class="pagination-container">
+                <div class="">
+                    صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}
+                </div>
+
+                <ul class="pagination align-right float-right mr-auto" style="padding-top: 10px">
+                    {% if page_obj.has_previous %}
+                        <li {% ifequal 1 page_obj.number %} class="page-item active" {% endifequal %}>
+                            <a class="page-link" href="?page=1">&laquo; 1
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page ={{ page_obj.previous_page_number }}">قبلی</a>
+                        </li>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page= {{ page_obj.next_page_number }}">بعدی</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                                {{ page_obj.paginator.num_pages }} &raquo;
+                            </a></li>
+                    {% endif %}
+                </ul>
+
             </div>
 
 

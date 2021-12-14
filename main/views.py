@@ -112,16 +112,16 @@ def requests(request):
     elif request.user.groups.all()[0].name == 'commercial_expert':
         requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-acceptation_date',
                                                                                       '-created_date')
-    # paginator = Paginator(requests_r, 40)
-    # page_number = request.GET.get('page')
-    # page_obj = Paginator.get_page(paginator, page_number)
+    paginator = Paginator(requests_r, 50)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
     prisons_r = Prison.objects.all().order_by('-name')
     prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
         'requests_r': requests_r,
         'prisons_r': prisons_r,
-        'prisonbranches_r': prisonbranches_r
-        # 'page_obj': page_obj,
+        'prisonbranches_r': prisonbranches_r,
+        'page_obj': page_obj,
     }
 
     return render(request, 'main/user/requests.html', context)
@@ -130,20 +130,23 @@ def requests(request):
 @login_required(login_url='account:login')
 @allowed_users(['ceo', 'commercial_manager', 'commercial_expert'])
 def declined_request(request):
-    if request.user.groups.all()[0].name == 'ceo':
-        requests_r = Request.objects.filter(request_status=Status.ceo_dreview).order_by(
-            '-created_date') | Request.objects.filter(request_status=Status.cm_dreview).order_by('-created_date')
-    elif request.user.groups.all()[0].name == 'commercial_manager':
-        requests_r = Request.objects.filter(request_status=Status.cm_dreview).order_by('-created_date')
-    elif request.user.groups.all()[0].name == 'commercial_expert':
-        requests_r = Request.objects.filter(request_status=Status.cm_dreview, expert=request.user).order_by(
-            '-created_date')
+    if request.user.groups.all()[0].name != 'commercial_expert':
+        requests_r = Request.objects.filter(shipping_status=ShippingStatus.declined).order_by('-acceptation_date',
+                                                                                              '-created_date')
+    else:
+        requests_r = Request.objects.filter(shipping_status=ShippingStatus.declined, expert=request.user).order_by(
+            '-acceptation_date''-created_date')
+
+    paginator = Paginator(requests_r, 50)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
     prisons_r = Prison.objects.all().order_by('-name')
     prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
         'requests_r': requests_r,
         'prisons_r': prisons_r,
-        'prisonbranches_r': prisonbranches_r
+        'prisonbranches_r': prisonbranches_r,
+        'page_obj': page_obj,
     }
     return render(request, 'main/user/requests.html', context)
 
@@ -171,6 +174,8 @@ def finalized_requests(request):
 @login_required(login_url='account:login')
 @allowed_users(['ceo', 'commercial_expert', 'commercial_manager'])
 def completed_requests(request):
+    requests_r = None
+
     if request.user.groups.all()[0].name == 'commercial_expert':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
                                             request_status=Status.completed, expert=request.user).order_by(
@@ -184,14 +189,16 @@ def completed_requests(request):
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
                                             request_status=Status.completed).order_by('-acceptation_date',
                                                                                       '-created_date')
-
+    paginator = Paginator(requests_r, 50)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
     prisons_r = Prison.objects.all().order_by('-name')
     prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
         'requests_r': requests_r,
         'prisons_r': prisons_r,
-        'prisonbranches_r': prisonbranches_r
-        # 'page_obj': page_obj,
+        'prisonbranches_r': prisonbranches_r,
+        'page_obj': page_obj,
     }
     return render(request, 'main/user/requests.html', context)
 
@@ -200,17 +207,22 @@ def completed_requests(request):
 @allowed_users(['ceo'])
 def reviewing_requests(request):
     requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                        request_status=Status.cm_review).order_by(
-        '-created_date') | Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                                  request_status=Status.ce_review).order_by('-acceptation_date',
-                                                                                            '-created_date')
+                                        request_status=Status.cm_review).order_by('-acceptation_date',
+                                                                                  '-created_date') | Request.objects.filter(
+        shipping_status=ShippingStatus.requested,
+        request_status=Status.ce_review).order_by('-acceptation_date',
+                                                  '-created_date')
+    paginator = Paginator(requests_r, 50)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
     prisons_r = Prison.objects.all().order_by('-name')
     prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
 
         'requests_r': requests_r,
         'prisons_r': prisons_r,
-        'prisonbranches_r': prisonbranches_r
+        'prisonbranches_r': prisonbranches_r,
+        'page_obj': page_obj
     }
     return render(request, 'main/user/requests.html', context)
 
@@ -428,8 +440,16 @@ def expert_requests(request):
         requests_r = Request.objects.filter(request_status=Status.ce_review).order_by('-acceptation_date',
                                                                                       '-created_date')
 
+    paginator = Paginator(requests_r, 50)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
+    prisons_r = Prison.objects.all().order_by('-name')
+    prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
-        'requests_r': requests_r
+        'requests_r': requests_r,
+        'prisons_r': prisons_r,
+        'prisonbranches_r': prisonbranches_r,
+        'page_obj': page_obj,
     }
     return render(request, 'main/user/requests.html', context)
 
@@ -1614,7 +1634,7 @@ def request_factors(request):
     requests_r = Request.objects.filter(request_status=Status.completed,
                                         shipping_status=ShippingStatus.supplier).order_by('-acceptation_date',
                                                                                           '-created_date')
-    paginator = Paginator(requests_r, 40)
+    paginator = Paginator(requests_r, 50)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
 
@@ -1657,16 +1677,24 @@ def search_requests(request):
                                                     request_status=Status.completed)
     elif flag == 3:
         if number != '':
-            requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review), number__exact=number,
-                                                shipping_status=ShippingStatus.requested)
+            if request.user.groups.all()[0].name == "ceo":
+                requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review), number__exact=number,
+                                                    shipping_status=ShippingStatus.requested)
+            else:
+                requests_r = Request.objects.filter(request_status=Status.ce_review, number__exact=number,
+                                                    shipping_status=ShippingStatus.requested)
         else:
-            requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review),
-                                                shipping_status=ShippingStatus.requested)
+            if request.user.groups.all()[0].name == "ceo":
+                requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review),
+                                                    shipping_status=ShippingStatus.requested)
+            else:
+                requests_r = Request.objects.filter(request_status=Status.ce_review,
+                                                    shipping_status=ShippingStatus.requested)
     elif flag == 4:
         if number != '':
-            requests_r = Request.objects.filter(number__exact=number, request_status=ShippingStatus.declined)
+            requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.declined)
         else:
-            requests_r = Request.objects.filter(request_status=ShippingStatus.declined)
+            requests_r = Request.objects.filter(shipping_status=ShippingStatus.declined)
     # elif flag == 5:
     #     if number != '':
     #         requests_r = Request.objects.filter(number__exact=number)

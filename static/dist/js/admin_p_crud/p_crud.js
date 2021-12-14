@@ -114,7 +114,6 @@ $(window).keypress(function (event) {
 });
 
 function handleSearchRequest(flag) {
-    console.log(selectedPrison.value, selectedBranch.value)
     if (selectedPrison.value === "بنیاد" && selectedBranch.value === "زندان" && nameField.value === '') {
     } else {
         getRequests(selectedPrison.value, selectedBranch.value, nameField.value, '', flag)
@@ -132,7 +131,7 @@ function resetRequestFound() {
 }
 
 function getRequests(prison, branch, number, date, flag) {
-
+    paginationContainer.style.display = "none";
     $("#loadingBar").show()
     tableBody.innerHTML = ""
     fetch("/search_requests", {
