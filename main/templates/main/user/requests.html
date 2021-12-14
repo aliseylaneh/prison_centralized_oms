@@ -7,79 +7,88 @@
                 <div class="w-100">
 
                     <div class="col-12 w-100">
+                        {% with url_name=request.resolver_match.url_name %}
+                            {% if url_name != 'returned_requests' or url_name != 'expert_requests' %}
+                                <div class="border-end bg-white text-center" id="sidebar-wrapper">
+                                    <span class=""> جست و جو درخواست:</span>
+                                    <input type="text" name="table_search" class="" placeholder="شماره درخواست"
+                                           id="nameField">
+                                    <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"
+                                            data-width="fit"
+                                            id="selected-prison">
+                                        <option value="بنیاد">بنیاد</option>
+                                        {% for prison in prisons_r %}
+                                            <option value="{{ prison.name }}">{{ prison.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"
+                                            data-width="fit"
+                                            id="selected-branch">
+                                        <option value="زندان">زندان</option>
+                                        {% for branch in prisonbranches_r %}
+                                            <option value="{{ branch.name }}">{{ branch.name }}</option>
+                                        {% endfor %}
+                                    </select>
 
+
+                                    <button accesskey="Enter" class="btn btn-primary" id="searchbtn" type="button"
+                                            {% if url_name == 'requests' %}
+                                            onclick="handleSearchRequest(1)" {% elif url_name == 'completed_request' %}
+                                            onclick="handleSearchRequest(2)" {% elif url_name == 'reviewing_request' %}
+                                            onclick="handleSearchRequest(3)"
+                                            {% elif url_name == 'declined_request' %}onclick="handleSearchRequest(4)" {% endif %} >
+                                        جست و جو
+                                    </button>
+
+                                    <button class="btn btn-outline-danger fa fa-close" type="button"
+                                            onclick="resetFound()">
+                                    </button>
+
+
+                                </div>
+
+                                {#                        <div class="col-12 text-center row justify-content-center mt-2">#}
+                                {#                            <div class="col-2 mt-2 text-left">#}
+                                {#                                <span class="">تاریخ ثبت:</span>#}
+                                {#                            </div>#}
+                                {##}
+                                {#                            <div class="col-1 mt-2 text-right" id="deliverdate">.................</div>#}
+                                {##}
+                                {#                            <div class="col-1 row mb-3 justify-content-start no-print">#}
+                                {##}
+                                {#                                <button class=" btn btn-outline-secondary fa fa-calendar float-left"#}
+                                {#                                        id="dtp"></button>#}
+                                {##}
+                                {#                            </div>#}
+                                {##}
+                                {##}
+                                {#                        </div>#}
+                            {% endif %}
+                        {% endwith %}
                         <div class="card w-100">
-{#                            <div class="card-header text-center">#}
-{#                                <h4>لیست درخواست ها</h4>#}
-{#                                <div class="border-end bg-white text-center" id="sidebar-wrapper">#}
-{#                                    <span class=""> جست و جو درخواست:</span>#}
-{#                                    <input type="text" name="table_search" class="" placeholder="شماره درخواست"#}
-{#                                           id="nameField">#}
-{#                                    <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"#}
-{#                                            data-width="fit"#}
-{#                                            id="selected-category">#}
-{#                                        <option value="بنیاد">بنیاد</option>#}
-{#                                        {% for prison in prisons_r %}#}
-{#                                            <option value="{{ prison.name }}">{{ prison.name }}</option>#}
-{#                                        {% endfor %}#}
-{#                                    </select>#}
-{#                                    <select class="btn btn-outline-dark show-tick dropdown filter-products text-center"#}
-{#                                            data-width="fit"#}
-{#                                            id="selected-category">#}
-{#                                        <option value="زندان">زندان</option>#}
-{#                                        {% for branch in prisonbranches_r %}#}
-{#                                            <option value="{{ branch.name }}">{{ branch.name }}</option>#}
-{#                                        {% endfor %}#}
-{#                                    </select>#}
-{##}
-{##}
-{#                                    <button accesskey="Enter" class="btn btn-primary" id="searchbtn" type="button"#}
-{#                                            onclick="handleSearch()">جست و جو#}
-{#                                    </button>#}
-{#                                    <button class="btn btn-outline-danger fa fa-close" type="button"#}
-{#                                            onclick="resetFound()">#}
-{#                                    </button>#}
-{##}
-{##}
-{#                                </div>#}
-{##}
-{#                                <div class="col-12 text-center row justify-content-center mt-2">#}
-{#                                    <div class="col-2 mt-2 text-left">#}
-{#                                        <span class="">تاریخ ثبت:</span>#}
-{#                                    </div>#}
-{##}
-{#                                    <div class="col-1 mt-2 text-right" id="deliverdate">.................</div>#}
-{##}
-{#                                    <div class="col-1 row mb-3 justify-content-start no-print">#}
-{##}
-{#                                        <button class=" btn btn-outline-secondary fa fa-calendar float-left"#}
-{#                                                id="dtp"></button>#}
-{##}
-{#                                    </div>#}
-{##}
-{##}
-{#                                </div>#}
-{##}
-{##}
-{#                            </div>#}
-{#                            <div class="w-100 text-center" id='loadingBar' style='display:none'>#}
-{#                                <div class="loadingio-spinner-spinner-985r529o724">#}
-{#                                    <div class="ldio-oiqxwq2p09">#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                        <div></div>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            </div>#}
+                            <div class="card-header text-center">
+                                <h4>لیست درخواست ها</h4>
+
+
+                            </div>
+                            <div class="w-100 text-center" id='loadingBar' style='display:none'>
+                                <div class="loadingio-spinner-spinner-985r529o724">
+                                    <div class="ldio-oiqxwq2p09">
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="app-table card-body table-responsive p-0">
                                 <table class="table table-striped table-valign-middle">
                                     <thead>

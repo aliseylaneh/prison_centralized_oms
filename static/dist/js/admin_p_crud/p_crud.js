@@ -1,6 +1,10 @@
 const nameField = document.querySelector("#nameField");
 const categoryField = document.querySelector("#categoryField");
 const selectedCategory = document.getElementById("selected-category");
+let deliverDate = document.getElementById('dtp')
+const selectedPrison = document.querySelector("#selected-prison");
+const selectedBranch = document.querySelector("#selected-branch");
+
 const tableOutput = document.querySelector(".table-output");
 const appTable = document.querySelector(".app-table");
 const paginationContainer = document.querySelector(".pagination-container");
@@ -11,7 +15,6 @@ const noResult = document.querySelector(".no-results")
 
 
 function handleSearch() {
-    console.log(selectedCategory.value)
     if (selectedCategory.value === 'دسته') {
         if (nameField.value.trim().length > 0)
             getData(nameField.value, null, null)
@@ -110,5 +113,83 @@ $(window).keypress(function (event) {
     }
 });
 
+function handleSearchRequest(flag) {
+    console.log(selectedPrison.value, selectedBranch.value)
+    if (selectedPrison.value === "بنیاد" && selectedBranch.value === "زندان" && nameField.value === '') {
+    } else {
+        getRequests(selectedPrison.value, selectedBranch.value, nameField.value, '', flag)
+    }
 
+
+}
+
+
+function resetRequestFound() {
+    noResult.style.display = "none"
+    tableOutput.style.display = "none"
+    appTable.style.display = "block"
+    paginationContainer.style.display = "block"
+}
+
+function getRequests(prison, branch, number, date, flag) {
+
+    $("#loadingBar").show()
+    tableBody.innerHTML = ""
+    fetch("/search_requests", {
+        body: JSON.stringify({prison: prison, branch: branch, number: number, date: date, flag: flag}),
+        method: "POST",
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log("data", data);
+            appTable.style.display = "none";
+            tableOutput.style.display = "block";
+
+            if (data.length === 0) {
+                noResult.style.display = "block"
+                tableOutput.style.display = "none"
+            } else {
+
+                $("#loadingBar").hide()
+                data.requests.forEach(item => {
+
+
+                    tableBody.innerHTML += `
+                                <tr>
+                                            <td class="text-center">${item.number}</td>
+                                            <td class="text-center">${item.prison}</td>
+                                            <td class="text-center"><label
+                                                    class="badge badge-secondary"
+                                                    style="font-size: 13px;">${item.status}</label>
+                                            </td>
+                                            <td class="text-center"><label class="badge badge-info"
+                                                                           style="font-size: 13px;">${item.sstatus}</label>
+                                            </td>
+
+                                            <td class="text-center"><span
+                                                    class="text-center">${item.branch}</span>
+                                            </td>
+
+                                            <td class="text-center"><span
+                                                    class="">${item.created_date_time} ${item.created_date} </span>
+                                            </td>
+                                            <td class="text-center"><span
+                                                    class="">${item.submitted_time} ${item.submitted_date}</span>
+                                            </td>
+                                            <td class="text-center"><a href="/get_request/${item.number}"
+                                                                       class="fa fa-check"
+                                                                       style="padding-top: 6px"></a>
+                                            </td>
+
+
+
+                                        </tr>
+
+                    `
+
+
+                });
+            }
+        });
+}
 

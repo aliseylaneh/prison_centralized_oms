@@ -138,9 +138,12 @@ def declined_request(request):
     elif request.user.groups.all()[0].name == 'commercial_expert':
         requests_r = Request.objects.filter(request_status=Status.cm_dreview, expert=request.user).order_by(
             '-created_date')
-
+    prisons_r = Prison.objects.all().order_by('-name')
+    prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
-        'requests_r': requests_r
+        'requests_r': requests_r,
+        'prisons_r': prisons_r,
+        'prisonbranches_r': prisonbranches_r
     }
     return render(request, 'main/user/requests.html', context)
 
@@ -1621,6 +1624,80 @@ def request_factors(request):
     }
 
     return render(request, 'main/financial_manager/request_factors.html', context)
+
+
+@login_required(login_url='account:login')
+def search_requests(request):
+    requests_r = None
+    prison = json.loads(request.body).get('prison')
+    branch = json.loads(request.body).get('branch')
+    number = json.loads(request.body).get('number')
+    created_date = json.loads(request.body).get('date')
+    flag = json.loads(request.body).get('flag')
+    if flag == 1:
+        if number != '':
+            requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.requested)
+        else:
+            requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested)
+
+    elif flag == 2:
+        if number != '':
+            if request.user.groups.all()[0].name == 'commercial_expert':
+                requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.supplier,
+                                                    request_status=Status.completed, expert_acceptation=request.user)
+            else:
+                requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.supplier,
+                                                    request_status=Status.completed)
+        else:
+            if request.user.groups.all()[0].name == 'commercial_expert':
+                requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
+                                                    request_status=Status.completed, expert_acceptation=request.user)
+            else:
+                requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
+                                                    request_status=Status.completed)
+    elif flag == 3:
+        if number != '':
+            requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review), number__exact=number,
+                                                shipping_status=ShippingStatus.requested)
+        else:
+            requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review),
+                                                shipping_status=ShippingStatus.requested)
+    elif flag == 4:
+        if number != '':
+            requests_r = Request.objects.filter(number__exact=number, request_status=ShippingStatus.declined)
+        else:
+            requests_r = Request.objects.filter(request_status=ShippingStatus.declined)
+    # elif flag == 5:
+    #     if number != '':
+    #         requests_r = Request.objects.filter(number__exact=number)
+    #     else:
+    #         requests_r = Request.objects.all()
+
+    if prison != 'بنیاد':
+        prison = Prison.objects.get(name=prison)
+        requests_r = requests_r.filter(prison=prison)
+    if branch != 'زندان':
+        branch = PrisonBranch.objects.get(name=branch)
+        requests_r = requests_r.filter(branch=branch)
+
+    # if created_date != '':
+    #     created_date = jdatetime.datetime.strptime(created_date, '%Y/%m/%d').togregorian()
+    #     print(date(created_date.year, created_date.month, created_date.day))
+    #     requests_r = requests_r.filter(
+    #         created_date__year=date(created_date.year, created_date.month, created_date.day).year)
+
+    requests_r = requests_r.order_by('-acceptation_date', '-created_date')
+    data = []
+    if requests_r is not None:
+        for request in requests_r:
+            data.append({'number': request.number, 'status': request.request_status, 'sstatus': request.shipping_status,
+                         'created_date': request.get_created_date, 'created_date_time': request.get_created_time,
+                         'submitted_date': request.get_acceptations_date,
+                         'submitted_time': request.get_acceptations_time,
+                         'prison': request.prison.name,
+                         'branch': request.branch.name})
+
+    return JsonResponse({'requests': data}, safe=False)
 
 
 @login_required(login_url='account:login')

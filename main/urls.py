@@ -88,5 +88,7 @@ urlpatterns = [
     path('export_order_report', views.export_order_report, name='export_order_report'),
     path('get_request/<str:pk>/supplier_orders/<str:ord>/hamifactor', views.hami_factor, name='hamifactor'),
 
-    path('request_factors', views.request_factors, name='request_factors')
+    path('request_factors', views.request_factors, name='request_factors'),
+
+    path('search_requests', csrf_exempt(views.search_requests), name='search_requests')
 ]
