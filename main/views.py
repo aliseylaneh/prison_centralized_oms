@@ -135,7 +135,7 @@ def declined_request(request):
                                                                                               '-created_date')
     else:
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.declined, expert=request.user).order_by(
-            '-acceptation_date''-created_date')
+            '-acceptation_date', '-created_date')
 
     paginator = Paginator(requests_r, 50)
     page_number = request.GET.get('page')
@@ -204,14 +204,19 @@ def completed_requests(request):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['ceo'])
+@allowed_users(['ceo', 'commercial_manager'])
 def reviewing_requests(request):
-    requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
-                                        request_status=Status.cm_review).order_by('-acceptation_date',
-                                                                                  '-created_date') | Request.objects.filter(
-        shipping_status=ShippingStatus.requested,
-        request_status=Status.ce_review).order_by('-acceptation_date',
-                                                  '-created_date')
+    if request.user.groups.all()[0].name == 'ceo':
+        requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
+                                            request_status=Status.cm_review).order_by('-acceptation_date',
+                                                                                      '-created_date') | Request.objects.filter(
+            shipping_status=ShippingStatus.requested,
+            request_status=Status.ce_review).order_by('-acceptation_date',
+                                                      '-created_date')
+    else:
+        requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
+                                            request_status=Status.ce_review).order_by('-acceptation_date',
+                                                                                      '-created_date')
     paginator = Paginator(requests_r, 50)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)

@@ -9,7 +9,7 @@
                     <div class="col-12 w-100">
 
                         {% with url_name=request.resolver_match.url_name %}
-                            {% if url_name != 'returned_requests' %}
+                            {% if url_name != 'returned_requests' and url_name != 'expert_request' %}
                                 {% if request.user.groups.all.0.name != 'user' %}
                                     <div class="border-end bg-white text-center" id="sidebar-wrapper">
                                         <span class=""> جست و جو درخواست:</span>
