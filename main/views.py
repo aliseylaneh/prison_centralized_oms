@@ -1515,11 +1515,11 @@ def get_supplier_price(request):
     product = Product.objects.get(id=product_id)
     supplier = Supplier.objects.get(company_name=supplier_id)
     if supplier.company_name != 'بدون تامین کننده':
-        supplier_products = SupplierProduct.objects.filter(product=product, supplier=supplier, brand=brand).order_by(
-            '-created_date')[:5]
+        supplier_products = SupplierProduct.objects.filter(product=product, supplier=supplier).order_by(
+            '-created_date')[:10]
     else:
-        supplier_products = SupplierProduct.objects.filter(product=product, brand=brand).order_by(
-            '-created_date')[:5]
+        supplier_products = SupplierProduct.objects.filter(product=product).order_by(
+            '-created_date')[:10]
 
     data = []
     for supplier in supplier_products:
