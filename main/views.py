@@ -128,6 +128,26 @@ def requests(request):
 
 
 @login_required(login_url='account:login')
+@allowed_users(['user', 'ceo', 'commercial_manager'])
+def all_requests(request):
+    requests_r = Request.objects.all().order_by('-created_date')
+    paginator = Paginator(requests_r, 50)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
+    prisons_r = Prison.objects.all().order_by('-name')
+    prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
+
+    context = {
+        'requests_r': requests_r,
+        'prisons_r': prisons_r,
+        'prisonbranches_r': prisonbranches_r,
+        'page_obj': page_obj,
+    }
+
+    return render(request, 'main/user/requests.html', context)
+
+
+@login_required(login_url='account:login')
 @allowed_users(['ceo', 'commercial_manager', 'commercial_expert'])
 def declined_request(request):
     if request.user.groups.all()[0].name != 'commercial_expert':
@@ -1670,17 +1690,17 @@ def search_requests(request):
     flag = json.loads(request.body).get('flag')
     if flag == 1:
         if number != '':
-            requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.requested)
+            requests_r = Request.objects.filter(number__endswith=number, shipping_status=ShippingStatus.requested)
         else:
             requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested)
 
     elif flag == 2:
         if number != '':
             if request.user.groups.all()[0].name == 'commercial_expert':
-                requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.supplier,
+                requests_r = Request.objects.filter(number__contains=number, shipping_status=ShippingStatus.supplier,
                                                     request_status=Status.completed, expert=request.user)
             else:
-                requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.supplier,
+                requests_r = Request.objects.filter(number__contains=number, shipping_status=ShippingStatus.supplier,
                                                     request_status=Status.completed)
         else:
             if request.user.groups.all()[0].name == 'commercial_expert':
@@ -1692,10 +1712,10 @@ def search_requests(request):
     elif flag == 3:
         if number != '':
             if request.user.groups.all()[0].name == "ceo":
-                requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review), number__exact=number,
+                requests_r = Request.objects.filter(~Q(request_status=Status.ceo_review), number__contains=number,
                                                     shipping_status=ShippingStatus.requested)
             else:
-                requests_r = Request.objects.filter(request_status=Status.ce_review, number__exact=number,
+                requests_r = Request.objects.filter(request_status=Status.ce_review, number__contains=number,
                                                     shipping_status=ShippingStatus.requested)
         else:
             if request.user.groups.all()[0].name == "ceo":
@@ -1706,14 +1726,14 @@ def search_requests(request):
                                                     shipping_status=ShippingStatus.requested)
     elif flag == 4:
         if number != '':
-            requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.declined)
+            requests_r = Request.objects.filter(number__contains=number, shipping_status=ShippingStatus.declined)
         else:
             requests_r = Request.objects.filter(shipping_status=ShippingStatus.declined)
-    # elif flag == 5:
-    #     if number != '':
-    #         requests_r = Request.objects.filter(number__exact=number)
-    #     else:
-    #         requests_r = Request.objects.all()
+    elif flag == 5:
+        if number != '':
+            requests_r = Request.objects.filter(number__contains=number)
+        else:
+            requests_r = Request.objects.all()
 
     if prison != 'بنیاد':
         prison = Prison.objects.get(name=prison)

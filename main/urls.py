@@ -90,5 +90,6 @@ urlpatterns = [
 
     path('request_factors', views.request_factors, name='request_factors'),
 
-    path('search_requests', csrf_exempt(views.search_requests), name='search_requests')
+    path('search_requests', csrf_exempt(views.search_requests), name='search_requests'),
+    path('user/all_requests', views.all_requests, name='all_requests')
 ]
