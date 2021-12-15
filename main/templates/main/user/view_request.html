@@ -81,47 +81,51 @@
                                             </address>
                                         </div>
                                     </div>
-                                    <table class="table table-bordered">
+                                    <div class="table-responsive card-body">
+                                        <table class="table table-bordered">
 
-                                        <div class="text-center border-primary">محصولات انتخاب شده جهت مصرف در فروشگاه
-                                            ندامتگاه {{ request_r.branch.name }}
-                                        </div>
-                                        <thead>
-                                        <tr>
-                                            <th class="text-center">شماره</th>
-                                            <th class="text-center">نام کالا</th>
-                                            <th class="text-center">گروه</th>
-                                            <th class="text-center">تامین کننده</th>
-                                            <th class="text-center">برند</th>
-                                            <th class="text-center">کمیت</th>
-                                            <th class="text-center">قیمت نقدی استان</th>
-                                            <th class="text-center">قیمت دوماهه استان</th>
-                                            {% if request.user.groups.all.0.name != 'user' %}
-                                                <th class="text-center">قیمت خرید</th>
-                                                <th class="text-center">قیمت مصرف کننده</th>
-                                            {% endif %}
-                                        </tr>
-                                        </thead>
-                                        <tbody class='position-relative'>
-                                        {% for order in orders_r %}
+                                            <div class="text-center border-primary">محصولات انتخاب شده جهت مصرف در
+                                                فروشگاه
+                                                ندامتگاه {{ request_r.branch.name }}
+                                            </div>
+                                            <thead>
                                             <tr>
-                                                <td class="text-center">{{ forloop.counter }}</td>
-                                                <td class="text-center">{{ order.product.name }}</td>
-                                                <td class="text-center">{{ order.product.category.name }}</td>
-                                                <td class="text-center">{{ order.supplier.company_name }}</td>
-                                                <td class="text-center">{{ order.brand.company_name }}</td>
-                                                <td class="text-center">{{ order.quantity }} {{ order.product.based_quantity }}</td>
-                                                {% load humanize %}
-                                                <td class="text-center">{{ order.price|intcomma }} ریال</td>
-                                                <td class="text-center">{{ order.price_2m|intcomma }} ریال</td>
+                                                <th class="text-center">شماره</th>
+                                                <th class="text-center">نام کالا</th>
+                                                <th class="text-center">گروه</th>
+                                                <th class="text-center">تامین کننده</th>
+                                                <th class="text-center">برند</th>
+                                                <th class="text-center">کمیت</th>
+                                                <th class="text-center">قیمت نقدی استان</th>
+                                                <th class="text-center">قیمت دوماهه استان</th>
                                                 {% if request.user.groups.all.0.name != 'user' %}
-                                                    <td class="text-center">{{ order.buy_price|intcomma }} ریال</td>
-                                                    <td class="text-center">{{ order.sell_price|intcomma }} ریال</td>
+                                                    <th class="text-center">قیمت خرید</th>
+                                                    <th class="text-center">قیمت مصرف کننده</th>
                                                 {% endif %}
                                             </tr>
-                                        {% endfor %}
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody class='position-relative'>
+                                            {% for order in orders_r %}
+                                                <tr>
+                                                    <td class="text-center">{{ forloop.counter }}</td>
+                                                    <td class="text-center">{{ order.product.name }}</td>
+                                                    <td class="text-center">{{ order.product.category.name }}</td>
+                                                    <td class="text-center">{{ order.supplier.company_name }}</td>
+                                                    <td class="text-center">{{ order.brand.company_name }}</td>
+                                                    <td class="text-center">{{ order.quantity }} {{ order.product.based_quantity }}</td>
+                                                    {% load humanize %}
+                                                    <td class="text-center">{{ order.price|intcomma }} ریال</td>
+                                                    <td class="text-center">{{ order.price_2m|intcomma }} ریال</td>
+                                                    {% if request.user.groups.all.0.name != 'user' %}
+                                                        <td class="text-center">{{ order.buy_price|intcomma }} ریال</td>
+                                                        <td class="text-center">{{ order.sell_price|intcomma }} ریال
+                                                        </td>
+                                                    {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
 
 
                                     </p>

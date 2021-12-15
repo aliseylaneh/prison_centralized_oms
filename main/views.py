@@ -1669,14 +1669,14 @@ def search_requests(request):
         if number != '':
             if request.user.groups.all()[0].name == 'commercial_expert':
                 requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.supplier,
-                                                    request_status=Status.completed, expert_acceptation=request.user)
+                                                    request_status=Status.completed, expert=request.user)
             else:
                 requests_r = Request.objects.filter(number__exact=number, shipping_status=ShippingStatus.supplier,
                                                     request_status=Status.completed)
         else:
             if request.user.groups.all()[0].name == 'commercial_expert':
                 requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
-                                                    request_status=Status.completed, expert_acceptation=request.user)
+                                                    request_status=Status.completed, expert=request.user)
             else:
                 requests_r = Request.objects.filter(shipping_status=ShippingStatus.supplier,
                                                     request_status=Status.completed)
