@@ -100,8 +100,7 @@ def review_request(request):
 @allowed_users(['user', 'ceo', 'commercial_manager'])
 def requests(request):
     if request.user.groups.all()[0].name == 'user':
-        requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-acceptation_date',
-                                                                                            '-created_date')
+        requests_r = Request.objects.filter(user__email__exact=request.user.email).order_by('-created_date')
     elif request.user.groups.all()[0].name == 'ceo':
         requests_r = Request.objects.filter(shipping_status=ShippingStatus.requested,
                                             request_status=Status.ceo_review).order_by('-acceptation_date',
