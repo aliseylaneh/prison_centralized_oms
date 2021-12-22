@@ -1670,9 +1670,12 @@ def request_factors(request):
     paginator = Paginator(requests_r, 50)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
-
+    prisons_r = Prison.objects.all().order_by('-name')
+    prisonbranches_r = PrisonBranch.objects.all().order_by('-name')
     context = {
         'requests_r': requests_r,
+        'prisons_r': prisons_r,
+        'prisonbranches_r': prisonbranches_r,
         'page_obj': page_obj,
     }
 

@@ -122,6 +122,15 @@ function handleSearchRequest(flag) {
 
 }
 
+function handleSearchRequestExpert(flag) {
+    if (selectedPrison.value === "بنیاد" && selectedBranch.value === "زندان" && nameField.value === '') {
+    } else {
+        getRequestsForExpert(selectedPrison.value, selectedBranch.value, nameField.value, '', flag)
+    }
+
+
+}
+
 
 function resetRequestFound() {
     noResult.style.display = "none"
@@ -191,4 +200,67 @@ function getRequests(prison, branch, number, date, flag) {
             }
         });
 }
+
+function getRequestsForExpert(prison, branch, number, date, flag) {
+    paginationContainer.style.display = "none";
+    $("#loadingBar").show()
+    tableBody.innerHTML = ""
+    fetch("/search_requests", {
+        body: JSON.stringify({prison: prison, branch: branch, number: number, date: date, flag: flag}),
+        method: "POST",
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log("data", data);
+            appTable.style.display = "none";
+            tableOutput.style.display = "block";
+
+            if (data.length === 0) {
+                noResult.style.display = "block"
+                tableOutput.style.display = "none"
+            } else {
+
+                $("#loadingBar").hide()
+                data.requests.forEach(item => {
+
+
+                    tableBody.innerHTML += `
+                                <tr>
+                                            <td class="text-center">${item.number}</td>
+                                            <td class="text-center">${item.prison}</td>
+                                            <td class="text-center"><label
+                                                    class="badge badge-secondary"
+                                                    style="font-size: 13px;">${item.status}</label>
+                                            </td>
+                                            <td class="text-center"><label class="badge badge-info"
+                                                                           style="font-size: 13px;">${item.sstatus}</label>
+                                            </td>
+
+                                            <td class="text-center"><span
+                                                    class="text-center">${item.branch}</span>
+                                            </td>
+
+                                            <td class="text-center"><span
+                                                    class="">${item.created_date_time} ${item.created_date} </span>
+                                            </td>
+                                            <td class="text-center"><span
+                                                    class="">${item.submitted_time} ${item.submitted_date}</span>
+                                            </td>
+                                            <td class="text-center"><a href="/get_request/${item.number}/supplier_orders"
+                                                                       class="fa fa-check"
+                                                                       style="padding-top: 6px"></a>
+                                            </td>
+
+
+
+                                        </tr>
+
+                    `
+
+
+                });
+            }
+        });
+}
+
 
