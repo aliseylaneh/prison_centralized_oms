@@ -91,5 +91,12 @@ urlpatterns = [
     path('request_factors', views.request_factors, name='request_factors'),
 
     path('search_requests', csrf_exempt(views.search_requests), name='search_requests'),
-    path('user/all_requests', views.all_requests, name='all_request')
+    path('user/all_requests', views.all_requests, name='all_request'),
+    path('request/<str:req>/return_delivered_factor/<str:sup>',
+         csrf_exempt(views.return_delivered_factor), name='return_delivered_factor'),
+
+    path('request/<str:req>/submit_paid_factor/<str:sup>',
+         csrf_exempt(views.submit_paid_factor), name='submit_paid_factor'),
+    path('request/<str:req>/return_paid_factor/<str:sup>',
+         csrf_exempt(views.return_paid_factor), name='return_paid_factor')
 ]

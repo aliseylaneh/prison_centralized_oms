@@ -127,7 +127,7 @@ def requests(request):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['user', 'ceo', 'commercial_manager'])
+@allowed_users(['user', 'ceo', 'commercial_manager','commercial_expert'])
 def all_requests(request):
     requests_r = Request.objects.all().order_by('-created_date')
     paginator = Paginator(requests_r, 50)
@@ -565,10 +565,8 @@ def edit_get_rs_orders_factor(request, pk, ord):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['user', 'ceo'])
+@allowed_users(['user', 'ceo', 'financial_manager'])
 def submit_delivered_factor(request, req, sup):
-    # request_number = json.loads(request.body).get('request_number')
-    # supplier_id = json.loads(request.body).get('supplier_id')
     request_r = Request.objects.get(number=req)
     supplier_r = Supplier.objects.get(id=sup)
     deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
@@ -579,9 +577,55 @@ def submit_delivered_factor(request, req, sup):
     deliver_date.status = 1
     deliver_date.number = request_r.number + str(deliver_date.id)
     deliver_date.received_date = timezone.now()
+    deliver_date.last_edition = request.user
     deliver_date.save()
     return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
-    # return JsonResponse({}, safe=False)
+
+
+@login_required(login_url='account:login')
+@allowed_users(['user', 'ceo', 'financial_manager'])
+def return_delivered_factor(request, req, sup):
+    request_r = Request.objects.get(number=req)
+    supplier_r = Supplier.objects.get(id=sup)
+    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+
+    if deliver_date.paid_factor:
+        messages.error(request,
+                       f"امکان برگشت رسید تحویل انبار به دلیل تایید نهایی فاکتور کالای ارسالی، در دسترس نمی باشد.")
+        return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
+    deliver_date.status = 0
+    deliver_date.returned_date = timezone.now()
+    deliver_date.last_edition = request.user
+    deliver_date.save()
+    return redirect(reverse('main:get_rs_orders_factor', kwargs={'pk': req, 'ord': sup}))
+
+
+@login_required(login_url='account:login')
+@allowed_users(['user', 'ceo', 'financial_manager'])
+def submit_paid_factor(request, req, sup):
+    request_r = Request.objects.get(number=req)
+    supplier_r = Supplier.objects.get(id=sup)
+    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+
+    deliver_date.paid_factor = 1
+    deliver_date.paid_factor_sbd = timezone.now()
+    deliver_date.paid_factor_le = request.user
+    deliver_date.save()
+    return redirect(reverse('main:hamifactor', kwargs={'pk': req, 'ord': sup}))
+
+
+@login_required(login_url='account:login')
+@allowed_users(['user', 'ceo', 'financial_manager'])
+def return_paid_factor(request, req, sup):
+    request_r = Request.objects.get(number=req)
+    supplier_r = Supplier.objects.get(id=sup)
+    deliver_date = DeliverDate.objects.get(request=request_r, supplier=supplier_r)
+
+    deliver_date.paid_factor = 0
+    deliver_date.paid_factor_rd = timezone.now()
+    deliver_date.paid_factor_le = request.user
+    deliver_date.save()
+    return redirect(reverse('main:hamifactor', kwargs={'pk': req, 'ord': sup}))
 
 
 @login_required(login_url='account:login')

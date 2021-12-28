@@ -159,32 +159,26 @@
 
                                 <div class="row gutters pt-4">
                                     <div class="col-1 no-print" id="print-button">
-                                        {% if request.user.groups.all.0.name == 'ceo' %}
-                                            {% if deliver_date.status == 0 %}
-                                                <form action="#">
-                                                    <button type="submit" class="btn btn-info float-right ml-2"
-                                                            style="margin-right: 5px;" id="editButton">
-                                                        <i class="fa fa-edit"></i> ویرایش
-                                                    </button>
-                                                </form>
-                                            {% endif %}
-                                        {% endif %}
-
-                                    </div>
-                                    <div class="col-1 no-print" id="print-button">
-                                        {% if request.user.groups.all.0.name == 'ceo' %}
-                                            {% if deliver_date.status == 0 %}
-                                                <form action="#">
+                                        {% if request.user.groups.all.0.name == 'financial_manager' or request.user.groups.all.0.name == 'ceo' %}
+                                            {% if deliver_date.paid_factor == 0 %}
+                                                <form action="/request/{{ request_r.number }}/submit_paid_factor/{{ supplier_r.id }}">
                                                     <button type="submit" class="btn btn-danger float-right ml-2"
-                                                            style="margin-right: 5px;" id="submitButton">
-                                                        <i class="fa fa-check"></i> ثبت نهایی فاکتور
+                                                            style="margin-right: 5px;" id="editButton">
+                                                        <i class="fa fa-check"></i> تایید فاکتور
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <form action="/request/{{ request_r.number }}/return_paid_factor/{{ supplier_r.id }}">
+                                                    <button type="submit" class="btn btn-warning float-right ml-2"
+                                                            style="margin-right: 5px;" id="editButton">
+                                                        <i class="fa fa-forward"></i> برگشت فاکتور
                                                     </button>
                                                 </form>
                                             {% endif %}
                                         {% endif %}
 
                                     </div>
-                                    <div class="col-10 no-print" id="print-button">
+                                    <div class="col-11 no-print" id="print-button">
                                         <form action="/get_request/{{ request_r.number }}/supplier_orders">
                                             <button type="submit" class="btn btn-info float-left ml-2"
                                                     style="margin-right: 5px;">

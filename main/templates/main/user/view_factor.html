@@ -101,6 +101,15 @@
                                                         <i class="fa fa-edit"></i> ویرایش
                                                     </button>
                                                 </form>
+                                            {% else %}
+                                                {% if deliver_date.paid_factor == 0 %}
+                                                    <form action="/request/{{ request_r.number }}/return_delivered_factor/{{ supplier_r.id }}">
+                                                        <button type="submit" class="btn btn-warning float-right ml-2"
+                                                                style="margin-right: 5px;" id="editButton">
+                                                            <i class="fa fa-forward"></i> برگشت دادن رسید
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
                                             {% endif %}
                                         {% endif %}
 

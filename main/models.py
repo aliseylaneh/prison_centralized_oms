@@ -281,6 +281,12 @@ class DeliverDate(models.Model):
     number = models.CharField(max_length=255, null=True, unique=True)
     total_price = models.BigIntegerField(default=0)
     received_date = models.DateField(null=True)
+    returned_date = models.DateField(null=True)
+    last_edition = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    paid_factor = models.BooleanField(default=False)
+    paid_factor_sbd = models.DateField(null=True)
+    paid_factor_rd = models.DateField(null=True)
+    paid_factor_le = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='paid_factor_le')
 
     class Meta:
         unique_together = [['request', 'supplier']]

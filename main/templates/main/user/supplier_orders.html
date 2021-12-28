@@ -44,7 +44,7 @@
                                         {% if request.user.groups.all.0.name != 'user' %}
                                             <th class="text-center">مشاهده</th>
                                         {% else %}
-                                            <th class="text-center">مشاهده</th>
+                                            <th class="text-center">رسید تحویل کالا</th>
                                         {% endif %}
                                         {% if request.user.groups.all.0.name != 'user' %}
                                             <th class="text-center">رسید تحویل کالا</th>
@@ -75,7 +75,7 @@
                                             {% else %}
                                                 <td class="text-center"><a
                                                     href="/get_request/{{ request_r.number }}/supplier_orders/{{ key }}/factor"
-                                                    class="fa fa-shopping-cart"
+                                                    class="fa fa-ship"
                                                     style="padding-top: 6px"></a>
                                             {% endif %}
                                             {% if request.user.groups.all.0.name != 'user' %}
