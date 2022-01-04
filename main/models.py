@@ -274,19 +274,20 @@ class SupplierProduct(models.Model):
 
 
 class DeliverDate(models.Model):
-    request = models.ForeignKey(Request, null=True, on_delete=models.CASCADE)
-    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.CASCADE)
-    date = models.DateField(null=True)
-    status = models.BooleanField(default=False)
-    number = models.CharField(max_length=255, null=True, unique=True)
-    total_price = models.BigIntegerField(default=0)
-    received_date = models.DateField(null=True)
-    returned_date = models.DateField(null=True)
+    request = models.ForeignKey(Request, null=True, on_delete=models.CASCADE, blank=True)
+    supplier = models.ForeignKey(Supplier, null=True, on_delete=models.CASCADE, blank=True)
+    date = models.DateField(null=True, blank=True)
+    status = models.BooleanField(default=False, blank=True)
+    number = models.CharField(max_length=255, null=True, unique=True, blank=True)
+    total_price = models.BigIntegerField(default=0, blank=True)
+    received_date = models.DateField(null=True, blank=True)
+    returned_date = models.DateField(null=True, blank=True)
     last_edition = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    paid_factor = models.BooleanField(default=False)
-    paid_factor_sbd = models.DateField(null=True)
-    paid_factor_rd = models.DateField(null=True)
-    paid_factor_le = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='paid_factor_le')
+    paid_factor = models.BooleanField(default=False, blank=True)
+    paid_factor_sbd = models.DateField(null=True, blank=True)
+    paid_factor_rd = models.DateField(null=True, blank=True)
+    paid_factor_le = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='paid_factor_le',
+                                       blank=True)
 
     class Meta:
         unique_together = [['request', 'supplier']]
