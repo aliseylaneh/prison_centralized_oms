@@ -254,6 +254,9 @@ class Order(models.Model):
             'price_2m': self.price_2m
         }
 
+    def __str__(self):
+        return self.product.name + ' ' + self.request.number
+
 
 class SupplierProduct(models.Model):
     request = models.ForeignKey(Request, null=True, on_delete=models.SET_NULL)
@@ -282,7 +285,7 @@ class DeliverDate(models.Model):
     total_price = models.BigIntegerField(default=0, blank=True)
     received_date = models.DateField(null=True, blank=True)
     returned_date = models.DateField(null=True, blank=True)
-    last_edition = models.ForeignKey(User, null=True, on_delete=models.SET_NULL,blank=True)
+    last_edition = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, blank=True)
     paid_factor = models.BooleanField(default=False, blank=True)
     paid_factor_sbd = models.DateField(null=True, blank=True)
     paid_factor_rd = models.DateField(null=True, blank=True)
