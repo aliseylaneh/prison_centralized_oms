@@ -6,6 +6,7 @@
     <title>سامانه تدارکات حامیان امید فردا</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'plugins/pdpa/js-persian-cal.css' %}"/>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{% static 'plugins/font-awesome/css/font-awesome.min.css' %}">
     <!-- Ionicons -->
@@ -21,10 +22,7 @@
     <!-- jvectormap -->
     <link rel="stylesheet" href="{% static 'plugins/jvectormap/jquery-jvectormap-1.2.2.css' %}">
     <!-- Date Picker -->
-    <link rel="stylesheet" href="{% static 'plugins/datepicker/datepicker3.css' %}">
     <link rel="stylesheet" href="{% static 'dist/css/kamadatepicker.min.css' %}">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker-bs3.css' %}">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css' %}">
     <!-- Google Font: Source Sans Pro -->
@@ -39,6 +37,7 @@
     <!-- template rtl version -->
     <link rel="stylesheet" href="{% static 'dist/css/custom-style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.0.0-rc.2/dist/css/tom-select.css" rel="stylesheet">
+
 
     <style>
         .bootstrap-select.btn-group .btn .filter-option {
@@ -145,9 +144,6 @@
 <script src="{% static 'plugins/knob/jquery.knob.js' %}"></script>
 <!-- daterangepicker -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
-<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
-<!-- datepicker -->
-<script src="{% static 'plugins/datepicker/bootstrap-datepicker.js' %}"></script>
 <!-- Bootstrap WYSIHTML5 -->
 <script src="{% static 'plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js' %}"></script>
 <!-- Slimscroll -->
@@ -165,6 +161,12 @@
 
 </body>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $("#datepicker4").datepicker({
+            changeMonth: true,
+            changeYear: true,
+        });
+    });
     $(function () {
         $('.select2').select2()
     });

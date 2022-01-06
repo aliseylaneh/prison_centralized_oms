@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'account.apps.MainConfig',
+    'account.apps.AccountConfig',
     'main.apps.MainConfig',
+    'reports.apps.ReportsConfig',
     'rest_framework',
     'import_export',
     'django.contrib.humanize'
@@ -87,7 +88,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'USER': 'root',
-        'PASSWORD': 'St@03f2d3026c'
+        'PASSWORD': '03f2d3026c'
     }
 }
 # Password validation
