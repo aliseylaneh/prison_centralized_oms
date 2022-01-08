@@ -6,6 +6,7 @@ app_name = 'reports'
 
 urlpatterns = [
 
-    path('report', views.report_home, name='report')
+    path('report', views.report_home, name='report'),
+    path('category_report', csrf_exempt(views.search_category), name='category_report')
 
 ]
