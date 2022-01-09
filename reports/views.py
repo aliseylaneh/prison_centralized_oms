@@ -139,10 +139,12 @@ def review_request(request):
         for order in orders:
 
             supplier_product_price = SupplierProduct.objects.filter(request=request_n, product=order.product,
-                                                                    supplier=order.supplier, brand=order.brand)
+                                                                    supplier=order.supplier,
+                                                                    brand=order.brand).order_by("-created_date")
             if len(supplier_product_price) == 0:
                 supplier_product_price = SupplierProduct.objects.filter(product=order.product,
-                                                                        supplier=order.supplier, brand=order.brand)
+                                                                        supplier=order.supplier,
+                                                                        brand=order.brand).order_by("-created_date")
                 if len(supplier_product_price) != 0:
                     sellprice = supplier_product_price[0].price2m
                     buyprice = supplier_product_price[0].price
