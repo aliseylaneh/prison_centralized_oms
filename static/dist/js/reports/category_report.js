@@ -7,11 +7,13 @@ const requestTable = document.getElementById('request-table')
 const modalBody = document.getElementById('modalBody')
 
 function CrepServerCallOut() {
+
     category_name = document.getElementById('selected-category').value
     prison_id = document.getElementById('selected-prison').value
     start_date = document.getElementById('pcal1').value
     end_date = document.getElementById('pcal2').value
     if (category_name !== '0') {
+        $("#loadingBar").show()
         $.ajax({
             method: 'post',
             url: '/category_report',
@@ -23,6 +25,7 @@ function CrepServerCallOut() {
                 'prison_id': prison_id
             }),
             success: function (data) {
+                $("#loadingBar").hide()
                 requestTable.innerHTML = ''
                 ordercount.innerHTML = data.orders_count
                 if (data.orders_count_quantity !== null) {
