@@ -96,6 +96,7 @@ def review_request(request):
         return JsonResponse(data, safe=False)
 
 
+
 @login_required(login_url='account:login')
 @allowed_users(['user', 'ceo', 'commercial_manager'])
 def requests(request):

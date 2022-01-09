@@ -61,7 +61,6 @@ function getData(searchValue, categoryValue, supplierValue) {
     })
         .then((res) => res.json())
         .then((data) => {
-            console.log("data", data);
             appTable.style.display = "none";
             tableOutput.style.display = "block";
             noResult.style.display = "none"

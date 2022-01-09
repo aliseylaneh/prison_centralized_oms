@@ -62,6 +62,7 @@ class Category(models.Model):
     suppliers = models.ManyToManyField(Brand, verbose_name='suppliers')
     description = models.CharField(max_length=50, null=True)
     user_expert = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    created_date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -84,6 +85,7 @@ class Product(models.Model):
     description = models.CharField(max_length=255, null=True)
     tax = models.FloatField(default=9)
     profit = models.FloatField(default=3)
+    created_date = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.name
@@ -224,7 +226,7 @@ class Order(models.Model):
     quantity = models.IntegerField(default=0)
     sell_deliver_price = models.BigIntegerField(default=0)
     delivered_quantity = models.IntegerField(default=0)
-    created_date = models.DateTimeField(default=timezone.now)
+    created_date = models.DateField(default=timezone.now)
     price = models.BigIntegerField(default=0)
     price_2m = models.BigIntegerField(default=0)
     sell_price = models.BigIntegerField(default=0)
