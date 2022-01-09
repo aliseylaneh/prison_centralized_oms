@@ -139,22 +139,19 @@ def review_request(request):
         for order in orders:
             try:
                 supplier_product_price = SupplierProduct.objects.filter(request=request_n, product=order.product,
-                                                                        supplier=order.supplier)
-                if len(supplier_product_price) != 0:
-                    sellprice = supplier_product_price[0].price2m
-                    buyprice = supplier_product_price[0].price
-                else:
-                    sellprice = 0
-                    buyprice = 0
+                                                                        supplier=order.supplier, brand=order.brand)
+
             except SupplierProduct.DoesNotExist:
                 supplier_product_price = SupplierProduct.objects.filter(product=order.product,
-                                                                        supplier=order.supplier)
-                if len(supplier_product_price) != 0:
-                    sellprice = supplier_product_price[0].price2m
-                    buyprice = supplier_product_price[0].price
-                else:
-                    sellprice = 0
-                    buyprice = 0
+                                                                        supplier=order.supplier, brand=order.brand)
+
+            if len(supplier_product_price) != 0:
+                sellprice = supplier_product_price[0].price2m
+                buyprice = supplier_product_price[0].price
+            else:
+                sellprice = 0
+                buyprice = 0
+
             request_orders.append({'product_name': order.product.name, 'product_category': order.product.category.name,
                                    'product_supplier': order.supplier.company_name,
                                    'product_brand': order.brand.company_name, 'product_quantity': order.quantity,
