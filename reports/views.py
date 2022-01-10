@@ -12,7 +12,7 @@ import json
 import logging
 import unittest
 from datetime import date
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 import django
 import jdatetime
 import xlsxwriter
@@ -30,8 +30,8 @@ from account.decorators import *
 from main.models import *
 
 
+# Category Report
 @login_required(login_url='account:login')
-@allowed_users(['administrator'])
 def report_home(request):
     category = Category.objects.get(name='دخانیات')
     categories = Category.objects.all()
@@ -47,11 +47,10 @@ def report_home(request):
         'requests': requests,
         'prisons': prisons
     }
-    return render(request, 'reports/home.html', context)
+    return render(request, 'reports/category_report.html', context)
 
 
 @login_required(login_url='account:login')
-@allowed_users(['administrator'])
 def search_category(request):
     if request.method == 'POST':
         category_name = json.loads(request.body).get('category_name')
@@ -117,7 +116,6 @@ def search_category(request):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['administrator'])
 def review_request(request):
     if request.method == 'POST':
         request_number = json.loads(request.body).get('request_number')
@@ -169,3 +167,70 @@ def review_request(request):
             'request': retrieved_request
         }
         return JsonResponse(data, safe=False)
+
+
+# Product Report
+def product_report(request):
+    categories = Category.objects.all()
+
+    context = {
+        'categories': categories
+    }
+    return render(request, "reports/product_report.html", context)
+
+
+def search_product(request):
+    product_id = json.loads(request.body).get('product_id')
+    supplier_id = json.loads(request.body).get('supplier_id')
+    start_date = json.loads(request.body).get('start_date')
+    end_date = json.loads(request.body).get('end_date')
+    product = Product.objects.get(id=product_id)
+    supplier = Supplier.objects.get(company_name=supplier_id)
+    if supplier.company_name != 'بدون تامین کننده':
+        supplier_products = SupplierProduct.objects.filter(product=product, supplier=supplier)
+    else:
+        supplier_products = SupplierProduct.objects.filter(product=product)
+
+    if start_date != '' and end_date != '':
+        start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+        end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+        supplier_products = supplier_products.filter(created_date__range=[start_date, end_date])
+    elif start_date != '' and end_date == '':
+        start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+        supplier_products = supplier_products.filter(created_date__gte=start_date)
+    elif start_date == '' and end_date != '':
+        end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+        supplier_products = supplier_products.filter(created_date__lte=end_date)
+
+    supplier_products = supplier_products.order_by("-created_date")
+    supplier_count = supplier_products.values('supplier').distinct().count()
+    brand_count = supplier_products.values('brand').exclude(brand__company_name='بدون برند').distinct().count()
+    request_count = supplier_products.values('request').distinct().count()
+    buy_price_avg = supplier_products.aggregate(Avg('price'))['price__avg']
+    sell_price_avg = supplier_products.aggregate(Avg('price2m'))['price2m__avg']
+    most_supplier = supplier_products.values_list('supplier', 'supplier__company_name').annotate(
+        supplier_count=Count('supplier')).order_by(
+        '-supplier_count')
+    most_supplier_count = most_supplier[0][2]
+    most_supplier = most_supplier[0][1]
+    latest_supplier = supplier_products[0].supplier.company_name
+
+    data = []
+    for supplier in supplier_products:
+        data.append({'product_name': supplier.product.name, 'supplier_name': supplier.supplier.company_name,
+                     'brand_name': supplier.brand.company_name,
+                     'price': supplier.price, 'price2m': supplier.price2m,
+                     'created_date': f'{supplier.get_created_time} {supplier.get_created_date}'})
+
+    context = {
+        'data': data,
+        'supplier_count': supplier_count,
+        'brand_count': brand_count,
+        'request_count': request_count,
+        'buy_price_avg': buy_price_avg,
+        'sell_price_avg': sell_price_avg,
+        'most_supplier': most_supplier,
+        'latest_supplier': latest_supplier
+
+    }
+    return JsonResponse(context, safe=False)

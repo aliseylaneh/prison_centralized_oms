@@ -96,7 +96,6 @@ def review_request(request):
         return JsonResponse(data, safe=False)
 
 
-
 @login_required(login_url='account:login')
 @allowed_users(['user', 'ceo', 'commercial_manager'])
 def requests(request):
@@ -128,7 +127,7 @@ def requests(request):
 
 
 @login_required(login_url='account:login')
-@allowed_users(['user', 'ceo', 'commercial_manager','commercial_expert'])
+@allowed_users(['user', 'ceo', 'commercial_manager', 'commercial_expert'])
 def all_requests(request):
     requests_r = Request.objects.all().order_by('-created_date')
     paginator = Paginator(requests_r, 50)
@@ -1148,7 +1147,7 @@ def add_supplier(request):
 
 # Product CRUD
 
-@allowed_users(allowed_roles=['site_admin', 'user'])
+@allowed_users(allowed_roles=['site_admin', 'user', 'ceo', 'commercial_manager', 'commercial_expert','administrator'])
 @login_required(login_url='account:login')
 def search_products(request):
     if request.method == 'POST':
