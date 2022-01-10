@@ -134,6 +134,7 @@ function PrepServerCallOut(product_id) {
                                     <td class="text-center"">${numberWithCommas(item.price2m)} ریال</td>
                                     <td class="text-center">${margin.toFixed(2)}</td>
                                     <td class="text-center"">${item.created_date}</td>
+                                    <td class="text-center">${item.last_edition}</td>
                                 </tr>
 
                     `

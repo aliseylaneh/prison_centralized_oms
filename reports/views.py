@@ -220,7 +220,8 @@ def search_product(request):
         data.append({'product_name': supplier.product.name, 'supplier_name': supplier.supplier.company_name,
                      'brand_name': supplier.brand.company_name,
                      'price': supplier.price, 'price2m': supplier.price2m,
-                     'created_date': f'{supplier.get_created_time} {supplier.get_created_date}'})
+                     'created_date': f'{supplier.get_created_time} {supplier.get_created_date}',
+                     'last_edition': supplier.last_edition.userprofile.first_name + ' ' + supplier.last_edition.userprofile.last_name if supplier.last_edition is not None else 'نامعلوم'})
 
     context = {
         'data': data,

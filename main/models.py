@@ -267,6 +267,7 @@ class SupplierProduct(models.Model):
     price = models.BigIntegerField(default=0)
     price2m = models.BigIntegerField(default=0)
     created_date = models.DateTimeField(default=datetime.now())
+    last_edition = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, blank=True)
 
     @property
     def get_created_date(self):

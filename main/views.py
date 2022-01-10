@@ -1147,7 +1147,7 @@ def add_supplier(request):
 
 # Product CRUD
 
-@allowed_users(allowed_roles=['site_admin', 'user', 'ceo', 'commercial_manager', 'commercial_expert','administrator'])
+@allowed_users(allowed_roles=['site_admin', 'user', 'ceo', 'commercial_manager', 'commercial_expert', 'administrator'])
 @login_required(login_url='account:login')
 def search_products(request):
     if request.method == 'POST':
@@ -1609,7 +1609,7 @@ def add_supplier_price(request):
     request_r = Request.objects.get(number=request_number)
 
     SupplierProduct.objects.create(request=request_r, product=product, supplier=supplier, brand=brand, price=price,
-                                   price2m=price2m, created_date=datetime.now())
+                                   price2m=price2m, created_date=datetime.now(), last_edition=request.user)
 
     data = {
         'message': 'قیمت جدید برای تامین کننده مورد نظر به همراه برند آن ثبت شد'
