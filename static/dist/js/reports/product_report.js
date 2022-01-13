@@ -125,7 +125,9 @@ function PrepServerCallOut(product_id) {
                 priceTableHeader.style.display = "block"
                 tableOutput.style.display = "none"
                 data.data.forEach(item => {
-                    let margin = ((item.price2m - item.price) / item.price2m) * 100
+                    let margin = 0
+                    if (item.price2m !== 0)
+                        margin = ((item.price2m - item.price) / item.price2m) * 100
                     priceTable.innerHTML += `
                                 <tr>
                                     <td class="text-center"">${item.supplier_name}</td>

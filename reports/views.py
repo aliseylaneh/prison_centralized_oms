@@ -252,7 +252,6 @@ def product_detailed_report(request):
 
 def search_detailed_product(request):
     product_id = json.loads(request.body).get('product_id')
-    prison_id = json.loads(request.body).get('prison_id')
     start_date = json.loads(request.body).get('start_date')
     end_date = json.loads(request.body).get('end_date')
     product = Product.objects.get(id=product_id)

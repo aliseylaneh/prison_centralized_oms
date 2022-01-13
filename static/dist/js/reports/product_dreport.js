@@ -79,11 +79,6 @@ function getProducts(searchValue, categoryValue, supplierValue) {
                 $("#loadingBar").hide()
                 var suppliers = '';
                 var product_suppliers = data.products[0].product_suppliers
-                for (var key in product_suppliers) {
-
-                    suppliers += '<option class="h-100" value="' + product_suppliers[key] + '">' + product_suppliers[key] + '</option>';
-
-                }
                 data.products.forEach(item => {
 
                     tableBody.innerHTML += `
@@ -91,12 +86,6 @@ function getProducts(searchValue, categoryValue, supplierValue) {
                                     <td class="text-center"">${item.id}</td>
                                     <td class="text-center">${item.name}</td>
                                     <td class="text-center"><span class="badge badge-success" style="font-size: 13px;" id="searchedCategory-${item.id}">${item.category_id}</span></td>
-                                    <td class="text-center ">
-                                        <select class="btn btn-outline-dark text-right w-100 responseSupplier-${item.id}" aria-label=".form-select-sm example" id="searchedSupplier-${item.id}">
-                                        <option value="بدون تامین کننده">تامین کننده</option>
-                                            ${suppliers}
-                                        </select>
-                                        </td>
                                     <td class="text-center"><span id="shoppingButton"  class="fa fa-list btn btn-outline-secondary" style="padding-top: 6px" onclick="PrepServerCallOut(${item.id})"></span></td>
                                 </tr>
 
@@ -108,11 +97,9 @@ function getProducts(searchValue, categoryValue, supplierValue) {
 
 
 function PrepServerCallOut(product_id) {
-    let supplier_id = document.getElementById('searchedSupplier-' + product_id).value
-    start_date = document.getElementById('pcal1').value
-    end_date = document.getElementById('pcal2').value
+    let start_date = document.getElementById('pcal1').value
+    let end_date = document.getElementById('pcal2').value
     let myproduct = {
-        'supplier_id': supplier_id,
         'product_id': product_id,
         'start_date': start_date,
         'end_date': end_date
