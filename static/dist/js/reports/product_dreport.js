@@ -4,8 +4,9 @@ const selectedCategory = document.getElementById("selected-category");
 const tableOutput = document.querySelector(".table-output");
 tableOutput.style.display = 'none';
 const tableBody = document.querySelector(".table-body")
-const priceTable = document.querySelector('.priceTable')
-const resultTable = document.getElementById('resultTable')
+const priceTable = document.querySelector('.prisonTable')
+const supplierTable = document.querySelector('.supplierTable')
+const requestTable = document.querySelector('.requestTable')
 const priceTableHeader = document.getElementById('priceTableHeader')
 
 let supplierCounter = document.getElementById('suppliercount')
@@ -53,6 +54,9 @@ function clearDates() {
 function backTable() {
     tableOutput.style.display = "block"
     priceTableHeader.style.display = "none"
+    requestTable.innerHTML = ''
+    priceTable.innerHTML = ''
+    supplierTable.innerHTML = ''
 }
 
 
@@ -115,27 +119,49 @@ function PrepServerCallOut(product_id) {
         'end_date': end_date
     }
     priceTable.innerHTML = '';
+    supplierTable.innerHTML = '';
+    requestTable.innerHTML = '';
     $.ajax({
-        url: '/product_search_report',
+        url: '/search_detailed_product',
         data: JSON.stringify(myproduct),
         dataType: 'json',
         method: 'POST',
         success: function (data) {
-            if (data.data.length !== 0) {
+            if (data.orders_count !== 0) {
                 priceTableHeader.style.display = "block"
                 tableOutput.style.display = "none"
-                data.data.forEach(item => {
-                    let margin = ((item.price2m - item.price) / item.price2m) * 100
+                data.prisons_response.forEach(item => {
                     priceTable.innerHTML += `
                                 <tr>
+                                    <td class="text-center"">${item.prison_name}</td>
+                                    <td class="text-center"">${item.order_quantity}</td>
+                                    <td class="text-center">${item.order_counter}</td>
+                                </tr>
+
+                    `
+                })
+                data.suppliers_response.forEach(item => {
+                    supplierTable.innerHTML += `
+                                <tr>
                                     <td class="text-center"">${item.supplier_name}</td>
-                                    <td class="text-center"">${item.product_name}</td>
-                                    <td class="text-center">${item.brand_name}</td>
-                                    <td class="text-center"">${numberWithCommas(item.price)} ریال</td>
-                                    <td class="text-center"">${numberWithCommas(item.price2m)} ریال</td>
-                                    <td class="text-center">${margin.toFixed(2)}</td>
-                                    <td class="text-center"">${item.created_date}</td>
-                                    <td class="text-center">${item.last_edition}</td>
+                                    <td class="text-center"">${item.order_quantity}</td>
+                                    <td class="text-center">${item.order_counter}</td>
+                                </tr>
+
+                    `
+                })
+                data.requests_response.forEach(item => {
+                    requestTable.innerHTML += `
+                                <tr>
+                                    <td class="text-center"">${item.request_number}</td> 
+                                    <td class="text-center">${item.request_prison}</td>
+                                    <td class="text-center"">${item.request_branch}</td>
+                                    <td class="text-center"">${item.order_supplier}</td>
+                                    <td class="text-center">${item.order_brand}</td>
+                                    <td class="text-center"">${item.order_quantity}</td>
+                                    <td class="text-center"">${item.order_delivered_quantity}</td>
+                                    <td class="text-center">${item.order_sell_price}</td>
+                                    <td class="text-center">${item.order_dsell_price}</td>
                                 </tr>
 
                     `
@@ -150,7 +176,7 @@ function PrepServerCallOut(product_id) {
 
 
             } else {
-                window.alert('اطلاعاتی درخصوص قیمت های ثبت شده برای کالای مورد نظر در سامانه وجود ندارد')
+                window.alert("اطلاعاتی درمورد کالای مورد نظر در قیمت سفارشات وجود ندارد")
             }
         }
     })
