@@ -134,8 +134,8 @@ function PrepServerCallOut(product_id) {
                     priceTable.innerHTML += `
                                 <tr>
                                     <td class="text-center"">${item.prison_name}</td>
-                                    <td class="text-center"">${item.order_quantity}</td>
                                     <td class="text-center">${item.order_counter}</td>
+                                    <td class="text-center"">${item.order_quantity}</td>
                                 </tr>
 
                     `
@@ -144,8 +144,8 @@ function PrepServerCallOut(product_id) {
                     supplierTable.innerHTML += `
                                 <tr>
                                     <td class="text-center"">${item.supplier_name}</td>
-                                    <td class="text-center"">${item.order_quantity}</td>
                                     <td class="text-center">${item.order_counter}</td>
+                                    <td class="text-center"">${item.order_quantity}</td>
                                 </tr>
 
                     `
