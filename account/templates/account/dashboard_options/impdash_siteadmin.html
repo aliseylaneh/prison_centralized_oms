@@ -24,7 +24,7 @@
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     {% with url_name=request.resolver_match.url_name %}
-                        <li class="nav-item has-treeview {% if 'product' in url_name or 'categories' in url_name or 'brands' in url_name or 'add_brand' in url_name %} menu-open {% endif %}">
+                        <li class="nav-item has-treeview {% if url_name == 'add_product' or url_name == 'categories' or url_name == 'brands' or url_name == 'products' or url_name == 'add_brand' %} menu-open {% endif %}">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fa fa-product-hunt"></i>
                                 <p>
@@ -130,6 +130,44 @@
                                            class="nav-link {% if url_name == 'prisons' %}active{% endif %}">
                                             <i class="fa fa-circle-o nav-icon"></i>
                                             <p>بنیاد ها</p>
+                                        </a>
+                                    </li>
+
+                                {% endwith %}
+                            </ul>
+                        </li>
+                    {% endwith %}
+
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item has-treeview {% if 'report' in url_name %} menu-open {% endif %}" hidden>
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fa fa-table"></i>
+                                <p>
+                                    گزارشات و استعلام
+                                    <i class="fa fa-angle-left right"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                {% with url_name=request.resolver_match.url_name %}
+                                    <li class="nav-item">
+                                        <a href="/report"
+                                           class="nav-link {% if url_name == 'category_report' %}active{% endif %}">
+                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <p>گروه کالایی</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="product_report"
+                                           class="nav-link {% if url_name == 'product_report' %}active{% endif %}">
+                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <p>کالا و مارجین</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="product_detailed_report"
+                                           class="nav-link {% if url_name == 'product_detailed_report' %}active{% endif %}">
+                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <p>استعلام خصوصی کالا</p>
                                         </a>
                                     </li>
 
