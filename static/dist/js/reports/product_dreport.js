@@ -9,13 +9,15 @@ const supplierTable = document.querySelector('.supplierTable')
 const requestTable = document.querySelector('.requestTable')
 const priceTableHeader = document.getElementById('priceTableHeader')
 
-let supplierCounter = document.getElementById('suppliercount')
-let brandCounter = document.getElementById('brandcount')
-let requestCounter = document.getElementById('requestcount')
-let bpAvg = document.getElementById('averagebuyprice')
-let spAvg = document.getElementById('averagesellprice')
-let mostUsedSupplier = document.getElementById('mostsubmitted')
-let latestSuppleir = document.getElementById('lastsupplier')
+let product_name = document.getElementById('product_name')
+let product_category = document.getElementById('product_category')
+let product_unit = document.getElementById('product_unit')
+let orders_count = document.getElementById('orders_count')
+let orders_quantity = document.getElementById('orders_quantity')
+let dp_sum = document.getElementById('dp_sum')
+let sdp_avg = document.getElementById('sdp_avg')
+let with_brand_count = document.getElementById('with_brand_count')
+let no_brand_count = document.getElementById('no_brand_count')
 
 
 function handleSearch() {
@@ -104,9 +106,6 @@ function getProducts(searchValue, categoryValue, supplierValue) {
         });
 }
 
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-}
 
 function PrepServerCallOut(product_id) {
     let supplier_id = document.getElementById('searchedSupplier-' + product_id).value
@@ -160,20 +159,21 @@ function PrepServerCallOut(product_id) {
                                     <td class="text-center">${item.order_brand}</td>
                                     <td class="text-center"">${item.order_quantity}</td>
                                     <td class="text-center"">${item.order_delivered_quantity}</td>
-                                    <td class="text-center">${item.order_sell_price}</td>
-                                    <td class="text-center">${item.order_dsell_price}</td>
+                                    <td class="text-center">${numberWithCommas(item.order_sell_price)}</td>
+                                    <td class="text-center">${numberWithCommas(item.order_dsell_price)}</td>
                                 </tr>
 
                     `
                 })
-                supplierCounter.innerHTML = data.supplier_count
-                brandCounter.innerHTML = data.brand_count
-                requestCounter.innerHTML = data.request_count
-                bpAvg.innerHTML = numberWithCommas(data.buy_price_avg)
-                spAvg.innerHTML = numberWithCommas(data.sell_price_avg)
-                mostUsedSupplier.innerHTML = data.most_supplier
-                latestSuppleir.innerHTML = data.latest_supplier
-
+                product_name.innerHTML = data.product_name
+                product_category.innerHTML = data.product_category
+                product_unit.innerHTML = data.product_unit
+                orders_count.innerHTML = data.orders_count
+                orders_quantity.innerHTML = data.orders_quantity
+                dp_sum.innerHTML = data.dq_sum
+                sdp_avg.innerHTML = numberWithCommas(data.sdp_avg)
+                with_brand_count.innerHTML = data.with_brand_count
+                no_brand_count.innerHTML = data.no_brand_count
 
             } else {
                 window.alert("اطلاعاتی درمورد کالای مورد نظر در قیمت سفارشات وجود ندارد")

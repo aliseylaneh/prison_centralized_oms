@@ -333,14 +333,14 @@ def search_detailed_product(request):
         'product_category': product_category,
         'product_unit': product_unit,
         'orders_count': orders_count,
-        'dq_sum': dq_sum,
-        'sdp_avg': sdp_avg,
+        'dq_sum': dq_sum['delivered_quantity__sum'],
+        'sdp_avg': sdp_avg['sell_deliver_price__avg'],
         'with_brand_count': with_brand_count,
         'no_brand_count': no_brand_count,
         'prisons_response': prison_response,
         'suppliers_response': suppliers_response,
         'requests_response': requests_response,
-        'orders_quantity': orders_quantity
+        'orders_quantity': orders_quantity['quantity__sum']
 
     }
     return JsonResponse(context, safe=False)

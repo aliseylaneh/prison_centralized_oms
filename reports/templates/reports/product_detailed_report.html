@@ -32,17 +32,17 @@
                                 </button>
 
                                 <br>
-                                <span class=""> انتخاب بنیاد:</span>
-                                <select class="btn btn-outline-dark show-tick dropdown" data-width="fit"
-                                        id="selected-prison">
-                                    <option value="">بنیاد</option>
-                                    {% for prison in prisons %}
-                                        <option onclick="" class="filter-supplier"
-                                                value="{{ prison.id }}">
-                                            {{ prison.name }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
+{#                                <span class=""> انتخاب بنیاد:</span>#}
+                                {#                                <select class="btn btn-outline-dark show-tick dropdown" data-width="fit"#}
+                                {#                                        id="selected-prison">#}
+                                {#                                    <option value="">بنیاد</option>#}
+                                {#                                    {% for prison in prisons %}#}
+                                {#                                        <option onclick="" class="filter-supplier"#}
+                                {#                                                value="{{ prison.id }}">#}
+                                {#                                            {{ prison.name }}#}
+                                {#                                        </option>#}
+                                {#                                    {% endfor %}#}
+                                {#                                </select>#}
                                 <span>از تاریخ:  </span>
                                 <input type="text" id="pcal1" class="pdate">
                                 <span>تا تاریخ: </span>
@@ -81,7 +81,7 @@
                                         <img src="..." class="card-img-top" alt="" hidden>
                                         <div class="card-body">
                                             <h6 class="card-text">واحد اندازه گیری</h6>
-                                            <p class="card-text" id="product_unit">0</p>
+                                            <p class="card-text" id="product_unit">نامعلوم</p>
                                         </div>
 
                                     </div>
@@ -97,7 +97,7 @@
                                         <img src="..." class="card-img-top" alt="" hidden>
                                         <div class="card-body">
                                             <h6 class="card-text">مقدار کل سفارشات</h6>
-                                            <p class="card-text" id="orders_quantitiy">0</p>
+                                            <p class="card-text" id="orders_quantity">0</p>
                                         </div>
 
                                     </div>
@@ -121,7 +121,7 @@
                                         <img src="..." class="card-img-top" alt="" hidden>
                                         <div class="card-body">
                                             <h6 class="card-text">تعداد سفارشات با برند</h6>
-                                            <p class="card-text" id="with_brand_count">نامعلوم</p>
+                                            <p class="card-text" id="with_brand_count">0</p>
                                         </div>
 
                                     </div>
