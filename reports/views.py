@@ -343,3 +343,76 @@ def search_detailed_product(request):
 
     }
     return JsonResponse(context, safe=False)
+
+
+@login_required(login_url='account:login')
+def request_status_report(request):
+    request_status = Status.values
+    shipping_status = ShippingStatus.values
+
+    context = {
+        "request_status": request_status,
+        "shipping_status": shipping_status
+    }
+    return render(request, 'reports/request_status_report.html', context)
+
+# @login_required(login_url='account:login')
+# def search_request(request):
+#     if request.method == 'POST':
+#         request_status = json.loads(request.body).get('selected-rstatus')
+#         shipping_status = json.loads(request.body).get('selected-sstatus')
+#         start_date = json.loads(request.body).get('start_date')
+#         end_date = json.loads(request.body).get('end_date')
+#
+#         if start_date != '' and end_date != '':
+#             start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+#             end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+#             orders_count = Order.objects.filter(product__category=category,
+#                                                 created_date__range=[start_date, end_date])
+#             requests_count = Order.objects.filter(product__category=category,
+#                                                   created_date__range=[start_date, end_date])
+#         elif start_date != '' and end_date == '':
+#             start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+#             orders_count = Order.objects.filter(product__category=category,
+#                                                 created_date__gte=start_date)
+#             requests_count = Order.objects.filter(product__category=category,
+#                                                   created_date__gte=start_date)
+#         elif start_date == '' and end_date != '':
+#             end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+#             orders_count = Order.objects.filter(product__category=category,
+#                                                 created_date__lte=end_date)
+#             requests_count = Order.objects.filter(product__category=category,
+#                                                   created_date__lte=end_date)
+#
+#
+#         else:
+#             orders_count = Order.objects.filter(product__category=category)
+#             requests_count = Order.objects.filter(product__category=category)
+#         if prison_id != '0':
+#             print(prison_id)
+#             prison = Prison.objects.get(id=prison_id)
+#             orders_count = orders_count.filter(request__prison=prison)
+#             requests_count = requests_count.filter(request__prison=prison).values('request__number',
+#                                                                                   'request__request_status',
+#                                                                                   'request__shipping_status',
+#                                                                                   'request__prison__name',
+#                                                                                   'request__branch__name').distinct().order_by(
+#                 'created_date')
+#         else:
+#             requests_count = requests_count.values('request__number',
+#                                                    'request__request_status',
+#                                                    'request__shipping_status',
+#                                                    'request__prison__name',
+#                                                    'request__branch__name').distinct().order_by(
+#                 'created_date')
+#         orders_count_quantity = orders_count.aggregate(Sum('quantity'))['quantity__sum']
+#     data = {
+#         'orders_count': orders_count.count(),
+#         'requests_count': requests_count.count(),
+#         'orders_count_quantity': orders_count_quantity,
+#         'expert': expert_fullname,
+#         'brand_count': brand_count,
+#         'requests': list(requests_count),
+#         'category': category.name
+#     }
+#     return JsonResponse(data, safe=False)

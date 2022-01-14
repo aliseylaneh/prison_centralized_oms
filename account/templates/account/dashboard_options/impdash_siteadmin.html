@@ -151,7 +151,7 @@
                                 {% with url_name=request.resolver_match.url_name %}
                                     <li class="nav-item">
                                         <a href="/report"
-                                           class="nav-link {% if url_name == 'category_report' %}active{% endif %}">
+                                           class="nav-link {% if url_name == 'report' %}active{% endif %}">
                                             <i class="fa fa-circle-o nav-icon"></i>
                                             <p>گروه کالایی</p>
                                         </a>
@@ -168,6 +168,13 @@
                                            class="nav-link {% if url_name == 'product_detailed_report' %}active{% endif %}">
                                             <i class="fa fa-circle-o nav-icon"></i>
                                             <p>استعلام خصوصی کالا</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="request-status-report"
+                                           class="nav-link {% if url_name == 'request-status-report' %}active{% endif %}">
+                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <p>وضعیت درخواست ها</p>
                                         </a>
                                     </li>
 
