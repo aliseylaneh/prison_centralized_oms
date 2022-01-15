@@ -1,73 +1,76 @@
-let ordercount = document.getElementById('ordercount')
-let fullordercount = document.getElementById('fullordercount')
 let requestcount = document.getElementById('requestcount')
-let categoryexpert = document.getElementById('categoryexpert')
-let brandcount = document.getElementById('brandcount')
 const requestTable = document.getElementById('request-table')
 const modalBody = document.getElementById('modalBody')
+let requestcountspecific = document.getElementById('requestcountspecific')
+let finalizedrequest = document.getElementById('finalizedrequest')
+let rejectedrequest = document.getElementById('rejectedrequest')
+let reqstatus = document.getElementById('reqstatus')
+let shippstatus = document.getElementById('shippstatus')
 
 function CrepServerCallOut() {
 
-    category_name = document.getElementById('selected-category').value
-    prison_id = document.getElementById('selected-prison').value
+    rstatus = document.getElementById('selected-category').value
+    sstatus = document.getElementById('selected-prison').value
     start_date = document.getElementById('pcal1').value
     end_date = document.getElementById('pcal2').value
-    if (category_name !== '0') {
-        $("#loadingBar").show()
-        $.ajax({
-            method: 'post',
-            url: '/request_search',
-            dataType: 'json',
-            data: JSON.stringify({
-                'category_name': category_name,
-                'start_date': start_date,
-                'end_date': end_date,
-                'prison_id': prison_id
-            }),
-            success: function (data) {
-                $("#loadingBar").hide()
-                requestTable.innerHTML = ''
-                ordercount.innerHTML = data.orders_count
-                if (data.orders_count_quantity !== null) {
-                    console.log(data.orders_count_quantity)
-                    fullordercount.innerHTML = data.orders_count_quantity
-                } else
-                    fullordercount.innerHTML = 0
-                requestcount.innerHTML = data.requests_count
-                categoryexpert.innerHTML = data.expert
-                brandcount.innerHTML = data.brand_count
-                data.requests.forEach(item => {
+    $("#loadingBar").show()
+    $.ajax({
+        method: 'post',
+        url: '/request-search-report',
+        dataType: 'json',
+        data: JSON.stringify({
+            'request_status': rstatus,
+            'start_date': start_date,
+            'end_date': end_date,
+            'shipping_status': sstatus
+        }),
+        success: function (data) {
+            $("#loadingBar").hide()
+            if (rstatus === '0')
+                reqstatus.innerHTML = 'همه'
+            else
+                reqstatus.innerHTML = rstatus
+            if (sstatus === '0')
+                shippstatus.innerHTML = 'همه'
+            else
+                shippstatus.innerHTML = sstatus
+            requestTable.innerHTML = ''
+            requestcount.innerHTML = data.rc
+            requestcountspecific.innerHTML = data.rsc
+            finalizedrequest.innerHTML = data.arc
+            rejectedrequest.innerHTML = data.rrc
+            if (data.requests.length === 0) {
+                requestcountspecific.innerHTML = '0'
+            }
+            data.requests.forEach(item => {
 
-
-                    requestTable.innerHTML += `
+                requestTable.innerHTML += `
                                 <tr>
-                                            <td class="text-center">${item.request__number}</td>
-                                            <td class="text-center">${item.request__prison__name}</td>
+                                            <td class="text-center">${item.number}</td>
+                                            <td class="text-center">${item.prison__name}</td>
                                             <td class="text-center"><label
-                                                    style="font-size: 13px;">${item.request__request_status}</label>
+                                                    style="font-size: 13px;">${item.request_status}</label>
                                             </td>
                                             <td class="text-center"><label
-                                                                          style="font-size: 13px;">${item.request__shipping_status}</label>
+                                                                          style="font-size: 13px;">${item.shipping_status}</label>
                                             </td>
 
                                             <td class="text-center"><span
-                                                    class="text-center">${item.request__branch__name}</span>
+                                                    class="text-center">${item.branch__name}</span>
                                             </td>
-                                            <td class="text-center no-print"><button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="ReviewRequest(${item.request__number})">مشاهده</button></a>
+                                            <td class="text-center no-print"><button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="ReviewRequest(${item.number})">مشاهده</button></a>
                                             </td>
                                         </tr>
 
                     `
 
 
-                });
+            });
 
-            }
-        })
+        }
+    })
 
-    } else {
-        window.alert('برای گزارش گیری باید یک گروه کالایی را انتخاب کنید')
-    }
+
 }
 
 function ReviewRequest(number) {

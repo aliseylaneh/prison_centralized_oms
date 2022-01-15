@@ -75,12 +75,21 @@
             </div>
 
         </div>
+
         <div class="row gutters justify-content-center">
-            <div class="card row gutters" style="width: 18rem; margin: 3px">
+            <div class="card" style="width: 18rem; margin: 3px">
                 <img src="..." class="card-img-top" alt="" hidden>
                 <div class="card-body">
-                    <h6 class="card-text">کل درخواست ها</h6>
-                    <h6 class="card-text" id="ordercount">0</h6>
+                    <h6 class="card-text">وضعیت درخواست</h6>
+                    <p class="card-text" id="reqstatus">نامعلوم</p>
+                </div>
+
+            </div>
+            <div class="card" style="width: 18rem; margin: 3px">
+                <img src="..." class="card-img-top" alt="" hidden>
+                <div class="card-body">
+                    <h6 class="card-text">وضعیت ارسال</h6>
+                    <p class="card-text" id="shippstatus">نامعلوم</p>
                 </div>
 
             </div>
@@ -88,15 +97,25 @@
                 <img src="..." class="card-img-top" alt="" hidden>
                 <div class="card-body">
                     <h6 class="card-text">تعداد درخواست های این وضعیت</h6>
-                    <p class="card-text" id="fullordercount">0</p>
+                    <p class="card-text" id="requestcountspecific">0</p>
                 </div>
 
             </div>
+            <div class="card row gutters" style="width: 18rem; margin: 3px">
+
+                <img src="..." class="card-img-top" alt="" hidden>
+                <div class="card-body">
+                    <h6 class="card-text">کل درخواست ها</h6>
+                    <h6 class="card-text" id="requestcount">0</h6>
+                </div>
+
+            </div>
+
             <div class="card" style="width: 18rem; margin: 3px">
                 <img src="..." class="card-img-top" alt="" hidden>
                 <div class="card-body">
                     <h6 class="card-text">درخواست ها نهایی شده</h6>
-                    <p class="card-text" id="requestcount">0</p>
+                    <p class="card-text" id="finalizedrequest">0</p>
                 </div>
 
             </div>
@@ -104,7 +123,7 @@
                 <img src="..." class="card-img-top" alt="" hidden>
                 <div class="card-body">
                     <h6 class="card-text">درخواست ها نهایی نشده</h6>
-                    <p class="card-text" id="brandcount">0</p>
+                    <p class="card-text" id="rejectedrequest">0</p>
                 </div>
 
             </div>

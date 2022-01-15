@@ -360,16 +360,18 @@ def request_status_report(request):
 @login_required(login_url='account:login')
 def search_request(request):
     if request.method == 'POST':
-        request_status = json.loads(request.body).get('selected-rstatus')
-        shipping_status = json.loads(request.body).get('selected-sstatus')
+        request_status = json.loads(request.body).get('request_status')
+        shipping_status = json.loads(request.body).get('shipping_status')
         start_date = json.loads(request.body).get('start_date')
         end_date = json.loads(request.body).get('end_date')
+        print(request_status, shipping_status)
         if request_status != '0':
             if start_date != '' and end_date != '':
                 start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
                 end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
                 requests = Request.objects.filter(request_status=request_status,
                                                   created_date__range=[start_date, end_date])
+
 
             elif start_date != '' and end_date == '':
                 start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
@@ -402,9 +404,28 @@ def search_request(request):
                 requests = Request.objects.filter(shipping_status=shipping_status,
                                                   created_date__lte=end_date)
             else:
-                requests = Request.objects.filter(request_status=request_status)
-        print(requests)
+                requests = Request.objects.filter(shipping_status=shipping_status)
+        elif shipping_status == '0' and request_status == '0':
+            requests = []
+        request_count = Request.objects.all().count()
+        accepted_requests = Request.objects.filter(request_status='اتمام تاییدیه').count()
+        rejected_requests = Request.objects.filter(shipping_status='تایید نشده').count()
+        if len(requests) == 0:
+            data = {
+                'rc': request_count,
+                'arc': accepted_requests,
+                'rrc': rejected_requests,
+                'requests': []
+            }
+            return JsonResponse(data, safe=False)
+        request_status_count = requests.count()
+        requests = list(requests.values('number', 'prison__name', 'branch__name', 'request_status',
+                                        'shipping_status').order_by('-created_date'))
         data = {
-
+            'rc': request_count,
+            'arc': accepted_requests,
+            'rsc': request_status_count,
+            'rrc': rejected_requests,
+            "requests": requests
         }
     return JsonResponse(data, safe=False)
