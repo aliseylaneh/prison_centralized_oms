@@ -14,7 +14,7 @@ urlpatterns = [
     path('product_search_report', csrf_exempt(views.search_product), name='product_search_report'),
     path('product_detailed_report', views.product_detailed_report, name='product_detailed_report'),
     path('search_detailed_product', csrf_exempt(views.search_detailed_product), name='search_detailed_product'),
-    path('request-status-report', views.request_status_report, name='request-status-report'),
-    path('req-search-report', csrf_exempt(views.search_request), name='req-search-report')
+    path('req-status-report', views.request_status_report, name='req-status-report'),
+    path('request-search-report', csrf_exempt(views.search_request), name='request-search-report')
 
 ]
