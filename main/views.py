@@ -395,17 +395,23 @@ def get_request(request, pk):
         orders_r = Order.objects.filter(request=request_r)
 
     for order in orders_r:
-        try:
-            order.buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                             brand=order.brand).order_by('-created_date')[0].price
-        except Exception:
-            order.buy_price = 0
 
-        try:
-            order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                              brand=order.brand).order_by('-created_date')[0].price2m
-        except Exception:
-            order.sell_price = 0
+        supplier_product_price = SupplierProduct.objects.filter(request=request_r, product=order.product,
+                                                                supplier=order.supplier,
+                                                                brand=order.brand).order_by("-created_date")
+        if len(supplier_product_price) == 0:
+            supplier_product_price = SupplierProduct.objects.filter(product=order.product,
+                                                                    supplier=order.supplier,
+                                                                    brand=order.brand).order_by("-created_date")
+            if len(supplier_product_price) != 0:
+                order.sell_price = supplier_product_price[0].price2m
+                order.buy_price = supplier_product_price[0].price
+            else:
+                order.sell_price = 0
+                order.buy_price = 0
+        else:
+            order.sell_price = supplier_product_price[0].price2m
+            order.buy_price = supplier_product_price[0].price
 
     categories_r = Order.objects.filter(request=request_r).values('product__category',
                                                                   'product__category__user_expert_id').distinct()
@@ -721,17 +727,23 @@ def update_request(request, pk):
         orders_r = Order.objects.filter(request=request_r)
 
     for order in orders_r:
-        try:
-            order.buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                             brand=order.brand).order_by('-created_date')[0].price
-        except Exception:
-            order.buy_price = 0
 
-        try:
-            order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                              brand=order.brand).order_by('-created_date')[0].price2m
-        except Exception:
-            order.sell_price = 0
+        supplier_product_price = SupplierProduct.objects.filter(request=request_r, product=order.product,
+                                                                supplier=order.supplier,
+                                                                brand=order.brand).order_by("-created_date")
+        if len(supplier_product_price) == 0:
+            supplier_product_price = SupplierProduct.objects.filter(product=order.product,
+                                                                    supplier=order.supplier,
+                                                                    brand=order.brand).order_by("-created_date")
+            if len(supplier_product_price) != 0:
+                order.sell_price = supplier_product_price[0].price2m
+                order.buy_price = supplier_product_price[0].price
+            else:
+                order.sell_price = 0
+                order.buy_price = 0
+        else:
+            order.sell_price = supplier_product_price[0].price2m
+            order.buy_price = supplier_product_price[0].price
 
     products = Product.objects.all()
     brands = Brand.objects.all()
