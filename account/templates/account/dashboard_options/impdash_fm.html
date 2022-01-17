@@ -45,6 +45,41 @@
                     {% endwith %}
                     </ul>
                 </ul>
+                <ul class="nav nav-treeview">
+                    {% with url_name=request.resolver_match.url_name %}
+                        <li class="nav-item">
+                            <a href="/report"
+                               class="nav-link {% if url_name == 'report' %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>گروه کالایی</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="product_report"
+                               class="nav-link {% if url_name == 'product_report' %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>کالا و مارجین</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="product_detailed_report"
+                               class="nav-link {% if url_name == 'product_detailed_report' %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>استعلام خصوصی کالا</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="req-status-report"
+                               class="nav-link {% if url_name == 'req-status-report' %}active{% endif %}">
+                                <i class="fa fa-circle-o nav-icon"></i>
+                                <p>وضعیت درخواست ها</p>
+                            </a>
+                        </li>
+
+                    {% endwith %}
+                </ul>
+
+
             </nav>
 
             <!-- /.sidebar-menu -->
