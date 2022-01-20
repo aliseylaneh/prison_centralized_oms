@@ -1789,9 +1789,15 @@ def search_requests(request):
             requests_r = Request.objects.filter(shipping_status=ShippingStatus.declined)
     elif flag == 5:
         if number != '':
-            requests_r = Request.objects.filter(number__contains=number)
+            if request.user.groups.all()[0].name == 'commercial_expert':
+                requests_r = Request.objects.filter(number__contains=number, expert=request.user)
+            else:
+                requests_r = Request.objects.filter(number__contains=number)
         else:
-            requests_r = Request.objects.all()
+            if request.user.groups.all()[0].name == 'commercial_expert':
+                requests_r = Request.objects.filter(expert=request.user)
+            else:
+                requests_r = Request.objects.all()
 
     if prison != 'بنیاد':
         prison = Prison.objects.get(name=prison)
