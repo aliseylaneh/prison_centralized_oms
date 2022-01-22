@@ -429,3 +429,14 @@ def search_request(request):
             "requests": requests
         }
     return JsonResponse(data, safe=False)
+
+
+def prison_report(request):
+    prisons = Prison.objects.all()
+    orders = []
+    for prison in prisons:
+        orders.append(
+            Order.objects.filter(request__prison=prison).values_list('request__prison_id', 'product__name').annotate(prison_quantity=Sum('quantity')).order_by('-prison_quantity'))
+    print(orders[0][0])
+
+    return render(request, "reports/product_report.html", {})
