@@ -433,10 +433,31 @@ def search_request(request):
 
 def prison_report(request):
     prisons = Prison.objects.all()
+    branches = PrisonBranch.objects.all()
     orders = []
     for prison in prisons:
         orders.append(
-            Order.objects.filter(request__prison=prison).values_list('request__prison_id', 'product__name').annotate(prison_quantity=Sum('quantity')).order_by('-prison_quantity'))
-    print(orders[0][0])
-
-    return render(request, "reports/product_report.html", {})
+            list(Order.objects.filter(request__prison=prison).values_list('request__prison__name',
+                                                                          'product__name',
+                                                                          'product__based_quantity').annotate(
+                prison_quantity=Sum('quantity')).order_by('-prison_quantity')[:1]))
+    final_orders = []
+    for order_f in orders:
+        for order in order_f:
+            final_orders.append(
+                {'prison_name': order[0], 'product_name': order[1], 'unit': order[2], 'quantity': order[3]})
+    print(order)
+    request_count = Request.objects.all().count()
+    orders_count = Order.objects.all().count()
+    orders_full_count = Order.objects.all().aggregate(Sum('quantity'))
+    context = {
+        'orders': final_orders,
+        'prison_count': prisons.count(),
+        'branch_count': branches.count(),
+        'request_count': request_count,
+        'orders_count': orders_count,
+        'orders_full_count': orders_full_count['quantity__sum'],
+        'date': date2jalali(timezone.now()).strftime("%Y/%m/%d"),
+        'time': datetime2jalali(timezone.now()).strftime("%X")
+    }
+    return render(request, "reports/prison_report.html", context)

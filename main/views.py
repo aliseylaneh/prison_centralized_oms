@@ -647,14 +647,22 @@ def get_rs_orders(request, pk, ord):
 
     for order in orders_r:
         try:
-            price = \
-                SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
-                    '-created_date')[0].price
-            price2m = \
-                SupplierProduct.objects.filter(supplier=supplier_r, brand=order.brand, product=order.product).order_by(
-                    '-created_date')[0].price2m
-            order.price = price
-            order.price_2m = price2m
+            supplier_product_price = SupplierProduct.objects.filter(request=request_r, product=order.product,
+                                                                    supplier=order.supplier,
+                                                                    brand=order.brand).order_by("-created_date")
+            if len(supplier_product_price) == 0:
+                supplier_product_price = SupplierProduct.objects.filter(product=order.product,
+                                                                        supplier=order.supplier,
+                                                                        brand=order.brand).order_by("-created_date")
+                if len(supplier_product_price) != 0:
+                    order.sell_price = supplier_product_price[0].price2m
+                    order.buy_price = supplier_product_price[0].price
+                else:
+                    order.sell_price = 0
+                    order.buy_price = 0
+            else:
+                order.price_2m = supplier_product_price[0].price2m
+                order.price = supplier_product_price[0].price
         except IndexError:
             messages.error(request,
                            f"تامین کننده ' {supplier_r.company_name} ' برای کالای ' {order.product.name} ' دارای قیمت نمیباشد.")
@@ -1677,32 +1685,40 @@ def hami_factor(request, pk, ord):
     final_price = 0
     if deliver_date.status is not False:
         for order in orders_r:
-            try:
-                buy_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                           brand=order.brand).order_by('-created_date')[0].price
-                if order.profit == 0:  # چک میشه سود حامیان جدید
 
-                    order.buy_price = (buy_price * (1 + (order.product.profit / 100))) / (1 + (order.product.tax / 100))
-                    tax = tax_price(multiply_price(order.buy_price, order.delivered_quantity))
-                    order.total_price = tax + multiply_price(order.buy_price, order.delivered_quantity)
-                    final_price += order.total_price
-                else:  # سود حامیان جدید
-                    new_profit = (((100 - order.profit) * buy_price) / 100)
-                    new_profit = buy_price + (buy_price - new_profit)
-                    nine_percent = ((91 * new_profit) / 100)
-                    order.buy_price = new_profit + (new_profit - nine_percent)
-                    tax = tax_price(multiply_price(order.buy_price, order.delivered_quantity))
-                    order.total_price = tax + multiply_price(order.buy_price, order.delivered_quantity)
-                    final_price += order.total_price
-            except Order.DoesNotExist:
-                order.buy_price = 0
+            supplier_product_price = SupplierProduct.objects.filter(request=order.request, product=order.product,
+                                                                    supplier=order.supplier,
+                                                                    brand=order.brand).order_by("-created_date")
+            if len(supplier_product_price) == 0:
+                supplier_product_price = SupplierProduct.objects.filter(product=order.product,
+                                                                        supplier=order.supplier,
+                                                                        brand=order.brand).order_by("-created_date")
+                if len(supplier_product_price) != 0:
+                    order.sell_price = supplier_product_price[0].price2m
+                    buy_price = supplier_product_price[0].price
+                else:
+                    order.sell_price = 0
+                    buy_price = 0
+            else:
+                order.sell_price = supplier_product_price[0].price2m
+                buy_price = supplier_product_price[0].price
 
-            try:
-                order.sell_price = SupplierProduct.objects.filter(supplier=order.supplier, product=order.product,
-                                                                  brand=order.brand).order_by('-created_date')[
-                    0].price2m
-            except Exception:
-                order.sell_price = 0
+            if order.profit == 0:  # چک میشه سود حامیان جدید
+
+                order.buy_price = (buy_price * (1 + (order.product.profit / 100))) / (1 + (order.product.tax / 100))
+                tax = tax_price(multiply_price(order.buy_price, order.delivered_quantity))
+                order.total_price = tax + multiply_price(order.buy_price, order.delivered_quantity)
+                final_price += order.total_price
+            else:  # سود حامیان جدید
+                new_profit = (((100 - order.profit) * buy_price) / 100)
+                new_profit = buy_price + (buy_price - new_profit)
+                nine_percent = ((91 * new_profit) / 100)
+                order.buy_price = new_profit + (new_profit - nine_percent)
+                tax = tax_price(multiply_price(order.buy_price, order.delivered_quantity))
+                order.total_price = tax + multiply_price(order.buy_price, order.delivered_quantity)
+                final_price += order.total_price
+
+
     else:
         messages.warning(request,
                          'کالای مربوط به این تامین کننده به زندان مورد نظر تحویل داده نشده اند')
