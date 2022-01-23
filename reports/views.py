@@ -419,8 +419,11 @@ def search_request(request):
             }
             return JsonResponse(data, safe=False)
         request_status_count = requests.count()
-        requests = list(requests.values('number', 'prison__name', 'branch__name', 'request_status',
+        requests = list(requests.values('number', 'prison__name', 'branch__name', 'request_status', 'created_date',
                                         'shipping_status').order_by('-created_date'))
+        for requestf in requests:
+            requestf['created_date'] = datetime2jalali(requestf['created_date']).strftime("%X") + ' ' + date2jalali(
+                requestf['created_date']).strftime("%Y/%m/%d")
         data = {
             'rc': request_count,
             'arc': accepted_requests,

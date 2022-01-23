@@ -58,6 +58,10 @@ function CrepServerCallOut() {
                                             <td class="text-center"><span
                                                     class="text-center">${item.branch__name}</span>
                                             </td>
+                                            <td class="text-center"><span
+                                                    class="text-center">${item.created_date}</span>
+                                            </td>
+                                            
                                             <td class="text-center no-print"><button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal" onclick="ReviewRequest(${item.number})">مشاهده</button></a>
                                             </td>
                                         </tr>
