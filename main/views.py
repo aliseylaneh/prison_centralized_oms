@@ -655,11 +655,11 @@ def get_rs_orders(request, pk, ord):
                                                                         supplier=order.supplier,
                                                                         brand=order.brand).order_by("-created_date")
                 if len(supplier_product_price) != 0:
-                    order.sell_price = supplier_product_price[0].price2m
-                    order.buy_price = supplier_product_price[0].price
+                    order.price_2m = supplier_product_price[0].price2m
+                    order.price = supplier_product_price[0].price
                 else:
-                    order.sell_price = 0
-                    order.buy_price = 0
+                    order.price_2m = 0
+                    order.price = 0
             else:
                 order.price_2m = supplier_product_price[0].price2m
                 order.price = supplier_product_price[0].price
