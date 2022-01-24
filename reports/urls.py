@@ -16,7 +16,7 @@ urlpatterns = [
     path('req-status-report', views.request_status_report, name='req-status-report'),
     path('request-search-report', csrf_exempt(views.search_request), name='request-search-report'),
     path('prison-report', views.prison_report, name='prison-report'),
-    path('prison-order-report', views.prison_order_report, name='prison-order-report'),
+    path('pris-order-report', views.prison_order_report, name='pris-order-report'),
     path('prison-date-report', csrf_exempt(views.prison_date_report), name='prison-date-report'),
 
 ]
