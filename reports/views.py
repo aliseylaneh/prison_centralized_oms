@@ -476,34 +476,32 @@ def prison_date_report(request):
     prisons = Prison.objects.all()
     prisons_r = []
     for prison in prisons:
-        print(prison)
         start_date = json.loads(request.body).get('start_date')
         end_date = json.loads(request.body).get('end_date')
         if start_date != '' and end_date != '':
             start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
             end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
             orders = Order.objects.filter(request__prison=prison,
-                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier,
+                                          request__request_status=Status.completed,
                                           created_date__range=[start_date, end_date])
 
         elif start_date != '' and end_date == '':
             start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
             orders = Order.objects.filter(request__prison=prison,
-                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier,
+                                          request__request_status=Status.completed,
                                           created_date__gte=start_date)
 
         elif start_date == '' and end_date != '':
             end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
             orders = Order.objects.filter(request__prison=prison,
-                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier,
+                                          request__request_status=Status.completed,
                                           created_date__lte=end_date)
         else:
             orders = Order.objects.filter(request__prison=prison,
-                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier)
+                                          request__request_status=Status.completed)
         price = 0
         if len(orders) != 0:
             for order in orders:
-                print(order)
                 supplierproduct = \
                     SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
                                                    brand=order.brand,
@@ -523,6 +521,9 @@ def prison_date_report(request):
                 'orders_price': price
 
             })
+    print(Order.objects.filter(request__prison__name="بنیاد تعاون استان مازندران",
+                               request__request_status=Status.completed).aggregate(
+        Sum('quantity')))
 
     data = {
         'prisons': prisons_r
