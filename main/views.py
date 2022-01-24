@@ -335,12 +335,15 @@ def decline_request(request, pk):
                 request_or.request_status = Status.ceo_dreview
                 request_or.shipping_status = ShippingStatus.declined
                 request_or.expert.clear()
+                request_or.last_returned_expert.clear()
                 request_or.user_signatures = init_user_signatures()
                 messages.success(request, 'درخواست مورد نظر تایید نشد')
         elif request.user.groups.all()[0].name == 'commercial_manager':
             request_or = Request.objects.get(number=pk)
             request_or.request_status = Status.cm_dreview
             request_or.shipping_status = ShippingStatus.declined
+            request_or.expert.clear()
+            request_or.last_returned_expert.clear()
             request_or.user_signatures = init_user_signatures()
         request_or.save()
     return redirect('main:get_request', pk)
