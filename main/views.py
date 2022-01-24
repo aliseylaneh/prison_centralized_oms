@@ -1882,16 +1882,27 @@ def export_order_report(request):
             deliver_date = None
         try:
             buy_price = 0
-            sell_price = SupplierProduct.objects.filter(brand__company_name=order[10], supplier__company_name=order[9],
+            sell_price = SupplierProduct.objects.filter(request__number=order[1], brand__company_name=order[10],
+                                                        supplier__company_name=order[9],
                                                         product__name=order[7]).order_by("-created_date")
-            test_list = list(sell_price.values_list('price', 'price2m'))
-            if len(test_list) > 0:
-                first_element = test_list.pop(0)
-                buy_price = first_element[0]
-                sell_price = first_element[1]
+            if len(sell_price) != 0:
+                test_list = list(sell_price.values_list('price', 'price2m'))
+                if len(test_list) > 0:
+                    first_element = test_list.pop(0)
+                    buy_price = first_element[0]
+                    sell_price = first_element[1]
             else:
-                buy_price = 0
-                sell_price = 0
+                sell_price = SupplierProduct.objects.filter(brand__company_name=order[10],
+                                                            supplier__company_name=order[9],
+                                                            product__name=order[7]).order_by("-created_date")
+                test_list = list(sell_price.values_list('price', 'price2m'))
+                if len(test_list) > 0:
+                    first_element = test_list.pop(0)
+                    buy_price = first_element[0]
+                    sell_price = first_element[1]
+                else:
+                    buy_price = 0
+                    sell_price = 0
         except SupplierProduct.DoesNotExist:
             sell_price = 0
             buy_price = 0

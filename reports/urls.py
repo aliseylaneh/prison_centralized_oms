@@ -9,7 +9,6 @@ urlpatterns = [
     path('report', views.report_home, name='report'),
     path('category_report', csrf_exempt(views.search_category), name='category_report'),
     path('review_request_report', csrf_exempt(views.review_request), name='review_request_report'),
-
     path('product_report', views.product_report, name='product_report'),
     path('product_search_report', csrf_exempt(views.search_product), name='product_search_report'),
     path('product_detailed_report', views.product_detailed_report, name='product_detailed_report'),

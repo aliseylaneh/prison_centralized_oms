@@ -507,8 +507,14 @@ def prison_date_report(request):
                 supplierproduct = \
                     SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
                                                    brand=order.brand,
-                                                   product=order.product)
-                if len(supplierproduct) != 0:
+                                                   product=order.product).order_by('-created_date')
+                if len(supplierproduct) == 0:
+                    supplierproduct = SupplierProduct.objects.filter(supplier=order.supplier,
+                                                                     brand=order.brand,
+                                                                     product=order.product).order_by('-created_date')
+                    if len(supplierproduct) != 0:
+                        price += supplierproduct[0].price * order.quantity
+                else:
                     price += supplierproduct[0].price * order.quantity
         if len(orders) != 0:
             prisons_r.append({
@@ -517,7 +523,6 @@ def prison_date_report(request):
                 'orders_price': price
 
             })
-    print(prisons_r)
 
     data = {
         'prisons': prisons_r

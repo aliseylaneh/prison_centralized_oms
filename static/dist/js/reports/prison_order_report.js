@@ -24,7 +24,7 @@ function CrepServerCallOut() {
                                             <td class="text-center">${item.prison_name}</td>
                                             <td class="text-center">${numberWithCommas(item.orders_count)}</td>
                                             <td class="text-center"><label
-                                                    style="font-size: 13px;">${numberWithCommas(item.orders_price)} ریال</label>
+                                                    style="font-size: 13px;">${numberWithCommas(item.orders_price)}</label>
                                             </td> 
                                 </tr>
 
