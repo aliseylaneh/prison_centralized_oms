@@ -1,4 +1,7 @@
 const requestTable = document.getElementById('request-table')
+const startdate = document.getElementById('startdate')
+const enddate = document.getElementById('enddate')
+const reportdate = document.getElementById('reportdate')
 
 
 function CrepServerCallOut() {
@@ -32,6 +35,17 @@ function CrepServerCallOut() {
 
 
             });
+            reportdate.innerHTML = data.report_date
+            if (start_date === '') {
+                startdate.innerHTML = 'نامشخص'
+            } else {
+                startdate.innerHTML = start_date
+            }
+            if (end_date === '') {
+                enddate.innerHTML = 'اکنون'
+            } else {
+                enddate.innerHTML = end_date
+            }
         }
     })
 }

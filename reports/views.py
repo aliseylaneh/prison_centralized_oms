@@ -521,11 +521,11 @@ def prison_date_report(request):
                 'orders_price': price
 
             })
-    print(Order.objects.filter(request__prison__name="بنیاد تعاون استان مازندران",
-                               request__request_status=Status.completed).aggregate(
-        Sum('quantity')))
+    report_date = datetime2jalali(timezone.now()).strftime("%X") + " " + date2jalali(timezone.now()).strftime(
+        "%Y/%m/%d")
 
     data = {
-        'prisons': prisons_r
+        'prisons': prisons_r,
+        'report_date': report_date
     }
     return JsonResponse(data, safe=False)
