@@ -464,3 +464,62 @@ def prison_report(request):
         'time': datetime2jalali(timezone.now()).strftime("%X")
     }
     return render(request, "reports/prison_report.html", context)
+
+
+def prison_order_report(request):
+    return render(request, "reports/prison_order_report.html", {})
+
+
+def prison_date_report(request):
+    start_date = json.loads(request.body).get('start_date')
+    end_date = json.loads(request.body).get('end_date')
+    prisons = Prison.objects.all()
+    prisons_r = []
+    for prison in prisons:
+        print(prison)
+        start_date = json.loads(request.body).get('start_date')
+        end_date = json.loads(request.body).get('end_date')
+        if start_date != '' and end_date != '':
+            start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+            end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier,
+                                          created_date__range=[start_date, end_date])
+
+        elif start_date != '' and end_date == '':
+            start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier,
+                                          created_date__gte=start_date)
+
+        elif start_date == '' and end_date != '':
+            end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier,
+                                          created_date__lte=end_date)
+        else:
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__shipping_status=ShippingStatus.requested or ShippingStatus.supplier)
+        price = 0
+        if len(orders) != 0:
+            for order in orders:
+                print(order)
+                supplierproduct = \
+                    SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
+                                                   brand=order.brand,
+                                                   product=order.product)
+                if len(supplierproduct) != 0:
+                    price += supplierproduct[0].price * order.quantity
+        if len(orders) != 0:
+            prisons_r.append({
+                'prison_name': prison.name,
+                'orders_count': orders.aggregate(Sum('quantity'))['quantity__sum'],
+                'orders_price': price
+
+            })
+    print(prisons_r)
+
+    data = {
+        'prisons': prisons_r
+    }
+    return JsonResponse(data, safe=False)
