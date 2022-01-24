@@ -471,8 +471,6 @@ def prison_order_report(request):
 
 
 def prison_date_report(request):
-    start_date = json.loads(request.body).get('start_date')
-    end_date = json.loads(request.body).get('end_date')
     prisons = Prison.objects.all()
     prisons_r = []
     for prison in prisons:
@@ -529,3 +527,127 @@ def prison_date_report(request):
         'report_date': report_date
     }
     return JsonResponse(data, safe=False)
+
+
+def prison_deliver_report(request):
+    prisons = Prison.objects.all().order_by('-name')
+    prisons_r = []
+    for prison in prisons:
+        start_date = json.loads(request.body).get('start_date')
+        end_date = json.loads(request.body).get('end_date')
+        if start_date != '' and end_date != '':
+            start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+            end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__request_status=Status.completed,
+                                          created_date__range=[start_date, end_date], delivered_quantity__gt=0)
+
+        elif start_date != '' and end_date == '':
+            start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__request_status=Status.completed,
+                                          created_date__gte=start_date, delivered_quantity__gt=0)
+
+        elif start_date == '' and end_date != '':
+            end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__request_status=Status.completed,
+                                          created_date__lte=end_date, delivered_quantity__gt=0)
+        else:
+            orders = Order.objects.filter(request__prison=prison,
+                                          request__request_status=Status.completed, delivered_quantity__gt=0)
+        price = 0
+        if len(orders) != 0:
+            for order in orders:
+                supplierproduct = \
+                    SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
+                                                   brand=order.brand,
+                                                   product=order.product).order_by('-created_date')
+                if len(supplierproduct) == 0:
+                    supplierproduct = SupplierProduct.objects.filter(supplier=order.supplier,
+                                                                     brand=order.brand,
+                                                                     product=order.product).order_by('-created_date')
+                    if len(supplierproduct) != 0:
+                        price += supplierproduct[0].price * order.quantity
+                else:
+                    price += supplierproduct[0].price * order.quantity
+        if len(orders) != 0:
+            prisons_r.append({
+                'prison_name': prison.name,
+                'orders_count': orders.aggregate(Sum('quantity'))['quantity__sum'],
+                'orders_price': price
+
+            })
+    report_date = datetime2jalali(timezone.now()).strftime("%X") + " " + date2jalali(timezone.now()).strftime(
+        "%Y/%m/%d")
+
+    data = {
+        'prisons': prisons_r,
+        'report_date': report_date
+    }
+    return JsonResponse(data, safe=False)
+
+# def por_xls(request):
+#     response = HttpResponse(content_type='text/csv')
+#     date_time_now = datetime2jalali(datetime.now()).strftime("%Y/%m/%d %H:%M:%S")
+#     response['Content-Disposition'] = f'attachment; filename="prison-order-{date_time_now}.xls"'
+#     response.write(u'\ufeff'.encode('utf8'))
+#     writer = csv.writer(response)
+#     writer.writerow(
+#         ['نام بنیاد', 'تعداد کل کالا درخواستی', 'مبلغ کل کالاهای درخواستی'])
+#     prisons = Prison.objects.all()
+#     prisons_r = []
+#     for prison in prisons:
+#         start_date = json.loads(request.body).get('start_date')
+#         end_date = json.loads(request.body).get('end_date')
+#         if start_date != '' and end_date != '':
+#             start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+#             end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+#             orders = Order.objects.filter(request__prison=prison,
+#                                           request__request_status=Status.completed,
+#                                           created_date__range=[start_date, end_date])
+#
+#         elif start_date != '' and end_date == '':
+#             start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+#             orders = Order.objects.filter(request__prison=prison,
+#                                           request__request_status=Status.completed,
+#                                           created_date__gte=start_date)
+#
+#         elif start_date == '' and end_date != '':
+#             end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+#             orders = Order.objects.filter(request__prison=prison,
+#                                           request__request_status=Status.completed,
+#                                           created_date__lte=end_date)
+#         else:
+#             orders = Order.objects.filter(request__prison=prison,
+#                                           request__request_status=Status.completed)
+#         price = 0
+#         if len(orders) != 0:
+#             for order in orders:
+#                 supplierproduct = \
+#                     SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
+#                                                    brand=order.brand,
+#                                                    product=order.product).order_by('-created_date')
+#                 if len(supplierproduct) == 0:
+#                     supplierproduct = SupplierProduct.objects.filter(supplier=order.supplier,
+#                                                                      brand=order.brand,
+#                                                                      product=order.product).order_by('-created_date')
+#                     if len(supplierproduct) != 0:
+#                         price += supplierproduct[0].price * order.quantity
+#                 else:
+#                     price += supplierproduct[0].price * order.quantity
+#         if len(orders) != 0:
+#             prisons_r.append({
+#                 'prison_name': prison.name,
+#                 'orders_count': orders.aggregate(Sum('quantity'))['quantity__sum'],
+#                 'orders_price': price
+#
+#             })
+#
+#     for prison in prisons_r:
+#         print(prison)
+#         prison = list(prison)
+#
+#         writer.writerow(prison)
+#
+#     return response
