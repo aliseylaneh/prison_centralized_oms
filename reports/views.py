@@ -470,9 +470,15 @@ def prison_order_report(request):
     return render(request, "reports/prison_order_report.html", {})
 
 
+def prison_orderd_report(request):
+    return render(request, "reports/prison_ordered_report.html", {})
+
+
 def prison_date_report(request):
-    prisons = Prison.objects.all()
+    prisons = Prison.objects.all().order_by('-name')
     prisons_r = []
+    total_quantity = 0
+    total_price = 0
     for prison in prisons:
         start_date = json.loads(request.body).get('start_date')
         end_date = json.loads(request.body).get('end_date')
@@ -513,6 +519,8 @@ def prison_date_report(request):
                 else:
                     price += supplierproduct[0].price * order.quantity
         if len(orders) != 0:
+            total_price += price
+            total_quantity += orders.aggregate(Sum('quantity'))['quantity__sum']
             prisons_r.append({
                 'prison_name': prison.name,
                 'orders_count': orders.aggregate(Sum('quantity'))['quantity__sum'],
@@ -523,6 +531,8 @@ def prison_date_report(request):
         "%Y/%m/%d")
 
     data = {
+        'total_price': total_price,
+        'total_quantity': total_quantity,
         'prisons': prisons_r,
         'report_date': report_date
     }
@@ -532,6 +542,8 @@ def prison_date_report(request):
 def prison_deliver_report(request):
     prisons = Prison.objects.all().order_by('-name')
     prisons_r = []
+    total_quantity = 0
+    total_price = 0
     for prison in prisons:
         start_date = json.loads(request.body).get('start_date')
         end_date = json.loads(request.body).get('end_date')
@@ -555,26 +567,35 @@ def prison_deliver_report(request):
                                           created_date__lte=end_date, delivered_quantity__gt=0)
         else:
             orders = Order.objects.filter(request__prison=prison,
+
                                           request__request_status=Status.completed, delivered_quantity__gt=0)
+        deliver_quantity = 0
         price = 0
         if len(orders) != 0:
             for order in orders:
-                supplierproduct = \
-                    SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
-                                                   brand=order.brand,
-                                                   product=order.product).order_by('-created_date')
-                if len(supplierproduct) == 0:
-                    supplierproduct = SupplierProduct.objects.filter(supplier=order.supplier,
-                                                                     brand=order.brand,
-                                                                     product=order.product).order_by('-created_date')
-                    if len(supplierproduct) != 0:
-                        price += supplierproduct[0].price * order.quantity
-                else:
-                    price += supplierproduct[0].price * order.quantity
-        if len(orders) != 0:
+                order_dd = DeliverDate.objects.filter(request=order.request, supplier=order.supplier).order_by(
+                    '-received_date')
+                if len(order_dd) != 0:
+                    if order_dd[0].status == 1:
+                        supplierproduct = \
+                            SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
+                                                           brand=order.brand,
+                                                           product=order.product).order_by('-created_date')
+                        if len(supplierproduct) == 0:
+                            supplierproduct = SupplierProduct.objects.filter(supplier=order.supplier,
+                                                                             brand=order.brand,
+                                                                             product=order.product).order_by(
+                                '-created_date')
+                            if len(supplierproduct) != 0:
+                                price += supplierproduct[0].price * order.delivered_quantity
+                        else:
+                            price += supplierproduct[0].price * order.delivered_quantity
+                        deliver_quantity += order.delivered_quantity
+                        total_quantity += order.delivered_quantity
+                        total_price += price
             prisons_r.append({
                 'prison_name': prison.name,
-                'orders_count': orders.aggregate(Sum('quantity'))['quantity__sum'],
+                'delivered_quantity': deliver_quantity,
                 'orders_price': price
 
             })
@@ -582,6 +603,8 @@ def prison_deliver_report(request):
         "%Y/%m/%d")
 
     data = {
+        'total_price': total_price,
+        'total_quantity': total_quantity,
         'prisons': prisons_r,
         'report_date': report_date
     }
