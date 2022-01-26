@@ -69,8 +69,10 @@ function getUsers(searchValue, categoryValue, supplierValue) {
             if (data.length === 0) {
                 noResult.style.display = "block"
                 tableOutput.style.display = "none"
+                tableOutput.innerHTML = ''
             } else {
                 noResult.style.display = "none"
+                tableOutput.innerHTML = ''
 
                 data.data.forEach(item => {
                     if (item.active === false) {
