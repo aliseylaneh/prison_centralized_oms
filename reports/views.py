@@ -619,7 +619,6 @@ def time_deliver_report(request):
 def time_dsearch_report(request):
     orders_suppliers = []
     request_number = json.loads(request.body).get('request_number')
-    request_number = '1400082954'
     if request_number != '':
         try:
             request_r = Request.objects.get(number=request_number)
