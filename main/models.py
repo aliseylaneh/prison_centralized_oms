@@ -294,6 +294,10 @@ class DeliverDate(models.Model):
     paid_factor_le = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='paid_factor_le',
                                        blank=True)
 
+    @property
+    def get_recieved_date(self):
+        return date2jalali(self.received_date).strftime("%Y/%m/%d")
+
     class Meta:
         unique_together = [['request', 'supplier']]
 

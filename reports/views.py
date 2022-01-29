@@ -12,6 +12,7 @@ import json
 import logging
 import unittest
 from datetime import date
+from datetime import datetime
 from django.db.models import Q, Avg, Count
 import django
 import jdatetime
@@ -25,6 +26,7 @@ from django.db import IntegrityError
 from django.http import JsonResponse, HttpResponseNotFound, HttpResponse, FileResponse
 from django.urls import reverse
 from io import StringIO
+from datetime import datetime
 
 from account.decorators import *
 from main.models import *
@@ -567,7 +569,6 @@ def prison_deliver_report(request):
                                           created_date__lte=end_date, delivered_quantity__gt=0)
         else:
             orders = Order.objects.filter(request__prison=prison,
-
                                           request__request_status=Status.completed, delivered_quantity__gt=0)
         deliver_quantity = 0
         price = 0
@@ -607,6 +608,106 @@ def prison_deliver_report(request):
         'total_quantity': total_quantity,
         'prisons': prisons_r,
         'report_date': report_date
+    }
+    return JsonResponse(data, safe=False)
+
+
+def time_deliver_report(request):
+    return render(request, "reports/time_report.html", {})
+
+
+def time_dsearch_report(request):
+    orders_suppliers = []
+    request_number = json.loads(request.body).get('request_number')
+    request_number = '1400082954'
+    if request_number != '':
+        try:
+            request_r = Request.objects.get(number=request_number)
+            orders_suppliers = Order.objects.filter(request=request_r).values('supplier',
+                                                                              'supplier__company_name').distinct()
+        except Request.DoesNotExist:
+            data = {
+                'orders_suppliers': [],
+                'messsage': 'درخواست مورد نظر وجود ندارد'
+            }
+            return JsonResponse(data, safe=False)
+
+    print(orders_suppliers)
+    deliver_dates = []
+    if len(orders_suppliers) != 0:
+        for supplier in orders_suppliers:
+            deliver_date = DeliverDate.objects.get(request=request_r, supplier_id=supplier['supplier'])
+            if deliver_date is not None:
+                avg_receive_requested = (
+                        deliver_date.received_date - request_r.created_date.date()).days if deliver_date.received_date and request_r.created_date is not None else 0
+                avg_receive_final = (
+                        deliver_date.received_date - request_r.acceptation_date.date()).days if deliver_date.received_date and request_r.acceptation_date is not None else 0
+                avg_requested_final = (
+                        request_r.acceptation_date.date() - request_r.created_date.date()).days if request_r.acceptation_date and request_r.created_date is not None else 0
+
+                deliver_dates.append(
+                    {'request_date': request_r.get_created_date,
+                     'supplier_name': supplier['supplier__company_name'],
+                     'recieved_date': deliver_date.get_recieved_date if deliver_date.received_date is not None else 'تاریخ',
+                     'final_date': request_r.get_acceptations_date if request_r.acceptation_date is not None else 'تاریخ',
+                     'avg_receive_requested': avg_receive_requested, 'avg_receive_final': avg_receive_final,
+                     'avg_requested_final': avg_requested_final})
+    orders = []
+    # deliver_quantity = 0
+    # price = 0
+    # if len(orders) != 0:
+    #     for order in orders:
+    #         order_dd = DeliverDate.objects.filter(request=order.request, supplier=order.supplier).order_by(
+    #             '-received_date')
+    #         if len(order_dd) != 0:
+    #             if order_dd[0].status == 1:
+    #                 supplierproduct = \
+    #                     SupplierProduct.objects.filter(request=order.request, supplier=order.supplier,
+    #                                                    brand=order.brand,
+    #                                                    product=order.product).order_by('-created_date')
+    #                 if len(supplierproduct) == 0:
+    #                     supplierproduct = SupplierProduct.objects.filter(supplier=order.supplier,
+    #                                                                      brand=order.brand,
+    #                                                                      product=order.product).order_by(
+    #                         '-created_date')
+    #                     if len(supplierproduct) != 0:
+    #                         price += supplierproduct[0].price * order.delivered_quantity
+    #                 else:
+    #                     price += supplierproduct[0].price * order.delivered_quantity
+    #                 deliver_quantity += order.delivered_quantity
+    #                 total_quantity += order.delivered_quantity
+    #                 total_price += price
+    #     prisons_r.append({
+    #         'delivered_quantity': deliver_quantity,
+    #         'orders_price': price
+    #
+    #     })
+    # report_date = datetime2jalali(timezone.now()).strftime("%X") + " " + date2jalali(timezone.now()).strftime(
+    #     "%Y/%m/%d")
+
+    data = {
+        'deliver_dates': deliver_dates
+    }
+    return JsonResponse(data, safe=False)
+
+
+def request_time_search(request):
+    if request.method == 'POST':
+        request_number = json.loads(request.body).get('request_number')
+        requests = Request.objects.filter(number__contains=request_number)
+        data = []
+        if requests is not None:
+            for request in requests:
+                data.append(
+                    {'number': request.number, 'status': request.request_status, 'sstatus': request.shipping_status,
+                     'created_date': request.get_created_date, 'created_date_time': request.get_created_time,
+                     'submitted_date': request.get_acceptations_date,
+                     'submitted_time': request.get_acceptations_time,
+                     'prison': request.prison.name,
+                     'branch': request.branch.name})
+
+    data = {
+        'requests': data
     }
     return JsonResponse(data, safe=False)
 

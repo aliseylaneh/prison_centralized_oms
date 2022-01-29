@@ -20,6 +20,9 @@ urlpatterns = [
     path('pris-ordered-report', views.prison_orderd_report, name='pris-ordered-report'),
     path('prison-date-report', csrf_exempt(views.prison_date_report), name='prison-date-report'),
     path('prison-deliver-report', csrf_exempt(views.prison_deliver_report), name='prison-deliver-report'),
+    path('time-deliver-report', views.time_deliver_report, name='time-deliver-report'),
+    path('time-dsearch-report', csrf_exempt(views.time_dsearch_report), name='time-dsearch-sreport'),
+    path('request-time-search', csrf_exempt(views.request_time_search), name='request-time-search')
     # path('por_xls', csrf_exempt(views.por_xls), name='por_xls')
 
 ]
