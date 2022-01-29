@@ -618,12 +618,15 @@ def time_deliver_report(request):
 
 def time_dsearch_report(request):
     orders_suppliers = []
+    supplier_deliver_count = 0
     request_number = json.loads(request.body).get('request_number')
     if request_number != '':
         try:
             request_r = Request.objects.get(number=request_number)
-            orders_suppliers = Order.objects.filter(request=request_r).values('supplier',
-                                                                              'supplier__company_name').distinct()
+            orders = Order.objects.filter(request=request_r)
+            orders_suppliers = orders.values('supplier',
+                                             'supplier__company_name').distinct()
+            orders_brands = orders.values('brand').distinct()
         except Request.DoesNotExist:
             data = {
                 'orders_suppliers': [],
@@ -631,27 +634,40 @@ def time_dsearch_report(request):
             }
             return JsonResponse(data, safe=False)
 
-    print(orders_suppliers)
     deliver_dates = []
     if len(orders_suppliers) != 0:
         for supplier in orders_suppliers:
-            deliver_date = DeliverDate.objects.get(request=request_r, supplier_id=supplier['supplier'])
-            if deliver_date is not None:
-                avg_receive_requested = (
-                        deliver_date.received_date - request_r.created_date.date()).days if deliver_date.received_date and request_r.created_date is not None else 0
-                avg_receive_final = (
-                        deliver_date.received_date - request_r.acceptation_date.date()).days if deliver_date.received_date and request_r.acceptation_date is not None else 0
-                avg_requested_final = (
-                        request_r.acceptation_date.date() - request_r.created_date.date()).days if request_r.acceptation_date and request_r.created_date is not None else 0
+            try:
+                deliver_date = DeliverDate.objects.get(request=request_r, supplier_id=supplier['supplier'])
+                if deliver_date is not None:
 
+                    avg_receive_requested = (
+                            deliver_date.received_date - request_r.created_date.date()).days if deliver_date.received_date and request_r.created_date is not None else 0
+                    avg_receive_final = (
+                            deliver_date.received_date - request_r.acceptation_date.date()).days if deliver_date.received_date and request_r.acceptation_date is not None else 0
+                    avg_requested_final = (
+                            request_r.acceptation_date.date() - request_r.created_date.date()).days if request_r.acceptation_date and request_r.created_date is not None else 0
+
+                    deliver_dates.append(
+                        {'request_date': request_r.get_created_date,
+                         'supplier_name': supplier['supplier__company_name'],
+                         'recieved_date': deliver_date.get_recieved_date if deliver_date.received_date is not None else 'بدون تاریخ',
+                         'final_date': request_r.get_acceptations_date if request_r.acceptation_date is not None else 'بدون تاریخ',
+                         'avg_receive_requested': avg_receive_requested, 'avg_receive_final': avg_receive_final,
+                         'avg_requested_final': avg_requested_final})
+                    if deliver_date.received_date is not None:
+                        supplier_deliver_count += 1
+
+
+            except DeliverDate.DoesNotExist:
                 deliver_dates.append(
                     {'request_date': request_r.get_created_date,
                      'supplier_name': supplier['supplier__company_name'],
-                     'recieved_date': deliver_date.get_recieved_date if deliver_date.received_date is not None else 'تاریخ',
-                     'final_date': request_r.get_acceptations_date if request_r.acceptation_date is not None else 'تاریخ',
-                     'avg_receive_requested': avg_receive_requested, 'avg_receive_final': avg_receive_final,
-                     'avg_requested_final': avg_requested_final})
-    orders = []
+                     'recieved_date': 'بدون تاریخ',
+                     'final_date': 'بدون تاریخ',
+                     'avg_receive_requested': 0, 'avg_receive_final': 0,
+                     'avg_requested_final': 0})
+
     # deliver_quantity = 0
     # price = 0
     # if len(orders) != 0:
@@ -681,11 +697,17 @@ def time_dsearch_report(request):
     #         'orders_price': price
     #
     #     })
-    # report_date = datetime2jalali(timezone.now()).strftime("%X") + " " + date2jalali(timezone.now()).strftime(
-    #     "%Y/%m/%d")
+    report_date = datetime2jalali(timezone.now()).strftime("%X") + " " + date2jalali(timezone.now()).strftime(
+        "%Y/%m/%d")
 
     data = {
-        'deliver_dates': deliver_dates
+        'request_number': request_r.number,
+        'suppliers_count': orders_suppliers.count(),
+        'brands_count': orders_brands.count(),
+        'deliver_dates': deliver_dates,
+        'report_date': report_date,
+        'supplier_deliver_count': supplier_deliver_count,
+        'orders_count': orders.count()
     }
     return JsonResponse(data, safe=False)
 

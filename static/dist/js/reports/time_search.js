@@ -2,6 +2,13 @@ const requestTable = document.getElementById('request-table')
 const tableOutput = document.querySelector(".table-output");
 const supplierTable = document.querySelector(".supplier-table");
 const requestSupplierDiv = document.getElementById('request-suppler-div')
+const requestNumber = document.getElementById('request_number')
+const supplierCount = document.getElementById('supplier_count')
+const brandCount = document.getElementById('brand_count')
+const ordersCount = document.getElementById('orders_count')
+const supplierDeliverCount = document.getElementById('supplier_delivered')
+const reportDate = document.getElementById('report_date')
+
 
 function TimerReqServerCallOut() {
 
@@ -87,6 +94,12 @@ function ReviewRequest(request_number) {
 
 
             });
+            requestNumber.innerHTML = data.request_number
+            supplierCount.innerHTML = data.suppliers_count
+            brandCount.innerHTML = data.brands_count
+            reportDate.innerHTML = data.report_date
+            ordersCount.innerHTML = data.orders_count
+            supplierDeliverCount.innerHTML = data.supplier_deliver_count
 
         }
     })
@@ -104,6 +117,14 @@ $(window).keypress(function (event) {
 
     }
 });
+
+
+function resetFound() {
+    tableOutput.style.display = 'block'
+    requestSupplierDiv.style.display = 'none'
+    supplierTable.innerHTML = ''
+}
+
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
