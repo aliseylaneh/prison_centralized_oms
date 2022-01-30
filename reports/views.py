@@ -547,6 +547,8 @@ def prison_deliver_report(request):
     total_quantity = 0
     total_price = 0
     for prison in prisons:
+        price = 0
+        deliver_quantity = 0
         start_date = json.loads(request.body).get('start_date')
         end_date = json.loads(request.body).get('end_date')
         if start_date != '' and end_date != '':
@@ -570,8 +572,7 @@ def prison_deliver_report(request):
         else:
             orders = Order.objects.filter(request__prison=prison,
                                           request__request_status=Status.completed, delivered_quantity__gt=0)
-        deliver_quantity = 0
-        price = 0
+
         if len(orders) != 0:
             for order in orders:
                 order_dd = DeliverDate.objects.filter(request=order.request, supplier=order.supplier).order_by(
@@ -593,7 +594,7 @@ def prison_deliver_report(request):
                             price += supplierproduct[0].price * order.delivered_quantity
                         deliver_quantity += order.delivered_quantity
                         total_quantity += order.delivered_quantity
-                        total_price += price
+            total_price += price
             prisons_r.append({
                 'prison_name': prison.name,
                 'delivered_quantity': deliver_quantity,
