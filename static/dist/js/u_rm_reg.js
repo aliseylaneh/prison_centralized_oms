@@ -7,7 +7,7 @@ const paginationContainer = document.querySelector(".pagination-container");
 
 
 tableOutput.style.display = "none";
-const tableBody = document.querySelector(".table-body")
+const tableBody = document.getElementById('table-body')
 const noResult = document.querySelector(".no-results")
 
 
@@ -72,7 +72,6 @@ function getUsers(searchValue, categoryValue, supplierValue) {
                 tableOutput.innerHTML = ''
             } else {
                 noResult.style.display = "none"
-                tableOutput.innerHTML = ''
 
                 data.data.forEach(item => {
                     if (item.active === false) {

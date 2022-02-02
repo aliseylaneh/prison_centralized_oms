@@ -733,6 +733,7 @@ def request_time_search(request):
     }
     return JsonResponse(data, safe=False)
 
+
 # def por_xls(request):
 #     response = HttpResponse(content_type='text/csv')
 #     date_time_now = datetime2jalali(datetime.now()).strftime("%Y/%m/%d %H:%M:%S")
@@ -797,3 +798,63 @@ def request_time_search(request):
 #         writer.writerow(prison)
 #
 #     return response
+
+def group_report(request):
+    return render(request, 'reports/expert_reports.html')
+
+
+def group_search_report(request):
+    group = json.loads(request.body).get('group')
+    start_date = json.loads(request.body).get('start_date')
+    end_date = json.loads(request.body).get('end_date')
+
+    if group == '1':
+        users = User.objects.filter(groups=3)
+    elif group == '2':
+        users = User.objects.filter(groups=7)
+    elif group == '3':
+        users = User.objects.filter(groups=4)
+
+    if start_date != '' and end_date != '':
+        start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+        end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+        requests = Request.objects.filter(created_date__range=[start_date, end_date])
+
+    elif start_date != '' and end_date == '':
+        start_date = jdatetime.datetime.strptime(start_date, '%Y/%m/%d').togregorian()
+        requests = Request.objects.filter(created_date__gte=start_date)
+
+    elif start_date == '' and end_date != '':
+        end_date = jdatetime.datetime.strptime(end_date, '%Y/%m/%d').togregorian()
+        requests = Request.objects.filter(created_date__lte=end_date)
+    else:
+        requests = Request.objects.all()
+
+    user_reports = []
+
+    for user in users:
+        user_categories = Category.objects.filter(user_expert=user)
+        user_rcats = ''
+        for usercats in user_categories:
+            if usercats != user_categories.last():
+                user_rcats += usercats.name + " - "
+            else:
+                user_rcats += usercats.name
+        request_count = requests.filter(expert=user).count()
+        request_accepted_count = requests.filter(Q(expert=user) and Q(expert_acceptation=user)).count()
+        request_declined_count = requests.filter(expert=user, shipping_status=ShippingStatus.declined).count()
+        request_returned_count = requests.filter(last_returned_expert=user, request_status=Status.ce_review).count()
+        user_reports.append({
+            'user_name': user.userprofile.first_name + " " + user.userprofile.last_name,
+            'username': user.email,
+            'user_categories': user_rcats,
+            'request_count': request_count,
+            'request_acc_count': request_accepted_count,
+            'request_returned_count': request_returned_count,
+            'request_declined_count': request_declined_count
+        })
+
+    data = {
+        'expert_reports': user_reports
+    }
+    return JsonResponse(data, safe=False)
