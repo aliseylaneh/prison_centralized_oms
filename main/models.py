@@ -86,6 +86,7 @@ class Product(models.Model):
     tax = models.FloatField(default=9)
     profit = models.FloatField(default=3)
     created_date = models.DateField(default=timezone.now)
+    status = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name

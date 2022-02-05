@@ -1179,12 +1179,12 @@ def search_products(request):
 
         if search_name is None:
             products = Product.objects.filter(
-                category=search_category)
+                category=search_category, status=True)
         elif search_category is None:
-            products = Product.objects.filter(name__contains=search_name)
+            products = Product.objects.filter(name__contains=search_name, status=True)
         else:
-            products = Product.objects.filter(name__contains=search_name) & Product.objects.filter(
-                category=search_category)
+            products = Product.objects.filter(name__contains=search_name, status=True) & Product.objects.filter(
+                category=search_category, status=True)
 
         data = []
         suppliers = Supplier.objects.filter(is_active=True).values()
@@ -1228,8 +1228,11 @@ def add_product(request):
         category = request.POST.get('category-selector')
         quantity_unit = request.POST.get('unit-selector')
         description = request.POST.get("description")
-        product = Product.objects.create(name=name, description=description,
-                                         based_quantity=getProductUnit(quantity_unit))
+        profit = request.POST.get('profit')
+        status = request.POST.get('status-selector')
+        tax = request.POST.get('tax')
+        product = Product.objects.create(name=name, description=description, profit=profit, tax=tax,
+                                         based_quantity=getProductUnit(quantity_unit), status=checkStatus(status))
 
         category = Category.objects.get(name=category)
         category.product_set.add(product)
@@ -1262,10 +1265,17 @@ def update_product(request):
         category = request.POST.get('category-selector')
         quantity_unit = request.POST.get('unit-selector')
         description = request.POST.get("description")
+        profit = request.POST.get('profit')
+        tax = request.POST.get('tax')
+        status = request.POST.get('status-selector')
+
         product = Product.objects.get(id=product_id)
         if name != '': product.name = name
         if quantity_unit != '': product.based_quantity = getProductUnit(quantity_unit)
         if description != '': product.description = description
+        if profit != '': product.profit = profit
+        if tax != '': product.tax = tax
+        if status != '': product.status = checkStatus(status)
         if category != '' and category != product.category.name:
             Category.objects.get(name=product.category.name).product_set.remove(product)
             Category.objects.get(name=category).product_set.add(product)

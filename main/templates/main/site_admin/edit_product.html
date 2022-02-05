@@ -47,11 +47,12 @@
                             <div class="card-body">
                                 <div class="row gutters">
                                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                        <h6 class="mb-3">مشخصات تامین کننده</h6>
+                                        <h6 class="mb-3">مشخصات کالا</h6>
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="product-id" value="{{ product_e.id }}" name="product-id" readonly hidden>
+                                            <input type="text" class="form-control" id="product-id"
+                                                   value="{{ product_e.id }}" name="product-id" readonly hidden>
                                         </div>
                                         <div class="form-group">
                                             <input type="text" class="form-control" id="name"
@@ -59,26 +60,6 @@
                                                    name="name" required>
                                             <div class="invalid-feedback">
                                                 کالا نیازمند یک نام کلی میباشد
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <select class="dropdown btn btn-outline-primary" id="category-selector"
-                                                    style="width: 100%;height: 39px" placeholder="گروه کالا"
-                                                    name="category-selector" required>
-                                                <option value="">گروه کالا</option>
-                                                {% for category in categories %}
-                                                    {% if category.name == product_e.category.name %}
-                                                        <option value="{{ category.name }}"
-                                                                selected>{{ category.name }}</option>
-                                                    {% else %}
-                                                        <option value="{{ category.name }}">{{ category.name }}</option>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </select>
-                                            <div class="invalid-feedback">
-                                                لطفا گروه کالایی را انتخاب کنید
                                             </div>
                                         </div>
                                     </div>
@@ -102,16 +83,67 @@
                                         </div>
                                     </div>
 
+
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" id="profit" name="profit"
+                                                   placeholder="درصد سود: {{ product_e.profit }}"/>
+                                            <div class="invalid-feedback">
+                                                درصد سود را وارد کنید
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <select class="dropdown btn btn-outline-primary" id="status-selector"
+                                                style="width: 100%;" placeholder="وضعیت قرار داد"
+                                                name="status-selector">
+                                            <option value="">وضعیت کالا</option>
+                                            <option value="فعال" {% if product_e.status == True %}
+                                                    selected {% endif %}>فعال
+                                            </option>
+                                            <option value="غیر فعال" {% if product_e.status == False %}
+                                                    selected {% endif %}>غیر فعال
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" id="tax" name="tax"
+                                                   placeholder="درصد مالیات: {{ product_e.tax }}"/>
+                                            <div class="invalid-feedback">
+                                                درصد مالیات را وارد کنید
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <select class="dropdown btn btn-outline-primary" id="category-selector"
+                                                style="width: 100%;height: 39px" placeholder="گروه کالا"
+                                                name="category-selector" required>
+                                            <option value="">گروه کالا</option>
+                                            {% for category in categories %}
+                                                {% if category.name == product_e.category.name %}
+                                                    <option value="{{ category.name }}"
+                                                            selected>{{ category.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ category.name }}">{{ category.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            لطفا گروه کالایی را انتخاب کنید
+                                        </div>
+                                    </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <textarea class="form-control" id="description" name="description"
                                                       placeholder="توضیحات: {{ product_e.description }}"></textarea>
                                             <div class="invalid-feedback">
-                                                آدرس را وارد کنید
+                                                توضیحات را وارد کنید
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="row gutters">
                                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">

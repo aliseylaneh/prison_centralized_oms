@@ -59,6 +59,51 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <select class="dropdown btn btn-outline-primary" id="status-selector"
+                                                style="width: 100%;" placeholder="وضعیت قرار داد"
+                                                name="status-selector">
+                                            <option value="">وضعیت کالا</option>
+                                            <option value="فعال">فعال
+                                            </option>
+                                            <option value="غیر فعال">غیر فعال
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" id="profit" name="profit"
+                                                   placeholder="درصد سود" required/>
+                                            <div class="invalid-feedback">
+                                                درصد سود را وارد کنید
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
+                                        <select class="dropdown btn btn-outline-primary" id="unit-selector"
+                                                style="width: 100%;height: 39px" placeholder="کیمت" required
+                                                name="unit-selector">
+                                            <option value="">کمیت</option>
+                                            {% for key,value in units %}
+                                                <option value="{{ value }}">{{ key }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <div class="invalid-feedback">
+                                            کمیت را انتخاب کنید
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <input type="number" class="form-control" id="tax" name="tax"
+                                                   placeholder="درصد مالیات" required/>
+                                            <div class="invalid-feedback">
+                                                درصد مالیات را وارد کنید
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <select class="dropdown btn btn-outline-primary" id="category-selector"
@@ -74,26 +119,11 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-3">
-                                        <select class="dropdown btn btn-outline-primary" id="unit-selector"
-                                                style="width: 100%;height: 39px" placeholder="کیمت" required
-                                                name="unit-selector">
-                                            <option value="">کمیت</option>
-                                            {% for key,value in units %}
-                                                <option value="{{ value }}">{{ key }}</option>
-                                            {% endfor %}
-                                        </select>
-                                        <div class="invalid-feedback">
-                                            کمیت را انتخاب کنید
-                                        </div>
-                                    </div>
-
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <textarea class="form-control" id="description" name="description"  placeholder="توضیحات"></textarea>
-                                            
+                                            <textarea class="form-control" id="description" name="description"
+                                                      placeholder="توضیحات"></textarea>
+
                                         </div>
                                     </div>
 
