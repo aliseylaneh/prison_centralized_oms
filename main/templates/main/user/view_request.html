@@ -491,7 +491,6 @@
                             <div class="col-12 text-center">
                                 <h5>تیکت های مربوط به این درخواست</h5>
                             </div>
-                            {% if request.user.groups.all.0.name != 'user' %}
                                 <div class="row gutters justify-content-center">
                                     <input class="input input-field col-2 m-3" id="ticket_title"
                                            placeholder="عنوان تیکت">
@@ -501,7 +500,6 @@
                                             onclick="handleTicket({{ request_r.number }})">ارسال
                                     </button>
                                 </div>
-                            {% endif %}
                         </div>
                         {% if tickets_r is not None %}
                             {% for ticket in tickets_r %}
