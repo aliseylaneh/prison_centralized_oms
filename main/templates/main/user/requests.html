@@ -9,7 +9,7 @@
                     <div class="col-12 w-100">
 
                         {% with url_name=request.resolver_match.url_name %}
-                            {% if url_name != 'returned_requests' and url_name != 'expert_request' %}
+                            {% if url_name != 'returned_requests' %}
                                 {% if request.user.groups.all.0.name != 'user' %}
                                     <div class="border-end bg-white text-center" id="sidebar-wrapper">
                                         <span class=""> جست و جو درخواست:</span>
@@ -31,20 +31,20 @@
                                                 <option value="{{ branch.name }}">{{ branch.name }}</option>
                                             {% endfor %}
                                         </select>
-
-
                                         <button accesskey="Enter" class="btn btn-primary" id="searchbtn" type="button"
                                                 {% if url_name == 'requests' %}
                                                 onclick="handleSearchRequest(1)" {% elif url_name == 'completed_request' %}
                                                 onclick="handleSearchRequest(2)" {% elif url_name == 'reviewing_request' %}
                                                 onclick="handleSearchRequest(3)" {% elif url_name == 'declined_request' %}
-                                                onclick="handleSearchRequest(4)" {% elif url_name == 'expert_request' %}
+                                                onclick="handleSearchRequest(4)" {% elif url_name == 'expert_request' and request.user.groups.all.0.name != 'commercial_expert' %}
                                                 onclick="handleSearchRequest(3)"{% elif url_name == 'all_request' %}
-                                                onclick="handleSearchRequest(5)"{% endif %} >
+                                                onclick="handleSearchRequest(5)" {% elif url_name == 'expert_request' and request.user.groups.all.0.name == 'commercial_expert' %}
+                                                onclick="handleSearchRequest(6)" {% endif %} >
                                             جست و جو
                                         </button>
 
-                                        <button class="btn btn-outline-danger fa fa-close" type="button"
+                                        <button class=" btn btn-outline-danger fa fa-close
+                                        " type="button"
                                                 onclick="resetFound()">
                                         </button>
 
