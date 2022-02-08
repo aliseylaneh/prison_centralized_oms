@@ -1831,12 +1831,14 @@ def search_requests(request):
         if number != '':
             if request.user.groups.all()[0].name == 'commercial_expert':
                 requests_r = Request.objects.filter(number__contains=number,
-                                                    expert=request.user, acceptation_date=None).exclude(
+                                                    expert=request.user, acceptation_date=None,
+                                                    request_status=Status.ce_review).exclude(
                     expert_acceptation=request.user)
         else:
             if request.user.groups.all()[0].name == 'commercial_expert':
                 requests_r = Request.objects.filter(expert=request.user,
-                                                    acceptation_date=None).exclude(expert_acceptation=request.user)
+                                                    acceptation_date=None, request_status=Status.ce_review).exclude(
+                    expert_acceptation=request.user)
 
     if prison != 'بنیاد':
         prison = Prison.objects.get(name=prison)
