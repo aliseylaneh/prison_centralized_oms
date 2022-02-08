@@ -310,6 +310,15 @@ def accept_request(request, pk):
                 messages.success(request, 'درخواست برای مدیر بازرگانی ارسال شد')
                 return redirect('main:requests')
             else:
+                if request_or.expert_acceptation.count() == 0 and request_or.expert.count() == 0:
+                    user_categories = Order.objects.filter(request=request_or).values(
+                        'product__category__user_expert_id').distinct()
+
+                    for user in user_categories:
+                        user_r = User.objects.get(id=user['product__category__user_expert_id'])
+                        request_or.expert.add(user_r)
+                        request_or.expert_acceptation.add(user_r)
+
                 request_or.request_status = Status.completed
                 request_or.shipping_status = ShippingStatus.supplier
                 request_or.user_signatures = set_user_signatures(request.user, request_or.user_signatures)
