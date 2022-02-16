@@ -77,13 +77,13 @@
                                                                            value="{{ order.sell_deliver_price }}">
                                                 ریال
                                             </td>
-                                            {% if request.user.groups.all.0.name == 'user' %}
+
                                                 <td class="text-center"><span id="submitSupplierProduct"
                                                                               class="fa fa-check btn btn-outline-primary"
                                                                               style="padding-top: 6px"
                                                                               onclick="submitDeliveredQuantity({{ order.id }})"></span>
                                                 </td>
-                                            {% endif %}
+
 
 
                                         </tr>
