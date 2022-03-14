@@ -34,6 +34,7 @@ from main.models import *
 
 # Category Report
 @login_required(login_url='account:login')
+@allowed_users(['administrator'])
 def report_home(request):
     category = Category.objects.get(name='دخانیات')
     categories = Category.objects.all()
@@ -53,6 +54,7 @@ def report_home(request):
 
 
 @login_required(login_url='account:login')
+@allowed_users(['administrator'])
 def search_category(request):
     if request.method == 'POST':
         category_name = json.loads(request.body).get('category_name')
@@ -118,6 +120,7 @@ def search_category(request):
 
 
 @login_required(login_url='account:login')
+@allowed_users(['administrator'])
 def review_request(request):
     if request.method == 'POST':
         request_number = json.loads(request.body).get('request_number')
@@ -172,6 +175,7 @@ def review_request(request):
 
 
 # Product Report
+@allowed_users(['administrator'])
 def product_report(request):
     categories = Category.objects.all()
 
@@ -252,6 +256,7 @@ def product_detailed_report(request):
     return render(request, "reports/product_detailed_report.html", context)
 
 
+@allowed_users(['administrator'])
 def search_detailed_product(request):
     product_id = json.loads(request.body).get('product_id')
     start_date = json.loads(request.body).get('start_date')
@@ -348,6 +353,7 @@ def search_detailed_product(request):
 
 
 @login_required(login_url='account:login')
+@allowed_users(['administrator'])
 def request_status_report(request):
     request_status = Status.values
     shipping_status = ShippingStatus.values
@@ -360,6 +366,7 @@ def request_status_report(request):
 
 
 @login_required(login_url='account:login')
+@allowed_users(['administrator'])
 def search_request(request):
     if request.method == 'POST':
         request_status = json.loads(request.body).get('request_status')
@@ -436,6 +443,7 @@ def search_request(request):
     return JsonResponse(data, safe=False)
 
 
+@allowed_users(['administrator'])
 def prison_report(request):
     prisons = Prison.objects.all()
     branches = PrisonBranch.objects.all()
@@ -468,14 +476,17 @@ def prison_report(request):
     return render(request, "reports/prison_report.html", context)
 
 
+@allowed_users(['administrator'])
 def prison_order_report(request):
     return render(request, "reports/prison_order_report.html", {})
 
 
+@allowed_users(['administrator'])
 def prison_orderd_report(request):
     return render(request, "reports/prison_ordered_report.html", {})
 
 
+@allowed_users(['administrator'])
 def prison_date_report(request):
     prisons = Prison.objects.all().order_by('-name')
     prisons_r = []
@@ -541,6 +552,7 @@ def prison_date_report(request):
     return JsonResponse(data, safe=False)
 
 
+@allowed_users(['administrator'])
 def prison_deliver_report(request):
     prisons = Prison.objects.all().order_by('-name')
     prisons_r = []
@@ -613,10 +625,12 @@ def prison_deliver_report(request):
     return JsonResponse(data, safe=False)
 
 
+@allowed_users(['administrator'])
 def time_deliver_report(request):
     return render(request, "reports/time_report.html", {})
 
 
+@allowed_users(['administrator'])
 def time_dsearch_report(request):
     orders_suppliers = []
     supplier_deliver_count = 0
@@ -713,6 +727,7 @@ def time_dsearch_report(request):
     return JsonResponse(data, safe=False)
 
 
+@allowed_users(['administrator'])
 def request_time_search(request):
     if request.method == 'POST':
         request_number = json.loads(request.body).get('request_number')
@@ -798,11 +813,12 @@ def request_time_search(request):
 #         writer.writerow(prison)
 #
 #     return response
-
+@allowed_users(['administrator'])
 def group_report(request):
     return render(request, 'reports/expert_reports.html')
 
 
+@allowed_users(['administrator'])
 def group_search_report(request):
     group = json.loads(request.body).get('group')
     start_date = json.loads(request.body).get('start_date')

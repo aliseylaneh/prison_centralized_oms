@@ -82,85 +82,85 @@
                     {% endwith %}
                     </ul>
                     </li>
-                    {% with url_name=request.resolver_match.url_name %}
-                        <li class="nav-item has-treeview {% if 'report' in url_name %} menu-open {% endif %}">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fa fa-table"></i>
-                                <p>
-                                    گزارشات و استعلام
-                                    <i class="fa fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                {% with url_name=request.resolver_match.url_name %}
-                                    <li class="nav-item">
-                                        <a href="/report"
-                                           class="nav-link {% if url_name == 'report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>گروه کالایی</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="product_report"
-                                           class="nav-link {% if url_name == 'product_report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>کالا و مارجین</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="product_detailed_report"
-                                           class="nav-link {% if url_name == 'product_detailed_report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>استعلام خصوصی کالا</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="req-status-report"
-                                           class="nav-link {% if url_name == 'req-status-report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>وضعیت درخواست ها</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="prison-report"
-                                           class="nav-link {% if url_name == 'prison-report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>مصرف استان</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="pris-order-report"
-                                           class="nav-link {% if url_name == 'pris-order-report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>مقدار درخواستی استان ها</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="pris-ordered-report"
-                                           class="nav-link {% if url_name == 'pris-ordered-report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>مقدار دریافتی استان ها</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="time-deliver-report"
-                                           class="nav-link {% if url_name == 'time-deliver-report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>مدت زمان درخواست و رسید</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="group-report"
-                                           class="nav-link {% if url_name == 'group-report' %}active{% endif %}">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>استعلام درخواست کارشناسان</p>
-                                        </a>
-                                    </li>
-
-                                {% endwith %}
-                            </ul>
-                        </li>
-                    {% endwith %}
+{#                    {% with url_name=request.resolver_match.url_name %}#}
+{#                        <li class="nav-item has-treeview {% if 'report' in url_name %} menu-open {% endif %}">#}
+{#                            <a href="#" class="nav-link">#}
+{#                                <i class="nav-icon fa fa-table"></i>#}
+{#                                <p>#}
+{#                                    گزارشات و استعلام#}
+{#                                    <i class="fa fa-angle-left right"></i>#}
+{#                                </p>#}
+{#                            </a>#}
+{#                            <ul class="nav nav-treeview">#}
+{#                                {% with url_name=request.resolver_match.url_name %}#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="/report"#}
+{#                                           class="nav-link {% if url_name == 'report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>گروه کالایی</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="product_report"#}
+{#                                           class="nav-link {% if url_name == 'product_report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>کالا و مارجین</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="product_detailed_report"#}
+{#                                           class="nav-link {% if url_name == 'product_detailed_report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>استعلام خصوصی کالا</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="req-status-report"#}
+{#                                           class="nav-link {% if url_name == 'req-status-report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>وضعیت درخواست ها</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="prison-report"#}
+{#                                           class="nav-link {% if url_name == 'prison-report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>مصرف استان</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="pris-order-report"#}
+{#                                           class="nav-link {% if url_name == 'pris-order-report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>مقدار درخواستی استان ها</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="pris-ordered-report"#}
+{#                                           class="nav-link {% if url_name == 'pris-ordered-report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>مقدار دریافتی استان ها</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="time-deliver-report"#}
+{#                                           class="nav-link {% if url_name == 'time-deliver-report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>مدت زمان درخواست و رسید</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{#                                    <li class="nav-item">#}
+{#                                        <a href="group-report"#}
+{#                                           class="nav-link {% if url_name == 'group-report' %}active{% endif %}">#}
+{#                                            <i class="fa fa-circle-o nav-icon"></i>#}
+{#                                            <p>استعلام درخواست کارشناسان</p>#}
+{#                                        </a>#}
+{#                                    </li>#}
+{##}
+{#                                {% endwith %}#}
+{#                            </ul>#}
+{#                        </li>#}
+{#                    {% endwith %}#}
                 </ul>
 
             </nav>
